@@ -11,22 +11,24 @@ def initiate_logging():
     # Initiate error logging
     logger = logging.getLogger('LexiconLog')
     logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     # If working on Steve's laptop change source and target for dev work
     if socket.gethostname() == 'steve-stanley-latitude':
         s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
         s.settings['target_folder'] = ''
         ch = logging.StreamHandler()
+        formatter = logging.Formatter('%(message)s')
         ch.setFormatter(formatter)
         ch.setLevel(logging.DEBUG)
         logger.addHandler(ch)
         logger.info('Logging to stream')
     else:
         fh = logging.FileHandler('Lexicon_error.log')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         fh.setLevel(logging.ERROR)
         logger.addHandler(fh)
+    return logger
 
 
 def letter_to_number(letter):
@@ -35,6 +37,7 @@ def letter_to_number(letter):
 
 
 def read_lexicon():
+    """Reads the .ods and returns a list of dictionary items representing the lexicon"""
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in s.spreadsheet_config.items()}
     # Read the lexicon and return a list of (Python) dictionary entries
@@ -42,7 +45,7 @@ def read_lexicon():
     raw_data.pop(0)  # get rid of the first row
     raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
     raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
-    data = []
+    processed_data = []
 
     for entry in raw_data:
         while len(entry) < 17:  # add blank columns to avoid index errors
@@ -67,18 +70,31 @@ def read_lexicon():
             'link': entry[col['link_col']]
         }
 
-        data.append(d)
+        processed_data.append(d)
     if s.settings['sort'] == 'orthography':
-        data.sort(key=lambda data: data['orth'])  # sort alphabetically by orthography
+        sort_orthographically(processed_data)
     else:
-        data.sort(key=lambda data: data['phon'])  # sort alphabetically by phonetics
-    return data
+        sort_phonetically(processed_data)
+    logger.info('%d dictionary entries read' % len(processed_data))
+    return processed_data
+
+
+def sort_by_id(processed_data):
+    return sorted(processed_data, key=lambda data: data['id'])
+
+
+def sort_phonetically(processed_data):
+    return sorted(processed_data, key=lambda data: data['phon'])
+
+
+def sort_orthographically(processed_data):
+    return sorted(processed_data, key=lambda data: data['orth'])
 
 
 def generate_HTML():
     data = read_lexicon()
     # order by id number so the for loop sees all the senses of a word one after another
-    data.sort(key=lambda data: data['id'])
+    data = sort_by_id(data)
 
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
@@ -156,5 +172,5 @@ def generate_HTML():
 
 
 if __name__ == '__main__':
-    initiate_logging()
+    logger = initiate_logging()
     generate_HTML()
