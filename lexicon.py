@@ -35,18 +35,17 @@ def letter_to_number(letter):
 
 
 def read_lexicon():
-    initiate_logging()
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in s.spreadsheet_config.items()}
     # Read the lexicon and return a list of (Python) dictionary entries
     raw_data = pyexcel_ods3.get_data(s.settings['spreadsheet_name'])['Sheet1']
-    raw_data.pop(0) # get rid of the first row
-    raw_data = [x for x in raw_data if x != []] # get rid of blank rows at the end
-    raw_data.sort(key=lambda raw_data: raw_data[col['id_col']]) # sort by ID number
+    raw_data.pop(0)  # get rid of the first row
+    raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
+    raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
     data = []
 
     for entry in raw_data:
-        while len(entry) < 17: # add blank columns to avoid index errors
+        while len(entry) < 17:  # add blank columns to avoid index errors
             entry.append('')
         d = {
             'id': entry[col['id_col']],
@@ -70,9 +69,9 @@ def read_lexicon():
 
         data.append(d)
     if s.settings['sort'] == 'orthography':
-        data.sort(key=lambda data: data['orth']) # sort alphabetically by orthography
+        data.sort(key=lambda data: data['orth'])  # sort alphabetically by orthography
     else:
-        data.sort(key=lambda data: data['phon']) # sort alphabetically by phonetics
+        data.sort(key=lambda data: data['phon'])  # sort alphabetically by phonetics
     return data
 
 
@@ -141,9 +140,9 @@ def generate_HTML():
             lex_entry = lex_body
         else:
             lex_entry = lex_heading + lex_body
-        last_id = entry['id'] # update previous id for this check
+        last_id = entry['id']  # update previous id for this check
 
-        body += lex_entry # add the entry to the HTML body
+        body += lex_entry  # add the entry to the HTML body
 
     # HTML closing tags
     html_close = '''
@@ -155,5 +154,7 @@ def generate_HTML():
     with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
         print(html_header, body, html_close, file=file)
 
+
 if __name__ == '__main__':
+    initiate_logging()
     generate_HTML()
