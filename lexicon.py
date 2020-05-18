@@ -71,6 +71,11 @@ def read_lexicon():
         }
 
         processed_data.append(d)
+    # pre processing tasks
+    for entry in processed_data:
+        if entry['sense'] == '':
+            entry['sense'] = 1
+
     if s.settings['sort'] == 'orthography':
         sort_orthographically(processed_data)
     else:
@@ -90,25 +95,42 @@ def sort_phonetically(processed_data):
 def sort_orthographically(processed_data):
     return sorted(processed_data, key=lambda data: data['orth'])
 
+def sort_by_sense(processed_data):
+    return sorted(processed_data, key=lambda data: data['sense'])
+
+
+def HTML_header(title):
+    html_header = '''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta lang="en-US">
+            <meta charset="UTF-8">
+            <meta name="author" content="New Tribes Mission">
+            <title>%s</title>
+            <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+            <script src="bootstrap/js/bootstrap.min.js"></script>
+            </head>''' % title
+    return html_header
+
+
+def generate_help_page():
+    html_header = HTML_header('%s Lexicon' % s.settings['language'])
+    body = '<h1>HELP PAGE</h1>'
+    html_close = '</div></body></html>'
+    with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
+        print(html_header, body, html_close, file=file)
+
 
 def generate_HTML():
     data = read_lexicon()
     # order by id number so the for loop sees all the senses of a word one after another
+    data = sort_by_sense(data) # get the sense numbers in order
     data = sort_by_id(data)
 
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
-    html_header = '''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta lang="en-US">
-        <meta charset="UTF-8">
-        <meta name="author" content="New Tribes Mission">
-        <title>%s Lexicon</title>
-        <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
-        <script src="bootstrap/js/bootstrap.min.js"></script>
-        </head>''' % s.settings['language']
+    html_header = HTML_header('%s Lexicon' % s.settings['language'])
 
     btn_group = '''<div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-light">{0} - English</button>
@@ -117,7 +139,8 @@ def generate_HTML():
     body = '''
     <body>
     <div class="container-fluid p-3 mb-2 bg-info text-white">
-    <h1>%s Lexicon</h1> <div class="container-fluid float-right">%s</div> 
+    <h1>%s Lexicon</h1> <div class="container-fluid float-right">%s 
+    <a href="Lexicon_help.html" button type="button" class="btn btn-light">Help</a> </div>
     <p>Updated %s </p>
     </div>
     <div class="container-fluid" id="entries_pane">''' % (s.settings['language'], btn_group, date)
@@ -144,12 +167,11 @@ def generate_HTML():
         <p>%s <strong>%s</strong> [%s]
         <strong><em style="color:dodgerblue"> %s</em></strong>, <strong style="color:gray">%s</strong> : %s</p>
         ''' % (sense, entry['pos'], entry['phon'], entry['eng'], entry['tpi'], entry['def'])
-        lex2 = '''
+        examples = '''
         <p>%s</p>
         <p>%s</p>
-        </div>
         ''' % (entry['ex'], entry['trans'])
-        lex_body = lex1 + lex2
+        lex_body = lex1 + examples
 
         # If the entry is a sense of the previous iteration add the sense without a repeated header
         if entry['id'] == last_id:
@@ -161,14 +183,15 @@ def generate_HTML():
         body += lex_entry  # add the entry to the HTML body
 
     # HTML closing tags
-    html_close = '''
-        </div>
-        </body>
-    </html>'''
+    html_close = '</div></body></html>'
 
     # Write the document by joining header, body and close
     with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
         print(html_header, body, html_close, file=file)
+    generate_help_page()
+
+
+
 
 
 if __name__ == '__main__':
