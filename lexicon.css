@@ -1,0 +1,21 @@
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#dictionary_sidebar {
+    width: 250px;
+    position: fixed;
+    overflow-y: scroll;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #17a2b8;
+    color: #fff;
+}
+
+#main_pane {
+    padding: 20px;
+    margin-left: 250px;
+}

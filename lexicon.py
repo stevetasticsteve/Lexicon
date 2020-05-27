@@ -6,6 +6,8 @@ import socket
 import logging
 import lexicon_config as s
 
+from jinja2 import Environment, FileSystemLoader
+
 
 def initiate_logging():
     # Initiate error logging
@@ -14,8 +16,8 @@ def initiate_logging():
 
     # If working on Steve's laptop change source and target for dev work
     if socket.gethostname() == 'steve-stanley-latitude':
-        s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
-        # s.settings['spreadsheet_name'] = 'excel_test.xlsx'
+        # s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
+        s.settings['spreadsheet_name'] = 'excel_test.xlsx'
         s.settings['target_folder'] = ''
         ch = logging.StreamHandler()
         formatter = logging.Formatter('%(message)s')
@@ -107,6 +109,7 @@ def HTML_header(title):
             <meta name="author" content="New Tribes Mission">
             <title>%s</title>
             <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+            <link rel="stylesheet" href="lexicon.css">
             <script src="bootstrap/js/bootstrap.min.js"></script>
             </head>''' % title
     return html_header
@@ -190,41 +193,51 @@ def generate_HTML():
                     <button type="button" class="btn btn-light">{0} - English</button>
                     <button type="button" class="btn btn-dark">English - {0}</button>
                     </div>'''.format(s.settings['language'])
-    navbar = '''
+    top_bar = '''
     <body>
     <div class="container-fluid p-3 mb-2 bg-info text-white">
-    <h1>%s Lexicon</h1> <div class="container-fluid float-right">%s 
-    <a href="Lexicon_help.html" button type="button" class="btn btn-light">Help</a> </div>
-    <p>Updated %s </p>
+        <h1>%s Lexicon</h1> 
+            <div class="container-fluid float-right">%s 
+            <a href="Lexicon_help.html" button type="button" class="btn btn-light">Help</a> 
+            </div>
+        <p>Updated %s </p>
     </div>''' % (s.settings['language'], btn_group, date)
 
     data = read_lexicon()
     lexicon_entries = create_headwords_HTML(data)
     initial_letters = get_word_beginings(lexicon_entries)
 
-    main_div = '''<div class="container-fluid" id="main_body">
-    <div class="row">'''
-    side_bar = '''<div class=col-sm-1>''' % initial_letters
+    side_bar = '''
+    <nav id="dictionary_sidebar">
+        <div id="initial_letters">'''
     for letter in initial_letters:
-        side_bar += '''<ul>%s</ul>''' % letter
-    side_bar += '</div>'
-    entries_pane ='''<div class=col-sm-11>'''
+        side_bar += '<ul>%s</ul>' % letter
+    side_bar += '</div></nav>'
+
+    main_pane = '<div class="container-fluid" id="main_pane">'
+    entries_pane = '<div id="entries">'
 
     # build the body of lexicon entries
     for entry in lexicon_entries:
         entries_pane += entry[1]
     entries_pane += '</div>'
+
+    main_pane += top_bar + entries_pane + '</div>'
+    body = '<div class="wrapper">' + side_bar + main_pane + '</div>'
+
     # HTML closing tags
     html_close = '</div></body></html>'
 
-    body = main_div + side_bar + entries_pane + '</div>'
-
-    # Write the document by joining header, body and close
+       # Write the document by joining header, body and close
     with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
-        print(html_header, navbar, body, html_close, file=file)
+        print(html_header, body, html_close, file=file)
     generate_help_page()
 
 
 if __name__ == '__main__':
-    logger = initiate_logging()
-    generate_HTML()
+    # logger = initiate_logging()
+    # generate_HTML()
+    file_loader = FileSystemLoader('templates')
+    env = Environment(loader=file_loader)
+    template = env.get_template('lang-Eng.html')
+    print(template.render())
