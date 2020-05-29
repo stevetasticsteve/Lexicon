@@ -168,7 +168,6 @@ def generate_HTML():
     initial_letters = get_word_beginings(lexicon_entries)
 
 
-
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
     template = env.get_template('lang-Eng.html')
