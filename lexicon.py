@@ -42,8 +42,12 @@ def read_lexicon():
     """Reads the .ods and returns a list of dictionary items representing the lexicon"""
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in s.spreadsheet_config.items()}
+    spreadsheet = s.settings['spreadsheet_name']
+    assert os.path.exists(spreadsheet), 'No spreadsheet file'
+    _, extension = os.path.splitext(spreadsheet)
+    assert extension in ('.ods', '.xls', '.xlsx'), 'Invalid file, must be .ods, .xls or .xlsx'
     # Read the lexicon and return a list of (Python) dictionary entries
-    raw_data = pyexcel_ods3.get_data(s.settings['spreadsheet_name'])['Sheet1']
+    raw_data = pyexcel_ods3.get_data(spreadsheet)['Sheet1']
     raw_data.pop(0)  # get rid of the first row
     raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
     raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
