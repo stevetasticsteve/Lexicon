@@ -8,7 +8,6 @@ import lexicon_config as s
 
 from jinja2 import Environment, FileSystemLoader
 
-
 def initiate_logging():
     # Initiate error logging
     logger = logging.getLogger('LexiconLog')
@@ -99,82 +98,54 @@ def sort_by_sense(processed_data):
     return sorted(processed_data, key=lambda data: data['sense'])
 
 
-def HTML_header(title):
-    html_header = '''
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta lang="en-US">
-            <meta charset="UTF-8">
-            <meta name="author" content="New Tribes Mission">
-            <title>%s</title>
-            <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
-            <link rel="stylesheet" href="lexicon.css">
-            <script src="bootstrap/js/bootstrap.min.js"></script>
-            </head>''' % title
-    return html_header
+# def generate_help_page():
+#     html_header = HTML_header('%s Lexicon help' % s.settings['language'])
+#     body = '<h1>HELP PAGE</h1>'
+#     html_close = '</div></body></html>'
+#     with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
+#         print(html_header, body, html_close, file=file)
 
 
-def generate_help_page():
-    html_header = HTML_header('%s Lexicon help' % s.settings['language'])
-    body = '<h1>HELP PAGE</h1>'
-    html_close = '</div></body></html>'
-    with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
-        print(html_header, body, html_close, file=file)
-
-
-def create_headwords_HTML(processed_data):
+def create_lexicon_entries(processed_data):
     '''Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
-    Returns a tuple (headword, html for entry) sorted alphabetically by headword'''
+    Returns a tuple (headword, list of sense dictionary) sorted alphabetically by headword'''
     processed_data = sort_by_sense(processed_data) # get the sense numbers in order
     processed_data = sort_by_id(processed_data)
     lexicon_entries = []
-    # Loop throgh the entries and create the dictionary entries
-    last_id = 0
+    last_id = 0  # blank variable to check if headwords are the same
+    lexeme_index = -1  # counter for lexicon_entries
+    # Loop through the entries and create the dictionary entries
     for entry in processed_data:
         # choose phonetics for headword if orthography not available
         if entry['orth']:
             headword = entry['orth']
         else:
             headword = entry['phon']
+        sense_data = {
+            'pos': entry['pos'],
+            'phonetics': entry['phon'],
+            'english': entry['eng'],
+            'tok_pisin': entry['tpi'],
+            'definition': entry['def'],
+            'example': entry['ex'],
+            'example_translation': entry['trans']
+        }
         # get which sense of the word
-        if entry['sense']:
-            sense = str(entry['sense']) + '.'
+        if not entry['sense']: # sense is blank, thus it is sense 1, and a new headword
+            senses = [] # start a new sense list
+            sense_data['sense'] = 1
         else:
-            sense = '1.'
+            sense_data['sense'] = entry['sense']
 
-        lex_heading = '''
-            <div class="lexeme">
-            <h3>%s</h3>''' % headword
-        # pos [phonetics] english, tpi : definition
-        lex1 = '''
-            <p>%s <strong>%s</strong> [%s]
-            <strong><em style="color:dodgerblue"> %s</em></strong>, <strong style="color:gray">%s</strong>''' \
-               % (sense, entry['pos'], entry['phon'], entry['eng'], entry['tpi'])
-        if entry['def']:
-            definition = ': %s</p>' % entry['def']
-        else:
-            definition = '</p>'
-        if entry['ex']:
-            examples = '''<dl class="row">
-                <dt class="col-sm-1">%s</dt>
-                <dd class="col-sm-1">%s</dd>
-                </dl>
-                ''' % (entry['ex'], entry['trans'])
-        else:
-            examples = ''
-        lex_body = lex1 + definition + examples
-
-        # If the entry is a sense of the previous iteration add the sense without a repeated header
-        if entry['id'] == last_id:
-            lex_entry = lex_body
-        else:
-            lex_entry = lex_heading + lex_body
-        last_id = entry['id']  # update previous id for this check
-
-        # create a tuple of the entry so it can be sorted by headword
-        lexicon_entries.append((headword, lex_entry))
-    lexicon_entries.sort()
+        if last_id == entry['id']: # this is a sense of the previous headword
+            lexicon_entries[lexeme_index][1].append(sense_data)
+        else: # this is a new headword
+            lexeme = (headword, [sense_data])
+            lexicon_entries.append(lexeme)
+            lexeme_index += 1
+        last_id = entry['id']
+    # sort alphabetically
+    lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_tuple: lexeme_tuple[0])
     return lexicon_entries
 
 
@@ -187,57 +158,35 @@ def get_word_beginings(lexicon_entries):
 def generate_HTML():
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
-    html_header = HTML_header('%s Lexicon' % s.settings['language'])
-
-    btn_group = '''<div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-light">{0} - English</button>
-                    <button type="button" class="btn btn-dark">English - {0}</button>
-                    </div>'''.format(s.settings['language'])
-    top_bar = '''
-    <body>
-    <div class="container-fluid p-3 mb-2 bg-info text-white">
-        <h1>%s Lexicon</h1> 
-            <div class="container-fluid float-right">%s 
-            <a href="Lexicon_help.html" button type="button" class="btn btn-light">Help</a> 
-            </div>
-        <p>Updated %s </p>
-    </div>''' % (s.settings['language'], btn_group, date)
+    context = {
+        'language': s.settings['language'],
+        'date': date
+    }
 
     data = read_lexicon()
-    lexicon_entries = create_headwords_HTML(data)
+    lexicon_entries = create_lexicon_entries(data)
     initial_letters = get_word_beginings(lexicon_entries)
 
-    side_bar = '''
-    <nav id="dictionary_sidebar">
-        <div id="initial_letters">'''
-    for letter in initial_letters:
-        side_bar += '<ul>%s</ul>' % letter
-    side_bar += '</div></nav>'
-
-    main_pane = '<div class="container-fluid" id="main_pane">'
-    entries_pane = '<div id="entries">'
-
-    # build the body of lexicon entries
-    for entry in lexicon_entries:
-        entries_pane += entry[1]
-    entries_pane += '</div>'
-
-    main_pane += top_bar + entries_pane + '</div>'
-    body = '<div class="wrapper">' + side_bar + main_pane + '</div>'
-
-    # HTML closing tags
-    html_close = '</div></body></html>'
-
-       # Write the document by joining header, body and close
-    with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
-        print(html_header, body, html_close, file=file)
-    generate_help_page()
 
 
-if __name__ == '__main__':
-    # logger = initiate_logging()
-    # generate_HTML()
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
     template = env.get_template('lang-Eng.html')
-    print(template.render())
+    # print(template.render(context=context))
+
+    # main_pane = '<div class="container-fluid" id="main_pane">'
+    # entries_pane = '<div id="entries">'
+    #
+    # # build the body of lexicon entries
+    # for entry in lexicon_entries:
+    #     entries_pane += entry[1]
+    # entries_pane += '</div>'
+
+    with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
+        print(template.render(context=context, entries=lexicon_entries), file=file)
+    # generate_help_page()
+
+logger = initiate_logging()
+if __name__ == '__main__':
+    # logger = initiate_logging()
+    generate_HTML()
