@@ -190,7 +190,8 @@ def get_word_beginings(lexicon_entries):
     return sorted(set(letters))
 
 
-def generate_HTML():
+def generate_HTML(processed_data):
+    check_processed_data(processed_data, 'generate_HTML()')
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
     context = {
@@ -198,8 +199,7 @@ def generate_HTML():
         'date': date
     }
 
-    data = read_lexicon()
-    lexicon_entries = create_lexicon_entries(data)
+    lexicon_entries = create_lexicon_entries(processed_data)
     initial_letters = get_word_beginings(lexicon_entries)
 
 
@@ -207,21 +207,45 @@ def generate_HTML():
     env = Environment(loader=file_loader)
     template = env.get_template('lang-Eng.html')
 
-    with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
+    html = os.path.join(s.settings['target_folder'], '{language}_Lexicon.html').format(language=s.settings['language'])
+    with open(html, 'w') as file:
         print(template.render(context=context, entries=lexicon_entries), file=file)
     # generate_help_page()
+
 
 def create_phonemic_assistant_db(processed_data, checked_only =True):
     """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
     Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
     (default=True)"""
     check_processed_data(processed_data, 'create_phonemic_assistant_db()')
+    if checked_only:
+        processed_data = [data for data in processed_data if data['check']]
+        if len(processed_data) == 0:
+            raise AssertionError('No checked data to work with!')
+
     pa_db = '﻿\_sh v3.0  400  PhoneticData\n'
 
-    # for item in processed_data:
-        # pa_db += pass
+    for i, item in enumerate(processed_data, 1):
+        item['ref'] = '{:03d}'.format(i) # format ref as 001, 002 etc
+        entry = '''
+        \\ref {ref}
+        \\ge {eng}
+        \\gn {tpi}
+        \\ph {phon}
+        \\ps {pos}\n'''.format(**item) # use the dict from read_lexicon()
+
+        pa_db += entry
+
+    db = (os.path.join(s.settings['target_folder'],
+                       '{language}_phonology_assistant.db'.format(language=s.settings['language'])))
+    with open(db,'w') as file:
+        print(pa_db, file=file)
+
 
 logger = initiate_logging()
 if __name__ == '__main__':
     # logger = initiate_logging()
-    generate_HTML()
+    data = read_lexicon()
+    generate_HTML(data)
+    create_phonemic_assistant_db(data, checked_only=False)
+
