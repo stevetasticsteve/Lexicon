@@ -228,11 +228,11 @@ def create_phonemic_assistant_db(processed_data, checked_only =True):
     for i, item in enumerate(processed_data, 1):
         item['ref'] = '{:03d}'.format(i) # format ref as 001, 002 etc
         entry = '''
-        \\ref {ref}
-        \\ge {eng}
-        \\gn {tpi}
-        \\ph {phon}
-        \\ps {pos}\n'''.format(**item) # use the dict from read_lexicon()
+\\ref {ref}
+\\ge {eng}
+\\gn {tpi}
+\\ph {phon}
+\\ps {pos}\n'''.format(**item) # use the dict from read_lexicon()
 
         pa_db += entry
 
