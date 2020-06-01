@@ -15,8 +15,8 @@ def initiate_logging():
 
     # If working on Steve's laptop change source and target for dev work
     if socket.gethostname() == 'steve-stanley-latitude':
-        # s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
-        s.settings['spreadsheet_name'] = 'excel_test.xlsx'
+        s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
+        # s.settings['spreadsheet_name'] = 'excel_test.xlsx'
         s.settings['target_folder'] = ''
         ch = logging.StreamHandler()
         formatter = logging.Formatter('%(message)s')
@@ -39,13 +39,19 @@ def letter_to_number(letter):
 
 
 def read_lexicon():
-    """Reads the .ods and returns a list of dictionary items representing the lexicon"""
+    """Reads the .ods and returns a list of dictionary items representing the lexicon,
+    unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
+    spreadsheet = s.settings['spreadsheet_name']
+    assert os.path.exists(spreadsheet), '{spreadsheet} does not exist'.format(spreadsheet=spreadsheet)
+    _, extension = os.path.splitext(spreadsheet)
+    valid_extensions = ('.ods', '.xls', '.xlsx')
+    assert any(ex == extension for ex in valid_extensions),  \
+        'Invalid file {extension}, must be .ods, .xls or .xlsx'.format(extension=extension)
+
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in s.spreadsheet_config.items()}
-    spreadsheet = s.settings['spreadsheet_name']
-    assert os.path.exists(spreadsheet), 'No spreadsheet file'
-    _, extension = os.path.splitext(spreadsheet)
-    assert extension in ('.ods', '.xls', '.xlsx'), 'Invalid file, must be .ods, .xls or .xlsx'
+    assert len(col) == 17, '17 Columns expected, %d found' % len(col)
+
     # Read the lexicon and return a list of (Python) dictionary entries
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Sheet1']
     raw_data.pop(0)  # get rid of the first row
@@ -111,8 +117,8 @@ def sort_by_sense(processed_data):
 
 
 def create_lexicon_entries(processed_data):
-    '''Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
-    Returns a tuple (headword, list of sense dictionary) sorted alphabetically by headword'''
+    """Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
+    Returns a tuple (headword, list of sense dictionary) sorted alphabetically by headword"""
     processed_data = sort_by_sense(processed_data) # get the sense numbers in order
     processed_data = sort_by_id(processed_data)
     lexicon_entries = []
@@ -132,14 +138,9 @@ def create_lexicon_entries(processed_data):
             'tok_pisin': entry['tpi'],
             'definition': entry['def'],
             'example': entry['ex'],
-            'example_translation': entry['trans']
+            'example_translation': entry['trans'],
+            'sense': entry['sense']
         }
-        # get which sense of the word
-        if not entry['sense']: # sense is blank, thus it is sense 1, and a new headword
-            senses = [] # start a new sense list
-            sense_data['sense'] = 1
-        else:
-            sense_data['sense'] = entry['sense']
 
         if last_id == entry['id']: # this is a sense of the previous headword
             lexicon_entries[lexeme_index][1].append(sense_data)
@@ -154,10 +155,11 @@ def create_lexicon_entries(processed_data):
 
 
 def get_word_beginings(lexicon_entries):
-    '''Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
-     headwords'''
+    """Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
+     headwords"""
     letters = [x[0][0] for x in lexicon_entries]
     return sorted(set(letters))
+
 
 def generate_HTML():
     # Create the HTML header and navbar
@@ -175,19 +177,19 @@ def generate_HTML():
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
     template = env.get_template('lang-Eng.html')
-    # print(template.render(context=context))
-
-    # main_pane = '<div class="container-fluid" id="main_pane">'
-    # entries_pane = '<div id="entries">'
-    #
-    # # build the body of lexicon entries
-    # for entry in lexicon_entries:
-    #     entries_pane += entry[1]
-    # entries_pane += '</div>'
 
     with open(os.path.join(s.settings['target_folder'], '%s_Lexicon.html') % s.settings['language'], 'w') as file:
         print(template.render(context=context, entries=lexicon_entries), file=file)
     # generate_help_page()
+
+def create_phonemic_assistant_db(processed_data, checked_only =True):
+    """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
+    Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
+    (default=True)"""
+    pa_db = '﻿\_sh v3.0  400  PhoneticData\n'
+
+    # for item in processed_data:
+        # pa_db += pass
 
 logger = initiate_logging()
 if __name__ == '__main__':
