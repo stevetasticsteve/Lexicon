@@ -115,10 +115,38 @@ def sort_by_sense(processed_data):
 #     with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
 #         print(html_header, body, html_close, file=file)
 
+# Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
+def check_processed_data(processed_data, function):
+    """A quick assert that the right data model is given to function, a list of dictionaries produced by
+    read_lexicon()"""
+    try:
+        assert len(processed_data) > 0, 'No data to work on!'
+        assert type(processed_data) == list, \
+            'wrong data type given to {function} - needs the result of read_lexicon()'.format(function=function)
+        assert type(processed_data[0]) == dict, \
+            'wrong data type given to {function} - needs the result of read_lexicon()'.format(function=function)
+    except AssertionError:
+        logger.exception('Function called incorrectly')
+        raise AssertionError
+
+
+def check_lexicon_entries(lexicon_entries, function):
+    """A quick assert that the data model comes from create_lexicon_entries, a list of tuples"""
+    try:
+        assert len(lexicon_entries) > 0, 'No data to work on!'
+        assert type(lexicon_entries) == list, \
+            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(function=function)
+        assert type(lexicon_entries[0]) == tuple, \
+            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(function=function)
+    except AssertionError:
+        logger.exception('Function called incorrectly')
+        raise AssertionError
+
 
 def create_lexicon_entries(processed_data):
     """Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
-    Returns a tuple (headword, list of sense dictionary) sorted alphabetically by headword"""
+    Returns a list of tuples (headword, list of sense dictionary) sorted alphabetically by headword"""
+    check_processed_data(processed_data, 'create_lexicon_entries()')
     processed_data = sort_by_sense(processed_data) # get the sense numbers in order
     processed_data = sort_by_id(processed_data)
     lexicon_entries = []
@@ -157,6 +185,7 @@ def create_lexicon_entries(processed_data):
 def get_word_beginings(lexicon_entries):
     """Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
      headwords"""
+    check_lexicon_entries(lexicon_entries, 'get_word_beginings()')
     letters = [x[0][0] for x in lexicon_entries]
     return sorted(set(letters))
 
@@ -186,6 +215,7 @@ def create_phonemic_assistant_db(processed_data, checked_only =True):
     """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
     Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
     (default=True)"""
+    check_processed_data(processed_data, 'create_phonemic_assistant_db()')
     pa_db = '﻿\_sh v3.0  400  PhoneticData\n'
 
     # for item in processed_data:
