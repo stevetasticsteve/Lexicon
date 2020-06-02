@@ -117,16 +117,20 @@ def sort_by_sense(processed_data):
 #         print(html_header, body, html_close, file=file)
 
 def generate_check_page(processed_data):
+    """Creates a page that shows all the phonetics that need to be checked. The HTML is sparse and is designed
+    for printing."""
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
     template = env.get_template('check.html')
+
+    words_to_check = [word for word in processed_data if not word['check']]
 
     context = {
         'title': '{language} checklist'.format(language=s.settings['language'])
     }
 
     with open('check_list.html', 'w') as file:
-        print(template.render(context=context), file=file)
+        print(template.render(context=context, entries=words_to_check), file=file)
 
 # Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
 def check_processed_data(processed_data, function):
