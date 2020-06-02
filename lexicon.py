@@ -8,6 +8,7 @@ import lexicon_config as s
 
 from jinja2 import Environment, FileSystemLoader
 
+
 def initiate_logging():
     # Initiate error logging
     logger = logging.getLogger('LexiconLog')
@@ -15,8 +16,8 @@ def initiate_logging():
 
     # If working on Steve's laptop change source and target for dev work
     if socket.gethostname() == 'steve-stanley-latitude':
-        s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
-        # s.settings['spreadsheet_name'] = 'excel_test.xlsx'
+        # s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
+        s.settings['spreadsheet_name'] = 'excel_test.xlsx'
         s.settings['target_folder'] = ''
         ch = logging.StreamHandler()
         formatter = logging.Formatter('%(message)s')
@@ -45,7 +46,7 @@ def read_lexicon():
     assert os.path.exists(spreadsheet), '{spreadsheet} does not exist'.format(spreadsheet=spreadsheet)
     _, extension = os.path.splitext(spreadsheet)
     valid_extensions = ('.ods', '.xls', '.xlsx')
-    assert any(ex == extension for ex in valid_extensions),  \
+    assert any(ex == extension for ex in valid_extensions), \
         'Invalid file {extension}, must be .ods, .xls or .xlsx'.format(extension=extension)
 
     # Convert column letters to list integers
@@ -115,6 +116,18 @@ def sort_by_sense(processed_data):
 #     with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
 #         print(html_header, body, html_close, file=file)
 
+def generate_check_page(processed_data):
+    file_loader = FileSystemLoader('templates')
+    env = Environment(loader=file_loader)
+    template = env.get_template('check.html')
+
+    context = {
+        'title': '{language} checklist'.format(language=s.settings['language'])
+    }
+
+    with open('check_list.html', 'w') as file:
+        print(template.render(context=context), file=file)
+
 # Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
 def check_processed_data(processed_data, function):
     """A quick assert that the right data model is given to function, a list of dictionaries produced by
@@ -135,9 +148,11 @@ def check_lexicon_entries(lexicon_entries, function):
     try:
         assert len(lexicon_entries) > 0, 'No data to work on!'
         assert type(lexicon_entries) == list, \
-            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(function=function)
+            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(
+                function=function)
         assert type(lexicon_entries[0]) == tuple, \
-            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(function=function)
+            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(
+                function=function)
     except AssertionError:
         logger.exception('Function called incorrectly')
         raise AssertionError
@@ -147,7 +162,7 @@ def create_lexicon_entries(processed_data):
     """Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
     Returns a list of tuples (headword, list of sense dictionary) sorted alphabetically by headword"""
     check_processed_data(processed_data, 'create_lexicon_entries()')
-    processed_data = sort_by_sense(processed_data) # get the sense numbers in order
+    processed_data = sort_by_sense(processed_data)  # get the sense numbers in order
     processed_data = sort_by_id(processed_data)
     lexicon_entries = []
     last_id = 0  # blank variable to check if headwords are the same
@@ -170,9 +185,9 @@ def create_lexicon_entries(processed_data):
             'sense': entry['sense']
         }
 
-        if last_id == entry['id']: # this is a sense of the previous headword
+        if last_id == entry['id']:  # this is a sense of the previous headword
             lexicon_entries[lexeme_index][1].append(sense_data)
-        else: # this is a new headword
+        else:  # this is a new headword
             lexeme = (headword, [sense_data])
             lexicon_entries.append(lexeme)
             lexeme_index += 1
@@ -195,13 +210,12 @@ def generate_HTML(processed_data):
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
     context = {
-        'language': s.settings['language'],
+        'title': '{language} Lexicon'.format(language=s.settings['language']),
         'date': date
     }
 
     lexicon_entries = create_lexicon_entries(processed_data)
     initial_letters = get_word_beginings(lexicon_entries)
-
 
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
@@ -211,9 +225,10 @@ def generate_HTML(processed_data):
     with open(html, 'w') as file:
         print(template.render(context=context, entries=lexicon_entries), file=file)
     # generate_help_page()
+    generate_check_page(processed_data)
 
 
-def create_phonemic_assistant_db(processed_data, checked_only =True):
+def create_phonemic_assistant_db(processed_data, checked_only=True):
     """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
     Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
     (default=True)"""
@@ -226,19 +241,19 @@ def create_phonemic_assistant_db(processed_data, checked_only =True):
     pa_db = '﻿\_sh v3.0  400  PhoneticData\n'
 
     for i, item in enumerate(processed_data, 1):
-        item['ref'] = '{:03d}'.format(i) # format ref as 001, 002 etc
+        item['ref'] = '{:03d}'.format(i)  # format ref as 001, 002 etc
         entry = '''
 \\ref {ref}
 \\ge {eng}
 \\gn {tpi}
 \\ph {phon}
-\\ps {pos}\n'''.format(**item) # use the dict from read_lexicon()
+\\ps {pos}\n'''.format(**item)  # use the dict from read_lexicon()
 
         pa_db += entry
 
     db = (os.path.join(s.settings['target_folder'],
                        '{language}_phonology_assistant.db'.format(language=s.settings['language'])))
-    with open(db,'w') as file:
+    with open(db, 'w') as file:
         print(pa_db, file=file)
 
 
@@ -248,4 +263,3 @@ if __name__ == '__main__':
     data = read_lexicon()
     generate_HTML(data)
     create_phonemic_assistant_db(data, checked_only=False)
-

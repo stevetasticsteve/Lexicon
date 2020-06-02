@@ -1,26 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="New Tribes Mission">
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="lexicon.css">
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="bootstrap/js/jquery-3.4.1.min.js"></script>
-    <title>{{context.language}} Lexicon</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
+{% block page_content %}
 <div class="wrapper">
     <nav id="dictionary_sidebar>">
-        <h3>Sidebar</h3>
         <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
             <div class="input-group">
               <input type="text" id="filter" name="filter" placeholder="Type to search"
                      aria-describedby="button-addon1" class="form-control border-0 bg-light">
             </div>
           </div>
+        <a href="check_list.html">See checklist</a>
         <script>$('#filter').keyup(function () {
             var filter = this.value.toLowerCase();
 
@@ -78,5 +67,4 @@
         </div></div>
     </div>
 </div>
-</body>
-</html>
+{% endblock %}
