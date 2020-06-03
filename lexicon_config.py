@@ -23,4 +23,5 @@ spreadsheet_config = {
     'syn_col': 'O',  # Column containing synonyms
     'ant_col': 'P',  # Column containing antonyms
     'link_col': 'Q',  # Column containing links,
+    'tag_col': 'R', # Column containing semantic tags
 }

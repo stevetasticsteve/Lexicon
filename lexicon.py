@@ -51,7 +51,7 @@ def read_lexicon():
 
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in s.spreadsheet_config.items()}
-    assert len(col) == 17, '17 Columns expected, %d found' % len(col)
+    assert len(col) == 18, '18 Columns expected, %d defined' % len(col)
 
     # Read the lexicon and return a list of (Python) dictionary entries
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Sheet1']
@@ -61,7 +61,7 @@ def read_lexicon():
     processed_data = []
 
     for entry in raw_data:
-        while len(entry) < 17:  # add blank columns to avoid index errors
+        while len(entry) < 18:  # add blank columns to avoid index errors
             entry.append('')
         d = {
             'id': entry[col['id_col']],
@@ -80,7 +80,8 @@ def read_lexicon():
             'check': entry[col['check_col']],
             'syn': entry[col['syn_col']],
             'ant': entry[col['ant_col']],
-            'link': entry[col['link_col']]
+            'link': entry[col['link_col']],
+            'tag': entry[col['tag_col']],
         }
 
         processed_data.append(d)
@@ -97,12 +98,15 @@ def sort_by_id(processed_data):
     return sorted(processed_data, key=lambda data: data['id'])
 
 
-def sort_phonetically(processed_data):
-    return sorted(processed_data, key=lambda data: data['phon'])
+def sort_by_tag(processed_data):
+    return sorted(processed_data, key=lambda data: data['tag'])
 
-
-def sort_orthographically(processed_data):
-    return sorted(processed_data, key=lambda data: data['orth'])
+# def sort_phonetically(processed_data):
+#     return sorted(processed_data, key=lambda data: data['phon'])
+#
+#
+# def sort_orthographically(processed_data):
+#     return sorted(processed_data, key=lambda data: data['orth'])
 
 
 def sort_by_sense(processed_data):
@@ -116,21 +120,6 @@ def sort_by_sense(processed_data):
 #     with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
 #         print(html_header, body, html_close, file=file)
 
-def generate_check_page(processed_data):
-    """Creates a page that shows all the phonetics that need to be checked. The HTML is sparse and is designed
-    for printing."""
-    file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader)
-    template = env.get_template('check.html')
-
-    words_to_check = [word for word in processed_data if not word['check']]
-
-    context = {
-        'title': '{language} checklist'.format(language=s.settings['language'])
-    }
-
-    with open('check_list.html', 'w') as file:
-        print(template.render(context=context, entries=words_to_check), file=file)
 
 # Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
 def check_processed_data(processed_data, function):
@@ -201,16 +190,33 @@ def create_lexicon_entries(processed_data):
     return lexicon_entries
 
 
-def get_word_beginings(lexicon_entries):
+def get_word_beginnings(lexicon_entries):
     """Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
      headwords"""
-    check_lexicon_entries(lexicon_entries, 'get_word_beginings()')
+    check_lexicon_entries(lexicon_entries, 'get_word_beginnings()')
     letters = [x[0][0] for x in lexicon_entries]
     return sorted(set(letters))
 
 
-def generate_HTML(processed_data):
+def generate_html(processed_data):
+    """Generate the HTML pages"""
+    template_dir = 'templates'
+    assert os.path.exists(template_dir), '{dir} is missing'.format(dir=template_dir)
+    assert os.path.isdir(template_dir), '{dir} is not a directory'.format(dir=template_dir)
+    templates = ['lang-Eng.html', 'check.html', 'base.html']
+    for template in templates:
+        template = os.path.join(template_dir, template)
+        assert os.path.exists(template), 'Template Error: {template} is missing'.format(template=template)
+
+    generate_lexicon_page(processed_data)
+    # generate_help_page()
+    generate_check_page(processed_data)
+
+
+def generate_lexicon_page(processed_data):
+    """Create suitable headwords for a dictionary and create a dictionary HTML page"""
     check_processed_data(processed_data, 'generate_HTML()')
+
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
     context = {
@@ -219,7 +225,7 @@ def generate_HTML(processed_data):
     }
 
     lexicon_entries = create_lexicon_entries(processed_data)
-    initial_letters = get_word_beginings(lexicon_entries)
+    initial_letters = get_word_beginnings(lexicon_entries)
 
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
@@ -228,8 +234,27 @@ def generate_HTML(processed_data):
     html = os.path.join(s.settings['target_folder'], '{language}_Lexicon.html').format(language=s.settings['language'])
     with open(html, 'w') as file:
         print(template.render(context=context, entries=lexicon_entries), file=file)
-    # generate_help_page()
-    generate_check_page(processed_data)
+
+
+def generate_check_page(processed_data):
+    """Creates a page that shows all the phonetics that need to be checked. The HTML is sparse and is designed
+    for printing."""
+    file_loader = FileSystemLoader('templates')
+    env = Environment(loader=file_loader)
+    template = env.get_template('check.html')
+
+    # filter out and return only unchecked entries
+    words_to_check = [word for word in processed_data if not word['check']]
+    # order by tag for more structured language checking session
+    words_to_check = sort_by_tag(words_to_check)
+    logger.info('{words_to_check} words need checking'.format(words_to_check=len(words_to_check)))
+
+    context = {
+        'title': '{language} checklist'.format(language=s.settings['language'])
+    }
+
+    with open('check_list.html', 'w') as file:
+        print(template.render(context=context, entries=words_to_check), file=file)
 
 
 def create_phonemic_assistant_db(processed_data, checked_only=True):
@@ -237,6 +262,7 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
     Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
     (default=True)"""
     check_processed_data(processed_data, 'create_phonemic_assistant_db()')
+
     if checked_only:
         processed_data = [data for data in processed_data if data['check']]
         if len(processed_data) == 0:
@@ -265,5 +291,5 @@ logger = initiate_logging()
 if __name__ == '__main__':
     # logger = initiate_logging()
     data = read_lexicon()
-    generate_HTML(data)
+    generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)

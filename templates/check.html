@@ -3,7 +3,26 @@
 {% block page_content %}
 
 <h1>Check list</h1>
-{% for word in entries %}
-<ul>{{word.phon}}</ul>
-{% endfor %}
+<table class="table">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Phonetics</th>
+        <th scope="col">Correction?</th>
+        <th scope="col">English</th>
+        <th scope="col">Tpi</th>
+        <th scope="col">POS</th>
+        <th scope="col">Tag</th>
+    </tr>
+    {% for word in entries %}
+    <tr>
+        <td>{{word.id}}</td>
+        <td>{{word.phon}}</td>
+        <td></td>
+        <td>"{{word.eng}}"</td>
+        <td>"{{word.tpi}}"</td>
+        <td>{{word.pos}}</td>
+        <td>{{word.tag}}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
