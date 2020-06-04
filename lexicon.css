@@ -4,7 +4,7 @@
 }
 
 #dictionary_sidebar {
-    width: 100px;
+    width: 25px;
     position: fixed;
     overflow-y: scroll;
     top: 0;
@@ -17,7 +17,7 @@
 
 #main_pane {
     padding: 0px;
-    margin-left: 100px;
+    margin-left: 25px;
 }
 
 @media only screen and (max-width: 600px) {

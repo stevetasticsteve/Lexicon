@@ -221,7 +221,8 @@ def generate_lexicon_page(processed_data):
     date = datetime.datetime.now().strftime('%A %d %B %Y')
     context = {
         'title': '{language} Lexicon'.format(language=s.settings['language']),
-        'date': date
+        'date': date,
+        'language': s.settings['language']
     }
 
     lexicon_entries = create_lexicon_entries(processed_data)
