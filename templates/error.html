@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<h1>Data errors</h1>
+{% for error in errors %}
+<ul>{{error}}</ul>
+{% endfor %}
+{% endblock %}

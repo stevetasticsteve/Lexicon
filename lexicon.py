@@ -7,6 +7,7 @@ import logging
 import lexicon_config as s
 
 from jinja2 import Environment, FileSystemLoader
+from collections import Counter
 
 
 def initiate_logging():
@@ -91,7 +92,41 @@ def read_lexicon():
             entry['sense'] = 1
 
     logger.info('%d dictionary entries read' % len(processed_data))
+
     return processed_data
+
+
+def validate_data(processed_data):
+    errors = find_missing_senses(processed_data)
+    return errors
+
+
+def find_missing_senses(processed_data):
+    """Returns a list (or None if n/a) of phonetic entries that are the same but aren't marked as senses of
+    each other. This may reveal data entry errors."""
+    check_processed_data(processed_data, 'find_missing_senses()')
+
+    words = [item['phon'] for item in processed_data]
+    count = Counter(words)
+    count = count.items()  # convert to list of tuples
+    repeated_phonetics = [item for item in count if item[1] > 1]
+
+    repeated_senses = []
+    for item in repeated_phonetics:
+        phonetics = item[0]
+        entries = [entry for entry in processed_data if entry['phon'] == phonetics]
+        count = Counter([entry['sense'] for entry in entries])
+        count = count.items()
+        repeated = [item for item in count if item[1] > 1]
+        if repeated:
+            error_msg = '{phonetics} has repeated senses'.format(phonetics=phonetics)
+            repeated_senses.append(error_msg)
+
+    if repeated_senses:
+        logger.info('Data validation found repeated senses')
+        return repeated_senses
+    else:
+        return None
 
 
 def sort_by_id(processed_data):
@@ -203,17 +238,21 @@ def generate_html(processed_data):
     template_dir = 'templates'
     assert os.path.exists(template_dir), '{dir} is missing'.format(dir=template_dir)
     assert os.path.isdir(template_dir), '{dir} is not a directory'.format(dir=template_dir)
-    templates = ['lang-Eng.html', 'check.html', 'base.html']
+    templates = ['lang-Eng.html', 'check.html', 'base.html', 'error.html']
     for template in templates:
         template = os.path.join(template_dir, template)
         assert os.path.exists(template), 'Template Error: {template} is missing'.format(template=template)
 
-    generate_lexicon_page(processed_data)
+    errors = validate_data(processed_data)
+
+    generate_lexicon_page(processed_data, errors)
     # generate_help_page()
     generate_check_page(processed_data)
+    if errors:
+        generate_error_page(errors)
 
 
-def generate_lexicon_page(processed_data):
+def generate_lexicon_page(processed_data, errors):
     """Create suitable headwords for a dictionary and create a dictionary HTML page"""
     check_processed_data(processed_data, 'generate_HTML()')
 
@@ -234,7 +273,22 @@ def generate_lexicon_page(processed_data):
 
     html = os.path.join(s.settings['target_folder'], '{language}_Lexicon.html').format(language=s.settings['language'])
     with open(html, 'w') as file:
-        print(template.render(context=context, entries=lexicon_entries), file=file)
+        print(template.render(context=context, entries=lexicon_entries, errors=errors), file=file)
+
+
+def generate_error_page(errors):
+    """Creates a page that shows all the validation errors discovered in the spreadsheet"""
+
+    file_loader = FileSystemLoader('templates')
+    env = Environment(loader=file_loader)
+    template = env.get_template('error.html')
+
+    context = {
+        'title': 'Data errors'
+    }
+
+    with open('errors.html', 'w') as file:
+        print(template.render(context=context, errors=errors), file=file)
 
 
 def generate_check_page(processed_data):
@@ -246,8 +300,12 @@ def generate_check_page(processed_data):
 
     # filter out and return only unchecked entries
     words_to_check = [word for word in processed_data if not word['check']]
+    # use a list to represent brand new entries, and one for new senses
+    new_senses = [word for word in words_to_check if word['sense'] == 1]
+    new_entries = [word for word in words_to_check if word['sense'] != 1]
     # order by tag for more structured language checking session
-    words_to_check = sort_by_tag(words_to_check)
+    new_entries = sort_by_tag(new_entries)
+    new_senses = sort_by_tag(new_senses)
     logger.info('{words_to_check} words need checking'.format(words_to_check=len(words_to_check)))
 
     context = {
@@ -255,7 +313,7 @@ def generate_check_page(processed_data):
     }
 
     with open('check_list.html', 'w') as file:
-        print(template.render(context=context, entries=words_to_check), file=file)
+        print(template.render(context=context, new_entries=new_entries, new_sense=new_senses), file=file)
 
 
 def create_phonemic_assistant_db(processed_data, checked_only=True):

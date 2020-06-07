@@ -42,6 +42,9 @@
                 <p>Updated {{context.date}} </p>
         </div>
         <div id="entries">
+            {% if errors %}
+            <a href="errors.html">Errors in the data have been identified</a>
+            {% endif %}
             {% for entry in entries %}
             <div class="entry">
             <h3>{{entry[0]}}</h3>
