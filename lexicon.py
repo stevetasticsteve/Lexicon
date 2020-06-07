@@ -303,8 +303,8 @@ def generate_check_page(processed_data):
     # filter out and return only unchecked entries
     words_to_check = [word for word in processed_data if not word['check']]
     # use a list to represent brand new entries, and one for new senses
-    new_senses = [word for word in words_to_check if word['sense'] == 1]
-    new_entries = [word for word in words_to_check if word['sense'] != 1]
+    new_senses = [word for word in words_to_check if word['sense'] > 1]
+    new_entries = [word for word in words_to_check if word['sense'] == 1]
     # order by tag for more structured language checking session
     new_entries = sort_by_tag(new_entries)
     new_senses = sort_by_tag(new_senses)
@@ -315,7 +315,7 @@ def generate_check_page(processed_data):
     }
 
     with open('check_list.html', 'w') as file:
-        print(template.render(context=context, new_entries=new_entries, new_sense=new_senses), file=file)
+        print(template.render(context=context, new_entries=new_entries, new_senses=new_senses), file=file)
 
 
 def create_phonemic_assistant_db(processed_data, checked_only=True):
