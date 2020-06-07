@@ -3,6 +3,9 @@
 {% block page_content %}
 <h1>Data errors</h1>
 {% for error in errors %}
-<ul>{{error}}</ul>
+    <h3>{{error[0]}}</h3>
+        {% for error_detail in error[1] %}
+        <ul>{{error_detail}}</ul>
+        {% endfor %}
 {% endfor %}
 {% endblock %}

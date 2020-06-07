@@ -92,12 +92,12 @@ def read_lexicon():
             entry['sense'] = 1
 
     logger.info('%d dictionary entries read' % len(processed_data))
-
     return processed_data
 
 
 def validate_data(processed_data):
-    errors = find_missing_senses(processed_data)
+    errors = []
+    errors.append(find_missing_senses(processed_data))
     return errors
 
 
@@ -108,23 +108,25 @@ def find_missing_senses(processed_data):
 
     words = [item['phon'] for item in processed_data]
     count = Counter(words)
-    count = count.items()  # convert to list of tuples
-    repeated_phonetics = [item for item in count if item[1] > 1]
+    count = count.items()  # convert to list of tuples (phonetics, number of times counted)
+    repeated_phonetics = [item for item in count if item[1] > 1] # filter out single occurences
 
     repeated_senses = []
-    for item in repeated_phonetics:
-        phonetics = item[0]
-        entries = [entry for entry in processed_data if entry['phon'] == phonetics]
-        count = Counter([entry['sense'] for entry in entries])
-        count = count.items()
-        repeated = [item for item in count if item[1] > 1]
-        if repeated:
-            error_msg = '{phonetics} has repeated senses'.format(phonetics=phonetics)
+    for entry in repeated_phonetics:
+        phonetics = entry[0]
+        entries_matching_phonetics = [entry for entry in processed_data if entry['phon'] == phonetics]
+
+        entry_sense_count = Counter([entry['sense'] for entry in entries_matching_phonetics])
+        entry_sense_count = entry_sense_count.items()
+        repeated_sense = [item for item in entry_sense_count if item[1] > 1]
+        if repeated_sense:
+            error_msg = '{phonetics} use same sense  number multiple times.'.format(phonetics=phonetics)
             repeated_senses.append(error_msg)
 
     if repeated_senses:
         logger.info('Data validation found repeated senses')
-        return repeated_senses
+        error = ('Sense number repeated', repeated_senses)
+        return error
     else:
         return None
 
