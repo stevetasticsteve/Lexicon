@@ -2,72 +2,11 @@
 
 {% block page_content %}
 <div class="wrapper">
-    <nav id="dictionary_sidebar>">
-        <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
-            <div class="input-group">
-              <input type="text" id="filter" name="filter" placeholder="Type to search"
-                     aria-describedby="button-addon1" class="form-control border-0 bg-light">
-            </div>
-          </div>
-        <a href="check_list.html">See checklist</a>
-        <script>$('#filter').keyup(function () {
-            var filter = this.value.toLowerCase();
-
-            $('.entry').each(function() {
-                var _this = $(this);
-                var headword = _this.find('h3').text().toLowerCase();
-
-                if (headword.indexOf(filter) < 0) {
-                    _this.hide();
-                    }
-                    else if(filter == ""){
-                        _this.show();
-                    }
-                    else{
-                        _this.show();
-                        }
-                 });
-            });</script>
-    </nav>
+    {% include 'sidebar.html' %}
     <div class="container-fluid" id="main_pane">
-        <div class="container-fluid p-3 mb-2 bg-info text-white">
-                <h1>{{context.language}} Lexicon</h1>
-                <div class="container-fluid float-right">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-dark">{{context.language}} - English</button>
-                        <button type="button" class="btn btn-light">English - {{context.language}}</button>
-                    </div>
-                    <a href="Lexicon_help.html" button type="button" class="btn btn-light">Help</a>
-                </div>
-                <p>Updated {{context.date}} </p>
+        {% include 'header.html' %}
+        {% include 'lang-Eng_entry.html' %}
         </div>
-        <div id="entries">
-            {% if errors %}
-            <a href="errors.html">Errors in the data have been identified</a>
-            {% endif %}
-            {% for entry in entries %}
-            <div class="entry">
-            <h3>{{entry[0]}}</h3>
-            {% for sense in entry[1] %}
-            <p>
-                {{sense.sense}} <strong>{{sense.pos}}</strong> [{{sense.phonetics}}]
-                <strong><em style="color:dodgerblue">{{sense.english}}</em></strong>
-                <strong style="color:gray">{{sense.tok_pisin}}</strong>
-            </p>
-            {% if sense.definition %}
-            <ul>{{sense.definition}}</ul>
-            {% endif %}
-
-            {% if sense.example %}
-            <dl class="row">
-                <dt class="col-sm-1">{{sense.example}}</dt>
-                <dd class="col-sm-1">{{sense.example_translation}}</dd>
-            </dl>
-            {% endif %}
-            {% endfor %}
-            </div>
-            {% endfor %}
-        </div></div>
     </div>
 </div>
 {% endblock %}

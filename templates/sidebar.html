@@ -1,0 +1,30 @@
+<div class="d-none d-md-block">
+    <nav id="dictionary_sidebar>">
+<!--        Searchbar for large viewports-->
+        <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
+            <div class="input-group">
+              <input type="text" id="filter" name="filter" placeholder="Type to search"
+                     aria-describedby="button-addon1" class="form-control border-0 bg-light">
+            </div>
+          </div>
+        <a href="check_list.html">See checklist</a>
+        <script>$('#filter').keyup(function () {
+            var filter = this.value.toLowerCase();
+
+            $('.entry').each(function() {
+                var _this = $(this);
+                var headword = _this.find('h3').text().toLowerCase();
+
+                if (headword.indexOf(filter) < 0) {
+                    _this.hide();
+                    }
+                    else if(filter == ""){
+                        _this.show();
+                    }
+                    else{
+                        _this.show();
+                        }
+                 });
+            });</script>
+    </nav>
+</div>

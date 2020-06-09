@@ -1,0 +1,44 @@
+<div class="container-fluid p-3 mb-2 bg-info text-white">
+    <h1>{{context.language}} Lexicon</h1>
+    <div class="container-fluid float-right">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-dark">{{context.language}} - English</button>
+            <button type="button" class="btn btn-light">English - {{context.language}}</button>
+        </div>
+        <a href="Lexicon_help.html" button type="button" class="btn btn-light">Help</a>
+    </div>
+    <p>Updated {{context.date}} </p>
+</div>
+
+<!--Search bar for small viewports-->
+<div class="d-md-none">
+    <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
+        <div class="input-group">
+          <input type="text" id="small_filter" name="filter" placeholder="Type to search"
+                 aria-describedby="button-addon1" class="form-control border-0 bg-light">
+        </div>
+    </div>
+<script>$('#small_filter').keyup(function () {
+    var filter = this.value.toLowerCase();
+
+    $('.entry').each(function() {
+        var _this = $(this);
+        var headword = _this.find('h3').text().toLowerCase();
+
+        if (headword.indexOf(filter) < 0) {
+            _this.hide();
+            }
+            else if(filter == ""){
+                _this.show();
+            }
+            else{
+                _this.show();
+                }
+         });
+    });</script>
+</div>
+<div errors>
+    {% if errors %}
+    <a href="errors.html">Errors in the data have been identified</a>
+    {% endif %}
+</div>
