@@ -149,15 +149,6 @@ def sort_by_tag(processed_data):
 def sort_by_sense(processed_data):
     return sorted(processed_data, key=lambda data: data['sense'])
 
-
-# def generate_help_page():
-#     html_header = HTML_header('%s Lexicon help' % s.settings['language'])
-#     body = '<h1>HELP PAGE</h1>'
-#     html_close = '</div></body></html>'
-#     with open(os.path.join(s.settings['target_folder'], 'Lexicon_help.html'), 'w') as file:
-#         print(html_header, body, html_close, file=file)
-
-
 # Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
 def check_processed_data(processed_data, function):
     """A quick assert that the right data model is given to function, a list of dictionaries produced by
@@ -240,7 +231,8 @@ def generate_html(processed_data):
     template_dir = 'templates'
     assert os.path.exists(template_dir), '{dir} is missing'.format(dir=template_dir)
     assert os.path.isdir(template_dir), '{dir} is not a directory'.format(dir=template_dir)
-    templates = ['lang-Eng.html', 'check.html', 'base.html', 'error.html']
+    templates = ['lang-Eng.html', 'check.html', 'base.html', 'error.html', 'Eng-lang.html', 'Eng-lang_entry.html',
+                 'help.html', 'sidebar.html', 'header.html', 'lang-Eng_entry.html']
     for template in templates:
         template = os.path.join(template_dir, template)
         assert os.path.exists(template), 'Template Error: {template} is missing'.format(template=template)
@@ -248,7 +240,8 @@ def generate_html(processed_data):
     errors = validate_data(processed_data)
 
     generate_lexicon_page(processed_data, errors)
-    # generate_help_page()
+    generate_Eng_page(processed_data)
+    generate_help_page()
     generate_check_page(processed_data)
     if errors:
         generate_error_page(errors)
@@ -273,7 +266,7 @@ def generate_lexicon_page(processed_data, errors):
     env = Environment(loader=file_loader)
     template = env.get_template('lang-Eng.html')
 
-    html = os.path.join(s.settings['target_folder'], '{language}_Lexicon.html').format(language=s.settings['language'])
+    html = os.path.join(s.settings['target_folder'], 'main_dict.html')
     with open(html, 'w') as file:
         print(template.render(context=context, entries=lexicon_entries, errors=errors), file=file)
 
@@ -291,6 +284,27 @@ def generate_error_page(errors):
 
     with open('errors.html', 'w') as file:
         print(template.render(context=context, errors=errors), file=file)
+
+
+def generate_Eng_page(processed_data):
+    """Creates a English to language lookup version of dictionary as html"""
+    file_loader = FileSystemLoader('templates')
+    env = Environment(loader=file_loader)
+    template = env.get_template('Eng-lang.html')
+
+    # Create the HTML header and navbar
+    date = datetime.datetime.now().strftime('%A %d %B %Y')
+    context = {
+        'title': '{language} Lexicon'.format(language=s.settings['language']),
+        'date': date,
+        'language': s.settings['language']
+    }
+
+    lexicon_entries = []
+
+    html = os.path.join(s.settings['target_folder'], 'reverse_dict.html')
+    with open(html, 'w') as file:
+        print(template.render(context=context, entries=lexicon_entries), file=file)
 
 
 def generate_check_page(processed_data):
@@ -316,6 +330,23 @@ def generate_check_page(processed_data):
 
     with open('check_list.html', 'w') as file:
         print(template.render(context=context, new_entries=new_entries, new_senses=new_senses), file=file)
+
+
+def generate_help_page():
+    """Creates a help page"""
+    file_loader = FileSystemLoader('templates')
+    env = Environment(loader=file_loader)
+    template = env.get_template('help.html')
+
+    date = datetime.datetime.now().strftime('%A %d %B %Y')
+    context = {
+        'title': 'Help',
+        'date': date,
+        'language': s.settings['language']
+    }
+
+    with open('help.html', 'w') as file:
+        print(template.render(context=context), file=file)
 
 
 def create_phonemic_assistant_db(processed_data, checked_only=True):
