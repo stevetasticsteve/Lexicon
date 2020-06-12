@@ -218,6 +218,16 @@ def create_lexicon_entries(processed_data):
     return lexicon_entries
 
 
+def create_reverse_lexicon_entries(processed_data):
+    reverse_entries = []
+    for item in processed_data:
+        entry = {
+            'headword': item['eng']
+        }
+        reverse_entries.append(entry)
+    return reverse_entries
+
+
 def get_word_beginnings(lexicon_entries):
     """Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
      headwords"""
@@ -304,7 +314,7 @@ def generate_Eng_page(processed_data):
         'language': s.settings['language']
     }
 
-    lexicon_entries = []
+    lexicon_entries = create_reverse_lexicon_entries(processed_data)
 
     html = os.path.join(s.settings['target_folder'], 'reverse_dict.html')
     with open(html, 'w') as file:
