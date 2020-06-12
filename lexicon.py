@@ -278,8 +278,12 @@ def generate_error_page(errors):
     env = Environment(loader=file_loader)
     template = env.get_template('error.html')
 
+    date = datetime.datetime.now().strftime('%A %d %B %Y')
+
     context = {
-        'title': 'Data errors'
+        'title': 'Data errors',
+        'date': date,
+        'language': s.settings['language']
     }
 
     with open('errors.html', 'w') as file:
