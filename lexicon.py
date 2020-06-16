@@ -96,6 +96,7 @@ def read_lexicon():
 
 
 def validate_data(processed_data):
+    """Check the spreadsheet for incorrectly entered data"""
     errors = []
     errors.append(find_missing_senses(processed_data))
     return errors
@@ -148,6 +149,7 @@ def sort_by_tag(processed_data):
 
 def sort_by_sense(processed_data):
     return sorted(processed_data, key=lambda data: data['sense'])
+
 
 # Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
 def check_processed_data(processed_data, function):
@@ -219,13 +221,13 @@ def create_lexicon_entries(processed_data):
 
 
 def create_reverse_lexicon_entries(processed_data):
-    reverse_entries = []
+    """Adjust the processed data so it's suitable to be displayed in an English to Lang dict"""
     for item in processed_data:
-        entry = {
-            'headword': item['eng']
-        }
-        reverse_entries.append(entry)
-    return reverse_entries
+        if item['orth']:
+            item['headword'] = item['orth']
+        else:
+            item['headword'] = item['phon']
+    return sorted(processed_data, key=lambda d: d['eng'].lower())
 
 
 def get_word_beginnings(lexicon_entries):
