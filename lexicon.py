@@ -222,12 +222,17 @@ def create_lexicon_entries(processed_data):
 
 def create_reverse_lexicon_entries(processed_data):
     """Adjust the processed data so it's suitable to be displayed in an English to Lang dict"""
+    check_processed_data(processed_data, 'create_reverse_lexicon_entries()')
+
+    processed_data = sorted(processed_data, key=lambda d: d['eng'].lower())
+    lexicon_entries = []
     for item in processed_data:
         if item['orth']:
             item['headword'] = item['orth']
         else:
             item['headword'] = item['phon']
-    return sorted(processed_data, key=lambda d: d['eng'].lower())
+        lexicon_entries.append((item['eng'].lower(), item))
+    return lexicon_entries
 
 
 def get_word_beginnings(lexicon_entries):
@@ -243,8 +248,12 @@ def generate_html(processed_data):
     template_dir = 'templates'
     assert os.path.exists(template_dir), '{dir} is missing'.format(dir=template_dir)
     assert os.path.isdir(template_dir), '{dir} is not a directory'.format(dir=template_dir)
-    templates = ['lang-Eng.html', 'check.html', 'base.html', 'error.html', 'Eng-lang.html', 'Eng-lang_entry.html',
-                 'help.html', 'sidebar.html', 'header.html', 'lang-Eng_entry.html']
+    templates = ['check_template.html', 'dictionary_template.html', 'error_template.html', 'help_template.html']
+    partial_templates = ['base.html', 'entry.html', 'header.html', 'reverse_entry.html', 'sidebar.html']
+
+    partial_templates = ['partial/' + x for x in partial_templates]
+
+    templates = templates + partial_templates
     for template in templates:
         template = os.path.join(template_dir, template)
         assert os.path.exists(template), 'Template Error: {template} is missing'.format(template=template)
@@ -276,7 +285,7 @@ def generate_lexicon_page(processed_data, errors):
 
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
-    template = env.get_template('lang-Eng.html')
+    template = env.get_template('dictionary_template.html')
 
     html = os.path.join(s.settings['target_folder'], 'main_dict.html')
     with open(html, 'w') as file:
@@ -289,7 +298,7 @@ def generate_error_page(errors):
 
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
-    template = env.get_template('error.html')
+    template = env.get_template('error_template.html')
 
     date = datetime.datetime.now().strftime('%A %d %B %Y')
 
@@ -307,21 +316,23 @@ def generate_Eng_page(processed_data):
     """Creates a English to language lookup version of dictionary as html"""
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
-    template = env.get_template('Eng-lang.html')
+    template = env.get_template('dictionary_template.html')
 
     # Create the HTML header and navbar
     date = datetime.datetime.now().strftime('%A %d %B %Y')
     context = {
         'title': '{language} Lexicon'.format(language=s.settings['language']),
         'date': date,
-        'language': s.settings['language']
+        'language': s.settings['language'],
+        'dict_type': 'reverse'
     }
 
     lexicon_entries = create_reverse_lexicon_entries(processed_data)
+    initial_letters = get_word_beginnings(lexicon_entries)
 
     html = os.path.join(s.settings['target_folder'], 'reverse_dict.html')
     with open(html, 'w') as file:
-        print(template.render(context=context, entries=lexicon_entries), file=file)
+        print(template.render(context=context, entries=lexicon_entries, letters=initial_letters), file=file)
 
 
 def generate_check_page(processed_data):
@@ -329,7 +340,7 @@ def generate_check_page(processed_data):
     for printing."""
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
-    template = env.get_template('check.html')
+    template = env.get_template('check_template.html')
 
     # filter out and return only unchecked entries
     words_to_check = [word for word in processed_data if not word['check']]
@@ -353,7 +364,7 @@ def generate_help_page():
     """Creates a help page"""
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
-    template = env.get_template('help.html')
+    template = env.get_template('help_template.html')
 
     date = datetime.datetime.now().strftime('%A %d %B %Y')
     context = {

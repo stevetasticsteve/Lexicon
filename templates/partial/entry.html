@@ -1,0 +1,20 @@
+{# template for a lang-eng entry. Includes sense information #}
+
+<h3>{{entry[0]}}</h3>
+{% for sense in entry[1] %}
+    <p>
+    {{sense.sense}} <strong>{{sense.pos}}</strong> [{{sense.phonetics}}]
+    <strong><em style="color:dodgerblue">{{sense.english}}</em></strong>
+    <strong style="color:gray">{{sense.tok_pisin}}</strong>
+    </p>
+    {% if sense.definition %}
+        <ul>{{sense.definition}}</ul>
+    {% endif %}
+
+    {% if sense.example %}
+        <dl class="row">
+        <dt class="col-sm-1">{{sense.example}}</dt>
+        <dd class="col-sm-1">{{sense.example_translation}}</dd>
+        </dl>
+    {% endif %}
+{% endfor %}
