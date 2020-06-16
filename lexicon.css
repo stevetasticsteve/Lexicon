@@ -4,24 +4,24 @@
 }
 
 #dictionary_sidebar {
-    width: 25px;
+    width: 175px;
     position: fixed;
-    overflow-y: scroll;
     top: 0;
     left: 0;
     height: 100vh;
-    z-index: 999;
-    background: #17a2b8;
+    z-index: 1;
+    background: #6aadb8;
     color: #fff;
 }
 
 #main_pane {
     padding: 0px;
-    margin-left: 25px;
+    margin-left: 175px;
 }
 
 @media only screen and (max-width: 600px) {
-  dictionary_sidebar {
-  
+
+  #main_pane{
+  margin-left: 5px;
   }
 }
