@@ -11,22 +11,21 @@ to be passed in. #}
 
         <div id="entries">
         {% for letter in letters %}
-        <hr><h1 id="{{letter}}">{{letter}}</h1><hr>
-        {% for entry in entries %}
-            {% if entry[0][0] == letter %}
-                <div class="entry">
-                    {% if context.dict_type %}
-                    {% include 'partial/reverse_entry.html' %}
-                    {% else %}
-                    {% include 'partial/entry.html' %}
-                    {% endif %}
-            {% endif %}
+            <hr><h1 id="{{letter}}">{{letter}}</h1><hr>
+            {% for entry in entries %}
+                {%- if entry[0][0] == letter -%}
+                    <div class="entry">
+                        {%- if context.dict_type -%}
+                        {% include 'partial/reverse_entry.html' %}
+                        {%- else -%}
+                        {% include 'partial/entry.html' %}
+                        {%- endif -%}
+                    </div>
+                {%- endif -%}
+            {% endfor %}
         {% endfor %}
-                </div>
-    {% endfor %}
-</div>
-
         </div>
+
     </div>
 </div>
 {% endblock %}
