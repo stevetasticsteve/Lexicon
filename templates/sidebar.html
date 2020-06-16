@@ -8,6 +8,12 @@
             </div>
           </div>
         <a href="check_list.html">See checklist</a>
+        <hr>
+        <div id="letters">
+            {% for letter in letters %}
+            <ul><a href="#{{letter}}">{{letter}}</a></ul>
+            {% endfor %}
+        </div>
         <script>$('#filter').keyup(function () {
             var filter = this.value.toLowerCase();
 

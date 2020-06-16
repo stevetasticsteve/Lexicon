@@ -280,7 +280,8 @@ def generate_lexicon_page(processed_data, errors):
 
     html = os.path.join(s.settings['target_folder'], 'main_dict.html')
     with open(html, 'w') as file:
-        print(template.render(context=context, entries=lexicon_entries, errors=errors), file=file)
+        print(template.render(context=context, entries=lexicon_entries, errors=errors, letters=initial_letters),
+              file=file)
 
 
 def generate_error_page(errors):
