@@ -414,5 +414,7 @@ if __name__ == '__main__':
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
-    kovol_verbs.paradigm_html(kovol_verbs.read_verbsheet())
+    verb_spreadsheet = os.path.join(s.settings['target_folder'], 'Kovol_verbs.ods')
+    verbs = kovol_verbs.read_verbsheet(spreadsheet=verb_spreadsheet)
+    kovol_verbs.paradigm_html(verbs)
 
