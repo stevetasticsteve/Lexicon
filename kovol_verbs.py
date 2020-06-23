@@ -10,7 +10,7 @@ import lexicon_config as s
 
 
 
-id_col, actor_col, tense_col, mode_col, kovol_col, english_col = 0, 1, 2, 3, 4, 5
+id_col, actor_col, tense_col, mode_col, kovol_col, english_col, author_col = 0, 1, 2, 3, 4, 5, 6
 
 
 def blank_paradigm():
@@ -48,6 +48,7 @@ class KovolVerb:
         tense = row[tense_col]
         actor = row[actor_col]
         kovol = row[kovol_col]
+        self.author = row[author_col]
         if tense == 'future':
             if actor == '2s':
                 self.future['2s'] = kovol
@@ -102,6 +103,7 @@ class KovolVerb:
         pprint.pprint((self.rpast_paradigm(),
                       self.past_paradigm(),
                       self.future_paradigm()))
+
 
 def read_verbsheet(spreadsheet='Kovol_verbs.ods'):
     assert os.path.exists(spreadsheet), 'Verb spreadsheet missing'
