@@ -4,6 +4,7 @@ import pyexcel_ods3
 import pprint
 import datetime
 from jinja2 import Environment, FileSystemLoader
+import os
 
 import lexicon_config as s
 
@@ -103,6 +104,7 @@ class KovolVerb:
                       self.future_paradigm()))
 
 def read_verbsheet(spreadsheet='Kovol_verbs.ods'):
+    assert os.path.exists(spreadsheet), 'Verb spreadsheet missing'
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Paradigms']
     raw_data.pop(0)  # get rid of the first row
     raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end

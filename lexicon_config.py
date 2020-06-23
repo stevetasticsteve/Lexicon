@@ -1,6 +1,7 @@
 settings = {
     'language': 'Kovol',
     'spreadsheet_name': '/media/NAS/Team Share/Kovol_lexicon.ods',
+    'verb_spreadsheet': '/media/NAS/Team Share/Kovol_verbs.ods',
     'target_folder': '/media/NAS/CLAHub/other_sites/Lexicon',  # the folder the web page should be created in
     'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
 }

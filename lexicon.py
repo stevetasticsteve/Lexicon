@@ -18,8 +18,9 @@ def initiate_logging():
 
     # If working on Steve's laptop change source and target for dev work
     if socket.gethostname() == 'steve-stanley-latitude':
-        # s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
-        s.settings['spreadsheet_name'] = 'excel_test.xlsx'
+        s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
+        s.settings['verb_spreadsheet'] = 'Kovol_verbs.ods'
+        # s.settings['spreadsheet_name'] = 'excel_test.xlsx'
         s.settings['target_folder'] = ''
         ch = logging.StreamHandler()
         formatter = logging.Formatter('%(message)s')
@@ -414,7 +415,7 @@ if __name__ == '__main__':
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
-    verb_spreadsheet = os.path.join(s.settings['target_folder'], 'Kovol_verbs.ods')
+    verb_spreadsheet = s.settings['verb_spreadsheet']
     verbs = kovol_verbs.read_verbsheet(spreadsheet=verb_spreadsheet)
     kovol_verbs.paradigm_html(verbs)
 
