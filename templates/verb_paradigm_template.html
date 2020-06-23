@@ -1,0 +1,71 @@
+{# Main page for creating normal or reverse dictionary pages. Requires letters (a list of initial letters),
+entries (a tuple of (headword, dict of entry info)) and context (date, title and a marker if reverse dict is intended)
+to be passed in. #}
+
+{% extends 'partial/base.html' %}
+{% block page_content %}
+<div class="wrapper">
+    {% include 'partial/sidebar.html' %}
+    <div class="container-fluid" id="main_pane">
+        {% include 'partial/header.html' %}
+
+        <div id="entries">
+        {% for verb in verbs %}
+            <div class="entry">
+            <h3>{{verb.kov}}</h3>
+                <p>"{{verb.eng}}"</p>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Remote past</th>
+                    <th scope="col">Recent past</th>
+                    <th scope="col">Future</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1s</th>
+                    <td>{{verb.rpast['1s']}}</td>
+                    <td>{{verb.past['1s']}}</td>
+                    <td>{{verb.future['1s']}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">2s</th>
+                    <td>{{verb.rpast['2s']}}</td>
+                    <td>{{verb.past['2s']}}</td>
+                    <td>{{verb.future['2s']}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">3s</th>
+                    <td>{{verb.rpast['3s']}}</td>
+                    <td>{{verb.past['3s']}}</td>
+                    <td>{{verb.future['3s']}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">1p</th>
+                    <td>{{verb.rpast['1p']}}</td>
+                    <td>{{verb.past['1p']}}</td>
+                    <td>{{verb.future['1p']}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">2p</th>
+                    <td>{{verb.rpast['2p']}}</td>
+                    <td>{{verb.past['2p']}}</td>
+                    <td>{{verb.future['2p']}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">3p</th>
+                    <td>{{verb.rpast['3p']}}</td>
+                    <td>{{verb.past['3p']}}</td>
+                    <td>{{verb.future['3p']}}</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

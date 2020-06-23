@@ -5,6 +5,7 @@ import os
 import socket
 import logging
 import lexicon_config as s
+import kovol_verbs
 
 from jinja2 import Environment, FileSystemLoader
 from collections import Counter
@@ -413,3 +414,5 @@ if __name__ == '__main__':
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
+    kovol_verbs.paradigm_html(kovol_verbs.read_verbsheet())
+
