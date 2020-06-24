@@ -1,10 +1,11 @@
 """A script to read our collection of verb paradigms, manipulate and display them"""
 
-import pyexcel_ods3
-import pprint
 import datetime
-from jinja2 import Environment, FileSystemLoader
 import os
+import pprint
+
+import pyexcel_ods3
+from jinja2 import Environment, FileSystemLoader
 
 import lexicon_config as s
 
@@ -14,12 +15,12 @@ id_col, actor_col, tense_col, mode_col, kovol_col, english_col, author_col = 0, 
 def blank_paradigm():
     """Returns a blank paradigm dictionary"""
     d = {
-    '1s': '',
-    '2s': '',
-    '3s': '',
-    '1p': '',
-    '2p': '',
-    '3p': '',
+        '1s': '',
+        '2s': '',
+        '3s': '',
+        '1p': '',
+        '2p': '',
+        '3p': '',
     }
     return d
 
@@ -126,8 +127,8 @@ class KovolVerb:
 
     def show_paradigms(self):
         pprint.pprint((self.rpast_paradigm(),
-                      self.past_paradigm(),
-                      self.future_paradigm()))
+                       self.past_paradigm(),
+                       self.future_paradigm()))
 
 
 def read_verbsheet(spreadsheet='Kovol_verbs.ods'):
@@ -144,6 +145,7 @@ def read_verbsheet(spreadsheet='Kovol_verbs.ods'):
             k.add_row(i)
         verbs.append(k)
     return sorted(verbs, key=lambda v: v.kov)
+
 
 def paradigm_html(verbs):
     """Creates a verbs paradigms page"""
