@@ -8,8 +8,6 @@ import os
 
 import lexicon_config as s
 
-
-
 id_col, actor_col, tense_col, mode_col, kovol_col, english_col, author_col = 0, 1, 2, 3, 4, 5, 6
 
 
@@ -30,10 +28,14 @@ class KovolVerb:
     def __init__(self, future1s, english):
         self.kov = future1s
         self.eng = english
+        self.short = ''
+        self.author = ''
         self.future = blank_paradigm()
         self.future['1s'] = future1s
         self.past = blank_paradigm()
         self.rpast = blank_paradigm()
+        self.sng_imperative = ''
+        self.pl_imperative = ''
 
     def __str__(self):
         return '{kovol}, {eng}'.format(kovol=self.kov, eng=self.eng)
@@ -43,21 +45,44 @@ class KovolVerb:
 
     def add_row(self, row):
         """Method for inserting data from a spreadsheet row if it is applicable"""
+        # if it's not the verb we're interested in return
+        assert row[english_col], 'Can\'t process verbs if English column is blank'
         if row[english_col] != self.eng:
             return
         tense = row[tense_col]
         actor = row[actor_col]
         kovol = row[kovol_col]
-        self.author = row[author_col]
+        mode = row[mode_col]
+        # first row processed should grab author
+        if not self.author:
+            self.author = row[author_col]
+        # short verbs don't need more processing, take it and return
+        if mode == 'short':
+            self.short = kovol
+            return
+
+        # otherwise slot row into correct place in paradigm
         if tense == 'future':
             if actor == '2s':
-                self.future['2s'] = kovol
+                if mode == 'imperative':
+                    self.sng_imperative = kovol
+                    # sometimes the imperative is all we have, include it if blank
+                    if not self.future['2s']:
+                        self.future['2s'] = kovol + '*'
+                else:
+                    self.future['2s'] = kovol
             elif actor == '3s':
                 self.future['3s'] = kovol
             elif actor == '1p':
                 self.future['1p'] = kovol
             elif actor == '2p':
-                self.future['2p'] = kovol
+                if mode == 'imperative':
+                    self.pl_imperative = kovol
+                    # sometimes the imperative is all we have, include it if blank
+                    if not self.future['2p']:
+                        self.future['2p'] = kovol + '*'
+                else:
+                    self.future['2p'] = kovol
             elif actor == '3p':
                 self.future['3p'] = kovol
         if tense == 'recent past':

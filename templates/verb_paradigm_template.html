@@ -9,10 +9,12 @@ to be passed in. #}
     <div class="container-fluid" id="main_pane">
         {% include 'partial/header.html' %}
         <strong>Searching</strong>
-        <ul>If you know the Kovol 1s future for the verb you can use the search bar to filter this page.</ul>
-        <ul>If you're searching for a particular conjugation you can use Ctrl + F</ul><hr>
+        <li>If you know the Kovol 1s future for the verb you can use the search bar to filter this page.</li>
+        <li>If you're searching for a particular conjugation you can use Ctrl + F</li>
+        <br>
+        <li>Imperative forms in a paradigm are marked with *</li><hr>
 
-        <div id="entries">
+        <div class="container container-fluid" id="entries">
         {% for verb in verbs %}
             <div class="entry">
             <h3>{{verb.kov}}</h3>
@@ -65,7 +67,21 @@ to be passed in. #}
                 </tr>
                 </tbody>
             </table>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <strong>Imperative forms:</strong>
+                        <ul>2s: {{verb.sng_imperative}}</ul>
+                        <ul>2p: {{verb.pl_imperative}}</ul>
+                    </div>
+                    {% if verb.short %}
+                    <div class="col-sm-2">
+                        <strong>Short form:</strong>
+                        <ul>{{verb.short}}</ul>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
+            <br>
         {% endfor %}
         </div>
 
