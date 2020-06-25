@@ -4,10 +4,22 @@
     <h1>{{context.language}} Lexicon</h1>
     <div class="container-fluid float-right">
         <div class="btn-group" role="group" aria-label="Basic example">
+            {% if context.header == 'lexicon' %}
             <a href="main_dict.html" button type="button" class="btn btn-dark">{{context.language}} - English</a>
+            {% else %}
+            <a href="main_dict.html" button type="button" class="btn btn-light">{{context.language}} - English</a>
+            {% endif %}
+            {% if context.header == 'reverse' %}
+            <a href="reverse_dict.html" button type="button" class="btn btn-dark">English - {{context.language}}</a>
+            {% else %}
             <a href="reverse_dict.html" button type="button" class="btn btn-light">English - {{context.language}}</a>
+            {% endif %}
         </div>
+        {% if context.header == 'help' %}
+        <a href="help.html" button type="button" class="btn btn-dark">Help</a>
+        {% else %}
         <a href="help.html" button type="button" class="btn btn-light">Help</a>
+        {% endif %}
     </div>
     <p>Updated {{context.date}} </p>
 </div>

@@ -277,7 +277,8 @@ def generate_lexicon_page(processed_data, errors):
     context = {
         'title': '{language} Lexicon'.format(language=s.settings['language']),
         'date': date,
-        'language': s.settings['language']
+        'language': s.settings['language'],
+        'header': 'lexicon'
     }
 
     lexicon_entries = create_lexicon_entries(processed_data)
@@ -324,7 +325,8 @@ def generate_Eng_page(processed_data):
         'title': '{language} Lexicon'.format(language=s.settings['language']),
         'date': date,
         'language': s.settings['language'],
-        'dict_type': 'reverse'
+        'dict_type': 'reverse',
+        'header': 'reverse'
     }
 
     lexicon_entries = create_reverse_lexicon_entries(processed_data)
@@ -370,7 +372,8 @@ def generate_help_page():
     context = {
         'title': 'Help',
         'date': date,
-        'language': s.settings['language']
+        'language': s.settings['language'],
+        'header': 'help'
     }
 
     with open('help.html', 'w') as file:
