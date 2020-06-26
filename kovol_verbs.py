@@ -3,6 +3,7 @@
 import datetime
 import os
 import pprint
+import logging
 
 import pyexcel_ods3
 from jinja2 import Environment, FileSystemLoader
@@ -10,6 +11,8 @@ from jinja2 import Environment, FileSystemLoader
 import lexicon_config as s
 
 id_col, actor_col, tense_col, mode_col, kovol_col, english_col, author_col = 0, 1, 2, 3, 4, 5, 6
+
+logger = logging.getLogger('LexiconLog')
 
 
 def blank_paradigm():
@@ -144,6 +147,7 @@ def read_verbsheet(spreadsheet='Kovol_verbs.ods'):
         for i in raw_data:
             k.add_row(i)
         verbs.append(k)
+    logger.info('{n} Kovol verbs processed'.format(n=len(verbs)))
     return sorted(verbs, key=lambda v: v.kov)
 
 
@@ -164,8 +168,4 @@ def paradigm_html(verbs):
     with open('verbs.html', 'w') as file:
         print(template.render(context=context, verbs=verbs), file=file)
 
-
-if __name__ == '__main__':
-    verbs = read_verbsheet()
-    for v in verbs:
-        v.show_paradigms()
+    logger.info('Kovol verb paradigms HTML page created')
