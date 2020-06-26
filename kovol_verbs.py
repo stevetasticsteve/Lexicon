@@ -157,7 +157,8 @@ def paradigm_html(verbs):
     context = {
         'title': 'Verbs',
         'date': date,
-        'language': s.settings['language']
+        'language': s.settings['language'],
+        'header': 'verbs'
     }
 
     with open('verbs.html', 'w') as file:

@@ -18,9 +18,15 @@
         {% if context.header == 'help' %}
         <a href="help.html" button type="button" class="btn btn-dark">Help</a>
         {% else %}
-        <a href="verbs.html" button type="button" class="btn btn-light">Verbs</a>
         <a href="help.html" button type="button" class="btn btn-light">Help</a>
         {% endif %}
+
+        {% if context.header == 'verbs' %}
+        <a href="verbs.html" button type="button" class="btn btn-dark">Verbs</a>
+        {% else %}
+        <a href="verbs.html" button type="button" class="btn btn-light">Verbs</a>
+        {% endif %}
+
     </div>
     <p>Updated {{context.date}} </p>
 </div>
