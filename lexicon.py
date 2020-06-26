@@ -99,6 +99,8 @@ def validate_data(processed_data):
     """Check the spreadsheet for incorrectly entered data"""
     errors = []
     errors.append(find_missing_senses(processed_data))
+    if not errors[0]:
+        errors = None
     return errors
 
 
