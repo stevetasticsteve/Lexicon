@@ -1,14 +1,17 @@
 #!/usr/bin/python3
-import pyexcel_ods3
 import datetime
+import logging
 import os
 import socket
-import logging
+import sys
+import traceback
+from collections import Counter
+
+import pyexcel_ods3
+from jinja2 import Environment, FileSystemLoader
+
 import lexicon_config as s
 import kovol_verbs
-
-from jinja2 import Environment, FileSystemLoader
-from collections import Counter
 
 
 def initiate_logging():
@@ -22,19 +25,38 @@ def initiate_logging():
         s.settings['verb_spreadsheet'] = 'Kovol_verbs.ods'
         # s.settings['spreadsheet_name'] = 'excel_test.xlsx'
         s.settings['target_folder'] = ''
-        ch = logging.StreamHandler()
-        formatter = logging.Formatter('%(message)s')
-        ch.setFormatter(formatter)
-        ch.setLevel(logging.DEBUG)
-        logger.addHandler(ch)
-        logger.info('Logging to stream')
-    else:
-        fh = logging.FileHandler('Lexicon_error.log')
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        fh.setLevel(logging.ERROR)
-        logger.addHandler(fh)
+
+    # add a stream log, and a file log for errors
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter('%(message)s')
+    ch.setFormatter(formatter)
+    ch.setLevel(logging.DEBUG)
+    logger.addHandler(ch)
+    logger.info('Updating Lexicon')
+    fh = logging.FileHandler('Lexicon_error.log')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    fh.setLevel(logging.ERROR)
+    logger.addHandler(fh)
     return logger
+
+
+logger = initiate_logging()
+
+
+def excepthook(exctype, value, tb):
+    if exctype == AssertionError:
+        logger.error('A critical error occurred: {value} \nAdjust settings and try again'.format(value=value))
+    else:
+        logger.critical('''An unhandled error occured, please contact the developer:
+        Error type : {type}
+        Error value: {value}
+        Traceback: {tb}'''.format(type=exctype, value=value, tb=traceback.format_tb(tb)))
+
+    # logger.error(args)
+
+
+sys.excepthook = excepthook
 
 
 def letter_to_number(letter):
@@ -93,7 +115,7 @@ def read_lexicon():
         if entry['sense'] == '':
             entry['sense'] = 1
 
-    logger.info('%d dictionary entries read' % len(processed_data))
+    logger.info('   -%d dictionary entries read' % len(processed_data))
     return processed_data
 
 
@@ -101,6 +123,8 @@ def validate_data(processed_data):
     """Check the spreadsheet for incorrectly entered data"""
     errors = []
     errors.append(find_missing_senses(processed_data))
+    if not errors[0]:
+        errors = None
     return errors
 
 
@@ -112,7 +136,7 @@ def find_missing_senses(processed_data):
     words = [item['phon'] for item in processed_data]
     count = Counter(words)
     count = count.items()  # convert to list of tuples (phonetics, number of times counted)
-    repeated_phonetics = [item for item in count if item[1] > 1] # filter out single occurences
+    repeated_phonetics = [item for item in count if item[1] > 1]  # filter out single occurences
 
     repeated_senses = []
     for entry in repeated_phonetics:
@@ -127,7 +151,7 @@ def find_missing_senses(processed_data):
             repeated_senses.append(error_msg)
 
     if repeated_senses:
-        logger.info('Data validation found repeated senses')
+        logger.info('   -Data validation found repeated senses')
         error = ('Sense number repeated', repeated_senses)
         return error
     else:
@@ -140,6 +164,7 @@ def sort_by_id(processed_data):
 
 def sort_by_tag(processed_data):
     return sorted(processed_data, key=lambda data: data['tag'])
+
 
 # def sort_phonetically(processed_data):
 #     return sorted(processed_data, key=lambda data: data['phon'])
@@ -266,8 +291,10 @@ def generate_html(processed_data):
     generate_Eng_page(processed_data)
     generate_help_page()
     generate_check_page(processed_data)
+    logger.info('HTML pages sucessfully generated')
     if errors:
         generate_error_page(errors)
+        logger.info('   - an error page has been generated')
 
 
 def generate_lexicon_page(processed_data, errors):
@@ -354,7 +381,7 @@ def generate_check_page(processed_data):
     # order by tag for more structured language checking session
     new_entries = sort_by_tag(new_entries)
     new_senses = sort_by_tag(new_senses)
-    logger.info('{words_to_check} words need checking'.format(words_to_check=len(words_to_check)))
+    logger.info('   -{words_to_check} words need checking'.format(words_to_check=len(words_to_check)))
 
     context = {
         'title': '{language} checklist'.format(language=s.settings['language'])
@@ -388,10 +415,14 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
     (default=True)"""
     check_processed_data(processed_data, 'create_phonemic_assistant_db()')
 
+    logger.info('Writing phonology assistant file')
     if checked_only:
         processed_data = [data for data in processed_data if data['check']]
+        logger.info('   - writing checked words only to phonology assistant file')
         if len(processed_data) == 0:
             raise AssertionError('No checked data to work with!')
+    else:
+        logger.info('   - writing unchecked words to phonology assistant file')
 
     pa_db = '﻿\_sh v3.0  400  PhoneticData\n'
 
@@ -411,10 +442,10 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
     with open(db, 'w') as file:
         print(pa_db, file=file)
 
+    logger.info('   - {n} words written to phonology assistant file'.format(n=len(processed_data)))
 
-logger = initiate_logging()
+
 if __name__ == '__main__':
-    # logger = initiate_logging()
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
