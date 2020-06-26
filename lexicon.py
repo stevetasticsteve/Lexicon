@@ -39,9 +39,6 @@ def initiate_logging():
     return logger
 
 
-logger = initiate_logging()
-
-
 def excepthook(exctype, value, tb):
     if exctype == AssertionError:
         logger.error('A critical error occurred: {value} \nAdjust settings and try again'.format(value=value))
@@ -50,11 +47,6 @@ def excepthook(exctype, value, tb):
         Error type : {type}
         Error value: {value}
         Traceback: {tb}'''.format(type=exctype, value=value, tb=traceback.format_tb(tb)))
-
-    # logger.error(args)
-
-
-sys.excepthook = excepthook
 
 
 def letter_to_number(letter):
@@ -447,6 +439,9 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
 
 
 if __name__ == '__main__':
+    logger = initiate_logging()
+    sys.excepthook = excepthook
+
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
