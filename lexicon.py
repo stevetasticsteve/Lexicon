@@ -294,13 +294,8 @@ def generate_lexicon_page(processed_data, errors):
     check_processed_data(processed_data, 'generate_HTML()')
 
     # Create the HTML header and navbar
-    date = datetime.datetime.now().strftime('%A %d %B %Y')
-    context = {
-        'title': '{language} Lexicon'.format(language=s.settings['language']),
-        'date': date,
-        'language': s.settings['language'],
-        'header': 'lexicon'
-    }
+    context = generate_context(title='{language} Lexicon'.format(language=s.settings['language']),
+                               header='lexicon')
 
     lexicon_entries = create_lexicon_entries(processed_data)
     initial_letters = get_word_beginnings(lexicon_entries)
@@ -322,13 +317,8 @@ def generate_error_page(errors):
     env = Environment(loader=file_loader)
     template = env.get_template('error_template.html')
 
-    date = datetime.datetime.now().strftime('%A %d %B %Y')
-
-    context = {
-        'title': 'Data errors',
-        'date': date,
-        'language': s.settings['language']
-    }
+    context = generate_context(title='Data errors'.format(language=s.settings['language']),
+                               header='errors')
 
     with open('errors.html', 'w') as file:
         print(template.render(context=context, errors=errors), file=file)
@@ -341,14 +331,9 @@ def generate_Eng_page(processed_data):
     template = env.get_template('dictionary_template.html')
 
     # Create the HTML header and navbar
-    date = datetime.datetime.now().strftime('%A %d %B %Y')
-    context = {
-        'title': '{language} Lexicon'.format(language=s.settings['language']),
-        'date': date,
-        'language': s.settings['language'],
-        'dict_type': 'reverse',
-        'header': 'reverse'
-    }
+    context = generate_context(title='{language} Lexicon'.format(language=s.settings['language']),
+                               header='reverse')
+    context['dict_type'] = 'reverse'
 
     lexicon_entries = create_reverse_lexicon_entries(processed_data)
     initial_letters = get_word_beginnings(lexicon_entries)
@@ -375,9 +360,8 @@ def generate_check_page(processed_data):
     new_senses = sort_by_tag(new_senses)
     logger.info('   -{words_to_check} words need checking'.format(words_to_check=len(words_to_check)))
 
-    context = {
-        'title': '{language} checklist'.format(language=s.settings['language'])
-    }
+    context = generate_context(title='{language} checklist'.format(language=s.settings['language']),
+                               header='check_list')
 
     html = os.path.join(s.settings['target_folder'], 'check_list.html')
     with open(html, 'w') as file:
@@ -390,16 +374,23 @@ def generate_help_page():
     env = Environment(loader=file_loader)
     template = env.get_template('help_template.html')
 
-    date = datetime.datetime.now().strftime('%A %d %B %Y')
-    context = {
-        'title': 'Help',
-        'date': date,
-        'language': s.settings['language'],
-        'header': 'help'
-    }
+    context = generate_context(title='Help', header='help')
     html = os.path.join(s.settings['target_folder'], 'help.html')
     with open(html, 'w') as file:
         print(template.render(context=context), file=file)
+
+
+def generate_context(title, header):
+    date = datetime.datetime.now().strftime('%A %d %B %Y')
+    context = {
+        'title': title,
+        'date': date,
+        'language': s.settings['language'],
+        'header': header,
+        'stylesheets': s.settings['stylesheets']
+    }
+
+    return context
 
 
 def create_phonemic_assistant_db(processed_data, checked_only=True):
