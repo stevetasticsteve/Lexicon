@@ -27,11 +27,15 @@ class MiscTests(unittest.TestCase):
 
 
 class ReadLexiconTests(unittest.TestCase):
-    def test_read_lexicon_return_type(self):
-        read_return = lexicon.read_lexicon(config_file=test_settings)
+    def setUp(self):
+        self.data = lexicon.read_lexicon(config_file=test_settings)
 
-        self.assertEqual(type(read_return), list, 'Wrong data type returned')
-        self.assertEqual(type(read_return[0]), dict, 'Wrong data type returned')
+    def test_read_lexicon_return_type(self):
+        self.assertEqual(type(self.data), list, 'Wrong data type returned')
+        self.assertEqual(type(self.data[0]), dict, 'Wrong data type returned')
+
+    def test_all_rows_read(self):
+        self.assertEqual(len(self.data), 5, 'Number of rows read not correct')
 
 
 if __name__ == '__main__':
