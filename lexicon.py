@@ -25,7 +25,8 @@ def initiate_logging():
     logger.addHandler(ch)
     logger.info('Updating Lexicon')
     if __name__ == '__main__':
-        fh = logging.FileHandler('Lexicon_error.log')
+        log_file = os.path.join(s.settings['target_folder'], 'Lexicon_error.log')
+        fh = logging.FileHandler(log_file)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         fh.setLevel(logging.ERROR)
