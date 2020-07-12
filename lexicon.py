@@ -24,11 +24,12 @@ def initiate_logging():
     ch.setLevel(logging.DEBUG)
     logger.addHandler(ch)
     logger.info('Updating Lexicon')
-    fh = logging.FileHandler('Lexicon_error.log')
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
-    fh.setLevel(logging.ERROR)
-    logger.addHandler(fh)
+    if __name__ == '__main__':
+        fh = logging.FileHandler('Lexicon_error.log')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+        fh.setLevel(logging.ERROR)
+        logger.addHandler(fh)
     return logger
 
 
