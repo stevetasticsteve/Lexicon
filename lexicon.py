@@ -50,7 +50,11 @@ def excepthook(exctype, value, tb):
 
 
 def letter_to_number(letter):
-    # returns an integer to use as an index for a given column letter
+    """returns an integer to use as an index for a given column letter. Can only accept up to column Z"""
+    assert type(letter) == str, 'Must provide a string'
+    assert len(letter) == 1, 'Function only designed for single letter columns'
+    assert letter.isalpha(), 'Must provide alphabetic input'
+
     return ord(letter.upper()) - 65
 
 
