@@ -1,5 +1,9 @@
 import unittest
+import logging
+logging.disable(logging.CRITICAL)
+
 import lexicon
+import tests.TestSettings as test_settings
 
 
 class MiscTests(unittest.TestCase):
@@ -20,3 +24,15 @@ class MiscTests(unittest.TestCase):
             lexicon.letter_to_number('')
         with self.assertRaises(AssertionError):
             lexicon.letter_to_number(' ')
+
+
+class ReadLexiconTests(unittest.TestCase):
+    def test_read_lexicon_return_type(self):
+        read_return = lexicon.read_lexicon(config_file=test_settings)
+
+        self.assertEqual(type(read_return), list, 'Wrong data type returned')
+        self.assertEqual(type(read_return[0]), dict, 'Wrong data type returned')
+
+
+if __name__ == '__main__':
+    unittest.main()

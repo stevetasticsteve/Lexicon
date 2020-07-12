@@ -58,10 +58,10 @@ def letter_to_number(letter):
     return ord(letter.upper()) - 65
 
 
-def read_lexicon():
+def read_lexicon(config_file=s):
     """Reads the .ods and returns a list of dictionary items representing the lexicon,
     unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
-    spreadsheet = s.settings['spreadsheet_name']
+    spreadsheet = config_file.settings['spreadsheet_name']
     # try:
     assert os.path.exists(spreadsheet), '{spreadsheet} does not exist'.format(spreadsheet=spreadsheet)
     _, extension = os.path.splitext(spreadsheet)
@@ -72,7 +72,7 @@ def read_lexicon():
     #     logger.exception(e)
 
     # Convert column letters to list integers
-    col = {k: letter_to_number(v) for k, v in s.spreadsheet_config.items()}
+    col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
     assert len(col) == 18, '18 Columns expected, %d defined' % len(col)
 
     # Read the lexicon and return a list of (Python) dictionary entries
@@ -442,10 +442,11 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
     logger.info('   - {n} words written to phonology assistant file'.format(n=len(processed_data)))
 
 
+logger = initiate_logging()
 if __name__ == '__main__':
-    logger = initiate_logging()
     sys.excepthook = excepthook
 
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
+
