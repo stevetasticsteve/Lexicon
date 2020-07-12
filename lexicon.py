@@ -378,7 +378,8 @@ def generate_check_page(processed_data):
         'title': '{language} checklist'.format(language=s.settings['language'])
     }
 
-    with open('check_list.html', 'w') as file:
+    html = os.path.join(s.settings['target_folder'], 'check_list.html')
+    with open(html, 'w') as file:
         print(template.render(context=context, new_entries=new_entries, new_senses=new_senses), file=file)
 
 
@@ -395,8 +396,8 @@ def generate_help_page():
         'language': s.settings['language'],
         'header': 'help'
     }
-
-    with open('help.html', 'w') as file:
+    html = os.path.join(s.settings['target_folder'], 'help.html')
+    with open(html, 'w') as file:
         print(template.render(context=context), file=file)
 
 
