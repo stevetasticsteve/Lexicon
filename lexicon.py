@@ -2,7 +2,6 @@
 import datetime
 import logging
 import os
-import socket
 import sys
 import traceback
 from collections import Counter
@@ -17,12 +16,6 @@ def initiate_logging():
     # Initiate error logging
     logger = logging.getLogger('LexiconLog')
     logger.setLevel(logging.DEBUG)
-
-    # If working on Steve's laptop change source and target for dev work
-    if socket.gethostname() == 'steve-stanley-latitude':
-        # s.settings['spreadsheet_name'] = 'Kovol_lexicon.ods'
-        s.settings['spreadsheet_name'] = 'excel_test.xlsx'
-        s.settings['target_folder'] = ''
 
     # add a stream log, and a file log for errors
     ch = logging.StreamHandler()
