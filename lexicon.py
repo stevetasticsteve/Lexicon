@@ -63,8 +63,6 @@ def read_lexicon(config_file=s):
     valid_extensions = ('.ods', '.xls', '.xlsx')
     assert any(ex == extension for ex in valid_extensions), \
         'Invalid file {extension}, must be .ods, .xls or .xlsx'.format(extension=extension)
-    # except AssertionError as e:
-    #     logger.exception(e)
 
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
