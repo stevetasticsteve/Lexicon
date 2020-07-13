@@ -37,6 +37,47 @@ class ReadLexiconTests(unittest.TestCase):
     def test_all_rows_read(self):
         self.assertEqual(len(self.data), 5, 'Number of rows read not correct')
 
+    def test_xlsx(self):
+        self.fail('Finish the test')
+
+    def test_xls(self):
+        self.fail('Finish the test')
+
+    def test_ods(self):
+        self.fail('Finish the test')
+
+    def test_incorrect_file_format(self):
+        self.fail('Finish the test')
+
+    def test_file_not_found(self):
+        self.fail('Finish the test')
+
+    def test_blank_file(self):
+        self.fail('Finish the test')
+
+    def test_blank_rows(self):
+        # @ start
+        # @ middle
+        # @ end
+        self.fail('Finish the test')
+
+    def test_header_row_missing(self):
+        self.fail('Finish the test')
+
+    def test_row_contents(self):
+        self.fail('Finish the test')
+
+    def test_settings_column_undefined(self):
+        self.fail('Finish the test')
+
+    def test_sheet_name_unexpected(self):
+        self.fail('Finish the test')
+
+    def test_all_entries_have_senses(self):
+        self.fail('Finish the test')
+
+    def test_blank_cell_response(self):
+        self.fail('Finish the test')
 
 if __name__ == '__main__':
     unittest.main()
