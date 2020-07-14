@@ -34,50 +34,72 @@ class ReadLexiconTests(unittest.TestCase):
         self.assertEqual(type(self.data), list, 'Wrong data type returned')
         self.assertEqual(type(self.data[0]), dict, 'Wrong data type returned')
 
-    def test_all_rows_read(self):
+    def test_read_lexicon_all_rows_read(self):
         self.assertEqual(len(self.data), 5, 'Number of rows read not correct')
 
-    def test_xlsx(self):
+    def test_read_lexicon_xlsx(self):
         self.fail('Finish the test')
 
-    def test_xls(self):
+    def test_read_lexicon_xls(self):
         self.fail('Finish the test')
 
-    def test_ods(self):
+    def test_read_lexicon_ods(self):
         self.fail('Finish the test')
 
-    def test_incorrect_file_format(self):
+    def test_read_lexicon_incorrect_file_format(self):
         self.fail('Finish the test')
 
-    def test_file_not_found(self):
+    def test_read_lexicon_file_not_found(self):
         self.fail('Finish the test')
 
-    def test_blank_file(self):
+    def test_read_lexicon_blank_file(self):
         self.fail('Finish the test')
 
-    def test_blank_rows(self):
+    def test_read_lexicon_blank_rows(self):
         # @ start
         # @ middle
         # @ end
         self.fail('Finish the test')
 
-    def test_header_row_missing(self):
+    def test_read_lexicon_header_row_missing(self):
         self.fail('Finish the test')
 
-    def test_row_contents(self):
+    def test_read_lexicon_row_contents(self):
         self.fail('Finish the test')
 
-    def test_settings_column_undefined(self):
+    def test_read_lexicon_settings_column_undefined(self):
         self.fail('Finish the test')
 
-    def test_sheet_name_unexpected(self):
+    def test_read_lexicon_sheet_name_unexpected(self):
         self.fail('Finish the test')
 
-    def test_all_entries_have_senses(self):
+    def test_read_lexicon_all_entries_have_senses(self):
         self.fail('Finish the test')
 
-    def test_blank_cell_response(self):
+    def test_read_lexicon_blank_cell_response(self):
         self.fail('Finish the test')
+
+
+class ValidationTestRunner(unittest.TestCase):
+    """validate_data() is a simple caller to run all the validation tests that should assert data provided is suitable
+    and clean up the return if there are no errors"""
+    def test_validate_data_return_type(self):
+        """Function should return a list of error tuples ('error', 'data') or None"""
+        self.fail('Finish the test')
+
+    def test_validate_data_incorrect_data_input_response(self):
+        """Function should raise an assertion error if processed data isn't provided"""
+        self.fail('Finish the test')
+
+
+class ValidateSenseNumbers(unittest.TestCase):
+    def test_validate_find_missing_senses_return_type(self):
+        """Function should return list of tuples ('Sense number repeated', 'data') or None"""
+        self.fail('Finish the test')
+
+    def test_validate_find_missing_senses_return_contents(self):
+        self.fail('Finish the test')
+
 
 if __name__ == '__main__':
     unittest.main()
