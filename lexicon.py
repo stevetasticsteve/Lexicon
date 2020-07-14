@@ -111,6 +111,8 @@ def read_lexicon(config_file=s):
 
 def validate_data(processed_data):
     """Check the spreadsheet for incorrectly entered data"""
+    check_processed_data(processed_data, 'validate_data()')
+
     errors = []
     errors.append(validate_find_missing_senses(processed_data))
     if not errors[0]:
@@ -121,8 +123,6 @@ def validate_data(processed_data):
 def validate_find_missing_senses(processed_data):
     """Returns a list (or None if n/a) of phonetic entries that are the same but aren't marked as senses of
     each other. This may reveal data entry errors."""
-    check_processed_data(processed_data, 'find_missing_senses()')
-
     words = [item['phon'] for item in processed_data]
     count = Counter(words)
     count = count.items()  # convert to list of tuples (phonetics, number of times counted)
