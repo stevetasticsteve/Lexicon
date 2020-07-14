@@ -25,6 +25,25 @@ class MiscTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             lexicon.letter_to_number(' ')
 
+    def test_sort_by_id(self):
+        self.fail('Finish the test')
+
+    def test_sort_by_tag(self):
+        self.fail('Finish the test')
+
+    def test_sort_by_sense(self):
+        self.fail('Finish the test')
+
+    def test_check_processed_data(self):
+        """Function should raise an assert error if argument isn't in the form of the return value of the
+        read_lexicon() function"""
+        self.fail('Finish the test')
+
+    def test_check_lexicon_entries(self):
+        """Function should raise an assert error if argument isn't in the form of the return value of the
+        create_lexicon_entries() function"""
+        self.fail('Finish the test')
+
 
 class ReadLexiconTests(unittest.TestCase):
     def setUp(self):
