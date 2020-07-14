@@ -44,6 +44,13 @@ class MiscTests(unittest.TestCase):
         create_lexicon_entries() function"""
         self.fail('Finish the test')
 
+    def test_get_word_beginnings_all_intial_words_present(self):
+        self.fail('Finish the test')
+
+    def test_gget_word_beginnings_returns_in_alphabetical_order(self):
+        self.fail('Finish the test')
+
+
 
 class ReadLexiconTests(unittest.TestCase):
     def setUp(self):
@@ -118,6 +125,36 @@ class ValidateSenseNumbers(unittest.TestCase):
 
     def test_validate_find_missing_senses_return_contents(self):
         self.fail('Finish the test')
+
+
+class CreateLexiconEntries(unittest.TestCase):
+    def test_create_lexicon_entries_return_type(self):
+        """Function should return a list of tuples (str, list)"""
+        self.fail('Finish the test')
+
+    def test_create_lexicon_entries_return_alphabetical_order(self):
+        self.fail('Finish the test')
+
+    def test_create_lexicon_entries_return_contents(self):
+        self.fail('Finish the test')
+
+
+class CreateReverseLexiconEntries(unittest.TestCase):
+    def test_create_reverse_lexicon_entries_return_type(self):
+        """Function should return a list of tuples (str, dict)"""
+        self.fail('Finish the test')
+
+    def test_create_reverse_lexicon_entries_return_alphabetical_order(self):
+        """Function should sort alphabetically based on tuple[0]"""
+        self.fail('Finish the test')
+
+    def test_create_reverse_lexicon_entries_return_contents(self):
+        self.fail('Finish the test')
+
+    def test_create_reverse_lexicon_entries_orthography_trumps_phonetics(self):
+        """Function should use orthographic text for headword when available"""
+        self.fail('Finish the test')
+
 
 
 if __name__ == '__main__':
