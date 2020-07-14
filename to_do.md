@@ -17,11 +17,23 @@
 viewed even if user can't launch Python (helping first time users)
 - create .dic (does libre office make use of .dic files?)
 - Hyperlinks to synonms, antonyms and see all
+- Create Anki .apkg from the dictionary data
+- Text parser to look for missing words
+- Interlinerizer? Could be useful, might not be
 
-## Spreadsheet interactions
+## Spreadsheet editing
 - Make any links 2 way
 - Check words used in examples are in the dict
 
 ## Bug fixes
+- When filtering the html dict letters with no hits shouldn't show
 
+## Testing
+- Finish thinking through and scaffolding the neccesary tests
+- Write the tests
+
+# Kovol specific features
+- Predict verb endings for a given root
+- Identify regular and irregular verbs
+- Identify missing paradigm entries
 
