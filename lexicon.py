@@ -260,11 +260,11 @@ def get_word_beginnings(lexicon_entries):
     return sorted(set(letters))
 
 
-def generate_html(processed_data):
-    """Generate the HTML pages"""
+def assert_templates_exist():
     template_dir = 'templates'
     assert os.path.exists(template_dir), '{dir} is missing'.format(dir=template_dir)
     assert os.path.isdir(template_dir), '{dir} is not a directory'.format(dir=template_dir)
+
     templates = ['check_template.html', 'dictionary_template.html', 'error_template.html', 'help_template.html']
     partial_templates = ['base.html', 'entry.html', 'header.html', 'reverse_entry.html', 'sidebar.html']
 
@@ -275,6 +275,10 @@ def generate_html(processed_data):
         template = os.path.join(template_dir, template)
         assert os.path.exists(template), 'Template Error: {template} is missing'.format(template=template)
 
+
+def generate_html(processed_data):
+    """Generate the HTML pages"""
+    assert_templates_exist()
     errors = validate_data(processed_data)
 
     generate_lexicon_page(processed_data, errors)

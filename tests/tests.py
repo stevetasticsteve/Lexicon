@@ -7,6 +7,7 @@ import tests.TestSettings as test_settings
 
 
 class MiscTests(unittest.TestCase):
+    """Test all the small miscellaneous functions"""
     def test_letter_to_number(self):
         # valid input
         self.assertEqual(lexicon.letter_to_number('A'), 0, 'Letter to number giving wrong output')
@@ -44,15 +45,21 @@ class MiscTests(unittest.TestCase):
         create_lexicon_entries() function"""
         self.fail('Finish the test')
 
-    def test_get_word_beginnings_all_intial_words_present(self):
+    def test_get_word_beginnings_all_initial_words_present(self):
         self.fail('Finish the test')
 
-    def test_gget_word_beginnings_returns_in_alphabetical_order(self):
+    def test_get_word_beginnings_returns_in_alphabetical_order(self):
         self.fail('Finish the test')
 
+    def test_assert_templates_exist(self):
+        self.fail('Finish the test')
+
+    def test_generate_context(self):
+        self.fail('Finish the test')
 
 
 class ReadLexiconTests(unittest.TestCase):
+    """Test the code that reads the spreadsheet"""
     def setUp(self):
         self.data = lexicon.read_lexicon(config_file=test_settings)
 
@@ -106,9 +113,8 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
 
-class ValidationTestRunner(unittest.TestCase):
-    """validate_data() is a simple caller to run all the validation tests that should assert data provided is suitable
-    and clean up the return if there are no errors"""
+class ValidationTests(unittest.TestCase):
+    """Test the code that validates the data read from the spreadsheet"""
     def test_validate_data_return_type(self):
         """Function should return a list of error tuples ('error', 'data') or None"""
         self.fail('Finish the test')
@@ -117,8 +123,6 @@ class ValidationTestRunner(unittest.TestCase):
         """Function should raise an assertion error if processed data isn't provided"""
         self.fail('Finish the test')
 
-
-class ValidateSenseNumbers(unittest.TestCase):
     def test_validate_find_missing_senses_return_type(self):
         """Function should return list of tuples ('Sense number repeated', 'data') or None"""
         self.fail('Finish the test')
@@ -127,7 +131,8 @@ class ValidateSenseNumbers(unittest.TestCase):
         self.fail('Finish the test')
 
 
-class CreateLexiconEntries(unittest.TestCase):
+class DataProcessingTests(unittest.TestCase):
+    """Test all the functions that process and reorganise data read from spreadsheet"""
     def test_create_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, list)"""
         self.fail('Finish the test')
@@ -138,8 +143,6 @@ class CreateLexiconEntries(unittest.TestCase):
     def test_create_lexicon_entries_return_contents(self):
         self.fail('Finish the test')
 
-
-class CreateReverseLexiconEntries(unittest.TestCase):
     def test_create_reverse_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, dict)"""
         self.fail('Finish the test')
@@ -155,6 +158,55 @@ class CreateReverseLexiconEntries(unittest.TestCase):
         """Function should use orthographic text for headword when available"""
         self.fail('Finish the test')
 
+
+class HTMLGenerationTests(unittest.TestCase):
+    """Tests the generation of HTML pages"""
+    def test_generate_html(self):
+        self.fail('Finish the test')
+
+    def test_generate_lexicon_page_exits(self):
+        self.fail('Finish the test')
+
+    def test_generate_lexicon_page_good_html(self):
+        self.fail('Finish the test')
+
+    def test_generate_lexicon_page_contents(self):
+        self.fail('Finish the test')
+
+    def test_generate_error_page_with_errors(self):
+        self.fail('Finish the test')
+
+    def test_generate_error_page_without_errors(self):
+        self.fail('Finish the test')
+
+    def test_generate_Eng_page_exits(self):
+        self.fail('Finish the test')
+
+    def test_generate_Eng_page_good_html(self):
+        self.fail('Finish the test')
+
+    def test_generate_Eng_page_contents(self):
+        self.fail('Finish the test')
+
+    def test_generate_check_page_exits(self):
+        self.fail('Finish the test')
+
+    def test_generate_check_page_good_html(self):
+        self.fail('Finish the test')
+
+    def test_generate_check_page_contents(self):
+        self.fail('Finish the test')
+
+
+class OtherFileGenerationTests(unittest.TestCase):
+    def test_create_phonemic_assistant_new_file_exists(self):
+        self.fail('Finish the test')
+
+    def test_create_phonemic_assistant_contents(self):
+        self.fail('Finish the test')
+
+    def test_create_phonemic_assistant_check_false(self):
+        self.fail('Finish the test')
 
 
 if __name__ == '__main__':

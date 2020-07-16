@@ -37,3 +37,6 @@ viewed even if user can't launch Python (helping first time users)
 - Identify regular and irregular verbs
 - Identify missing paradigm entries
 
+## Kovol specific bugs
+- Lots of whitespace when using the JS filter
+
