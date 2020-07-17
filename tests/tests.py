@@ -1,9 +1,10 @@
-import unittest
 import logging
+import unittest
+
 logging.disable(logging.CRITICAL)
 
 import lexicon
-import tests.TestSettings as test_settings
+import tests.fixtures
 
 
 class MiscTests(unittest.TestCase):
@@ -63,7 +64,7 @@ class MiscTests(unittest.TestCase):
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
     def setUp(self):
-        self.data = lexicon.read_lexicon(config_file=test_settings)
+        self.data = lexicon.read_lexicon(config_file=tests.fixtures)
 
     def test_read_lexicon_return_type(self):
         self.assertEqual(type(self.data), list, 'Wrong data type returned')
