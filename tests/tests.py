@@ -67,6 +67,7 @@ class ReadLexiconTests(unittest.TestCase):
         self.data = lexicon.read_lexicon(config_file=tests.fixtures)
 
     def test_read_lexicon_return_type(self):
+        # test also proves that .ods is being read
         self.assertEqual(type(self.data), list, 'Wrong data type returned')
         self.assertEqual(type(self.data[0]), dict, 'Wrong data type returned')
 
@@ -77,9 +78,6 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_read_lexicon_xls(self):
-        self.fail('Finish the test')
-
-    def test_read_lexicon_ods(self):
         self.fail('Finish the test')
 
     def test_read_lexicon_incorrect_file_format(self):
