@@ -9,7 +9,7 @@ from collections import Counter
 import pyexcel_ods3
 from jinja2 import Environment, FileSystemLoader
 
-import lexicon_config as s
+import lexicon_config
 
 
 def initiate_logging():
@@ -25,7 +25,7 @@ def initiate_logging():
     logger.addHandler(ch)
     logger.info('Updating Lexicon')
     if __name__ == '__main__':
-        log_file = os.path.join(s.settings['target_folder'], 'Lexicon_error.log')
+        log_file = os.path.join(lexicon_config.settings['target_folder'], 'Lexicon_error.log')
         fh = logging.FileHandler(log_file)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
@@ -53,7 +53,7 @@ def letter_to_number(letter):
     return ord(letter.upper()) - 65
 
 
-def read_lexicon(*args, config_file=s):
+def read_lexicon(*args, config_file=lexicon_config):
     """Reads the .ods and returns a list of dictionary items representing the lexicon,
     unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
     spreadsheet = config_file.settings['spreadsheet_name']
@@ -298,7 +298,7 @@ def generate_lexicon_page(processed_data, errors):
     check_processed_data(processed_data, 'generate_HTML()')
 
     # Create the HTML header and navbar
-    context = generate_context(title='{language} Lexicon'.format(language=s.settings['language']),
+    context = generate_context(title='{language} Lexicon'.format(language=lexicon_config.settings['language']),
                                header='lexicon')
 
     lexicon_entries = create_lexicon_entries(processed_data)
@@ -308,7 +308,7 @@ def generate_lexicon_page(processed_data, errors):
     env = Environment(loader=file_loader)
     template = env.get_template('dictionary_template.html')
 
-    html = os.path.join(s.settings['target_folder'], 'main_dict.html')
+    html = os.path.join(lexicon_config.settings['target_folder'], 'main_dict.html')
     with open(html, 'w') as file:
         print(template.render(context=context, entries=lexicon_entries, errors=errors, letters=initial_letters),
               file=file)
@@ -321,7 +321,7 @@ def generate_error_page(errors):
     env = Environment(loader=file_loader)
     template = env.get_template('error_template.html')
 
-    context = generate_context(title='Data errors'.format(language=s.settings['language']),
+    context = generate_context(title='Data errors'.format(language=lexicon_config.settings['language']),
                                header='errors')
 
     with open('errors.html', 'w') as file:
@@ -335,14 +335,14 @@ def generate_Eng_page(processed_data):
     template = env.get_template('dictionary_template.html')
 
     # Create the HTML header and navbar
-    context = generate_context(title='{language} Lexicon'.format(language=s.settings['language']),
+    context = generate_context(title='{language} Lexicon'.format(language=lexicon_config.settings['language']),
                                header='reverse')
     context['dict_type'] = 'reverse'
 
     lexicon_entries = create_reverse_lexicon_entries(processed_data)
     initial_letters = get_word_beginnings(lexicon_entries)
 
-    html = os.path.join(s.settings['target_folder'], 'reverse_dict.html')
+    html = os.path.join(lexicon_config.settings['target_folder'], 'reverse_dict.html')
     with open(html, 'w') as file:
         print(template.render(context=context, entries=lexicon_entries, letters=initial_letters), file=file)
 
@@ -364,10 +364,10 @@ def generate_check_page(processed_data):
     new_senses = sort_by_tag(new_senses)
     logger.info('   -{words_to_check} words need checking'.format(words_to_check=len(words_to_check)))
 
-    context = generate_context(title='{language} checklist'.format(language=s.settings['language']),
+    context = generate_context(title='{language} checklist'.format(language=lexicon_config.settings['language']),
                                header='check_list')
 
-    html = os.path.join(s.settings['target_folder'], 'check_list.html')
+    html = os.path.join(lexicon_config.settings['target_folder'], 'check_list.html')
     with open(html, 'w') as file:
         print(template.render(context=context, new_entries=new_entries, new_senses=new_senses), file=file)
 
@@ -379,7 +379,7 @@ def generate_help_page():
     template = env.get_template('help_template.html')
 
     context = generate_context(title='Help', header='help')
-    html = os.path.join(s.settings['target_folder'], 'help.html')
+    html = os.path.join(lexicon_config.settings['target_folder'], 'help.html')
     with open(html, 'w') as file:
         print(template.render(context=context), file=file)
 
@@ -389,9 +389,9 @@ def generate_context(title, header):
     context = {
         'title': title,
         'date': date,
-        'language': s.settings['language'],
+        'language': lexicon_config.settings['language'],
         'header': header,
-        'stylesheets': s.settings['stylesheets']
+        'stylesheets': lexicon_config.settings['stylesheets']
     }
 
     return context
@@ -425,8 +425,8 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
 
         pa_db += entry
 
-    db = (os.path.join(s.settings['target_folder'],
-                       '{language}_phonology_assistant.db'.format(language=s.settings['language'])))
+    db = (os.path.join(lexicon_config.settings['target_folder'],
+                       '{language}_phonology_assistant.db'.format(language=lexicon_config.settings['language'])))
     with open(db, 'w') as file:
         print(pa_db, file=file)
 
