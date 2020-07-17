@@ -28,9 +28,11 @@ class MiscTests(unittest.TestCase):
 
     def test_sort_by_id(self):
         self.fail('Finish the test')
+        # test case - ID number missing
 
     def test_sort_by_tag(self):
         self.fail('Finish the test')
+        # test case - tag missing
 
     def test_sort_by_sense(self):
         self.fail('Finish the test')
@@ -110,6 +112,9 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_read_lexicon_blank_cell_response(self):
+        self.fail('Finish the test')
+
+    def test_read_lexicon_no_blank_senses_in_return(self):
         self.fail('Finish the test')
 
 
