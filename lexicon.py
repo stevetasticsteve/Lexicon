@@ -53,16 +53,18 @@ def letter_to_number(letter):
     return ord(letter.upper()) - 65
 
 
-def read_lexicon(config_file=s):
+def read_lexicon(*args, config_file=s):
     """Reads the .ods and returns a list of dictionary items representing the lexicon,
     unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
     spreadsheet = config_file.settings['spreadsheet_name']
-    # try:
     assert os.path.exists(spreadsheet), '{spreadsheet} does not exist'.format(spreadsheet=spreadsheet)
     _, extension = os.path.splitext(spreadsheet)
     valid_extensions = ('.ods', '.xls', '.xlsx')
     assert any(ex == extension for ex in valid_extensions), \
         'Invalid file {extension}, must be .ods, .xls or .xlsx'.format(extension=extension)
+    if args:
+        logger.info('Function not designed to accept arguments. \nDefine the settings in lexicon_config.py or pass a '
+                    'different config via the config_file **kwarg')
 
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
