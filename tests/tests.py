@@ -79,25 +79,31 @@ class ReadLexiconTests(unittest.TestCase):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xlsx'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(type(data), list, 'Wrong data type returned, xlsx not read')
+        self.assertEqual(len(data), 5, 'Number of rows read not correct in xlsx')
 
     def test_read_lexicon_xls(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xls'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
 
         self.assertEqual(type(data), list, 'Wrong data type returned, xls not read')
+        self.assertEqual(len(data), 5, 'Number of rows read not correct in xls')
 
     def test_read_lexicon_incorrect_file_format(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xl'}):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(AssertionError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertIn('Invalid file', str(error.exception))
 
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.db'}):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(AssertionError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
-
+            self.assertIn('Invalid file', str(error.exception))
 
     def test_read_lexicon_file_not_found(self):
-        self.fail('Finish the test')
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/non_existent.ods'}):
+            with self.assertRaises(AssertionError) as error:
+                lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertIn('does not exist', str(error.exception))
 
     def test_read_lexicon_blank_file(self):
         self.fail('Finish the test')
