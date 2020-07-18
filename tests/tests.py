@@ -61,6 +61,9 @@ class MiscTests(unittest.TestCase):
     def test_generate_context(self):
         self.fail('Finish the test')
 
+    def test_check_config(self):
+        self.fail('Finish the test')
+
 
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""

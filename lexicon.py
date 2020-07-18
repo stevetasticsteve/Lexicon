@@ -53,6 +53,11 @@ def letter_to_number(letter):
     return ord(letter.upper()) - 65
 
 
+def check_config():
+    #todo write it!
+    pass
+
+
 def read_lexicon(*args, config_file=lexicon_config):
     """Reads the .ods and returns a list of dictionary items representing the lexicon,
     unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
