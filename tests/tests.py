@@ -122,6 +122,8 @@ class ReadLexiconTests(unittest.TestCase):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
 
             self.assertEqual(5, len(data), 'All rows not read when header is missing')
+            self.assertEqual('undum', data[0]['phon'], 'First row is incorrect')
+
 
     def test_read_lexicon_row_contents(self):
         self.fail('Finish the test')
