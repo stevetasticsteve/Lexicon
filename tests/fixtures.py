@@ -1,6 +1,7 @@
 settings = {
     'language': 'Test',
     'spreadsheet_name': 'tests/test_data/test_data_1.ods',
+    'sheet_name': 'Sheet1',  # Name of the sheet containing data
     'target_folder': 'test_output',  # the folder the web page should be created in
     'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
 }

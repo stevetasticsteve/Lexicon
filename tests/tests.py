@@ -76,13 +76,15 @@ class ReadLexiconTests(unittest.TestCase):
         self.assertEqual(len(data), 5, 'Number of rows read not correct')
 
     def test_read_lexicon_xlsx(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xlsx'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xlsx',
+                                               'sheet_name': 'Sheet1'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(type(data), list, 'Wrong data type returned, xlsx not read')
         self.assertEqual(5, len(data), 'Number of rows read not correct in xlsx')
 
     def test_read_lexicon_xls(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xls'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xls',
+                                               'sheet_name': 'Sheet1'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
 
         self.assertEqual(type(data), list, 'Wrong data type returned, xls not read')
@@ -106,7 +108,8 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('does not exist', str(error.exception))
 
     def test_read_lexicon_blank_file(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/blank_spreadsheet.ods'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/blank_spreadsheet.ods',
+                                               'sheet_name': 'Sheet1'}):
             with self.assertRaises(AssertionError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
             self.assertIn('That file is blank', str(error.exception))
@@ -118,7 +121,8 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_read_lexicon_header_row_missing(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/header_missing.ods'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/header_missing.ods',
+                                               'sheet_name': 'Sheet1'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
 
             self.assertEqual(5, len(data), 'All rows not read when header is missing')
@@ -131,10 +135,11 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_read_lexicon_sheet_name_unexpected(self):
-        self.fail('Finish the test')
-
-    def test_read_lexicon_all_entries_have_senses(self):
-        self.fail('Finish the test')
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.ods',
+                                               'sheet_name': 'ImaginarySheet'}):
+            with self.assertRaises(AssertionError) as error:
+                lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertIn('That sheet doesn\'t exist.', str(error.exception))
 
     def test_read_lexicon_blank_cell_response(self):
         self.fail('Finish the test')
@@ -143,7 +148,7 @@ class ReadLexiconTests(unittest.TestCase):
         data = lexicon.read_lexicon(config_file=tests.fixtures)
         for row in data:
             self.assertIsNot(row['sense'], '', 'Blank sense numbers are in the return value')
-            self.assertIs(int, type(row['sense']))
+            self.assertIs(int, type(row['sense']), 'Sense number for row isn\'t an integer')
 
 
 class ValidationTests(unittest.TestCase):

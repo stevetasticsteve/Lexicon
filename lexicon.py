@@ -71,7 +71,10 @@ def read_lexicon(*args, config_file=lexicon_config):
     assert len(col) == 18, '18 Columns expected, %d defined' % len(col)
 
     # Read the lexicon and return a list of (Python) dictionary entries
-    raw_data = pyexcel_ods3.get_data(spreadsheet)['Sheet1']
+    try:
+        raw_data = pyexcel_ods3.get_data(spreadsheet)[config_file.settings['sheet_name']]
+    except KeyError:
+        raise AssertionError('That sheet doesn\'t exist.')
     # Throw an assertion error if the file is blank (pyxcel returns [[]] )
     assert len(raw_data) > 1, 'That file is blank'
     # If the first row is identified as a header row (ID column is a string rather than int) get rid of it

@@ -1,6 +1,7 @@
 settings = {
     'language': 'Kovol',
     'spreadsheet_name': 'Kovol_lexicon.ods', # the path to the spreadsheet used as a data source
+    'sheet_name': 'Sheet1',  # Name of the sheet containing data
     'target_folder': 'local_output',  # the folder the web page should be created in
     'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
     'stylesheets': '/home/steve/Documents/Computing/Python_projects/Kovol Lexicon/stylesheets'  # the path to the stylesheet folder
