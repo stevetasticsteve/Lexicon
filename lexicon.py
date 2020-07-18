@@ -25,7 +25,7 @@ def initiate_logging():
     logger.addHandler(ch)
     logger.info('Updating Lexicon')
     if __name__ == '__main__':
-        log_file = os.path.join(lexicon_config.settings['target_folder'], 'Lexicon_error.log')
+        log_file = lexicon_config.settings['log_file']
         fh = logging.FileHandler(log_file)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
@@ -69,7 +69,6 @@ def read_lexicon(*args, config_file=lexicon_config):
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
     assert len(col) == 18, '18 Columns expected, %d defined' % len(col)
-
     # Read the lexicon and return a list of (Python) dictionary entries
     try:
         raw_data = pyexcel_ods3.get_data(spreadsheet)[config_file.settings['sheet_name']]
