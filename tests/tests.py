@@ -79,7 +79,7 @@ class ReadLexiconTests(unittest.TestCase):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xlsx'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(type(data), list, 'Wrong data type returned, xlsx not read')
-        self.assertEqual(len(data), 5, 'Number of rows read not correct in xlsx')
+        self.assertEqual(5, len(data), 'Number of rows read not correct in xlsx')
 
     def test_read_lexicon_xls(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xls'}):
@@ -118,7 +118,10 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_read_lexicon_header_row_missing(self):
-        self.fail('Finish the test')
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/header_missing.ods'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
+
+            self.assertEqual(5, len(data), 'All rows not read when header is missing')
 
     def test_read_lexicon_row_contents(self):
         self.fail('Finish the test')
