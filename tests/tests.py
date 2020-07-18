@@ -1,5 +1,6 @@
 import logging
 import unittest
+from unittest.mock import patch
 
 logging.disable(logging.CRITICAL)
 
@@ -63,41 +64,37 @@ class MiscTests(unittest.TestCase):
 
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
-    def setUp(self):
-        self.config = tests.fixtures
-        self.config.settings['spreadsheet_name'] = 'tests/test_data/test_data_1.ods'
-
     def test_read_lexicon_return_type(self):
         # test also proves that .ods is being read
-        data = lexicon.read_lexicon(config_file=self.config)
+        data = lexicon.read_lexicon(config_file=tests.fixtures)
 
         self.assertEqual(type(data), list, 'Wrong data type returned')
         self.assertEqual(type(data[0]), dict, 'Wrong data type returned')
 
     def test_read_lexicon_all_rows_read(self):
-        data = lexicon.read_lexicon(config_file=self.config)
+        data = lexicon.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(len(data), 5, 'Number of rows read not correct')
 
     def test_read_lexicon_xlsx(self):
-        self.config.settings['spreadsheet_name'] = 'tests/test_data/test_data_1.xlsx'
-        data = lexicon.read_lexicon(config_file=self.config)
-
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xlsx'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(type(data), list, 'Wrong data type returned, xlsx not read')
 
     def test_read_lexicon_xls(self):
-        self.config.settings['spreadsheet_name'] = 'tests/test_data/test_data_1.xls'
-        data = lexicon.read_lexicon(config_file=self.config)
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xls'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
 
         self.assertEqual(type(data), list, 'Wrong data type returned, xls not read')
 
     def test_read_lexicon_incorrect_file_format(self):
-        self.config.settings['spreadsheet_name'] = 'tests/test_data/test_data_1.xl'
-        with self.assertRaises(AssertionError):
-            lexicon.read_lexicon(config_file=self.config)
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xl'}):
+            with self.assertRaises(AssertionError):
+                lexicon.read_lexicon(config_file=tests.fixtures)
 
-        self.config.settings['spreadsheet_name'] = 'tests/test_data/test_data_1.db'
-        with self.assertRaises(AssertionError):
-            lexicon.read_lexicon(config_file=self.config)
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.db'}):
+            with self.assertRaises(AssertionError):
+                lexicon.read_lexicon(config_file=tests.fixtures)
+
 
     def test_read_lexicon_file_not_found(self):
         self.fail('Finish the test')
