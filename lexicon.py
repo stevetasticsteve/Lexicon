@@ -72,7 +72,12 @@ def read_lexicon(*args, config_file=lexicon_config):
 
     # Read the lexicon and return a list of (Python) dictionary entries
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Sheet1']
-    raw_data.pop(0)  # get rid of the first row
+    # Throw an assertion error if the file is blank (pyxcel returns [[]] )
+    assert len(raw_data) > 1, 'That file is blank'
+    # If the first row is identified as a header row (ID column is a string rather than int) get rid of it
+    if type(raw_data[0][col['id_col']]) == str:
+        raw_data.pop(0)
+
     raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
     raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
     processed_data = []
@@ -106,8 +111,6 @@ def read_lexicon(*args, config_file=lexicon_config):
     for entry in processed_data:
         if entry['sense'] == '':
             entry['sense'] = 1
-
-    assert len(processed_data) > 0, 'That file is blank'
 
     logger.info('   -%d dictionary entries read' % len(processed_data))
     return processed_data
