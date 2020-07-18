@@ -106,7 +106,10 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('does not exist', str(error.exception))
 
     def test_read_lexicon_blank_file(self):
-        self.fail('Finish the test')
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/blank_spreadsheet.ods'}):
+            with self.assertRaises(AssertionError) as error:
+                lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertIn('That file is blank', str(error.exception))
 
     def test_read_lexicon_blank_rows(self):
         # @ start

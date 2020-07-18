@@ -107,6 +107,8 @@ def read_lexicon(*args, config_file=lexicon_config):
         if entry['sense'] == '':
             entry['sense'] = 1
 
+    assert len(processed_data) > 0, 'That file is blank'
+
     logger.info('   -%d dictionary entries read' % len(processed_data))
     return processed_data
 
