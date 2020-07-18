@@ -150,6 +150,11 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIsNot(row['sense'], '', 'Blank sense numbers are in the return value')
             self.assertIs(int, type(row['sense']), 'Sense number for row isn\'t an integer')
 
+    def test_read_lexicon_data_not_as_expected(self):
+        """Test to make sure assertion error if the columns the user has put in the config don\'t contain the
+        data types expected"""
+        self.fail('Finish the test')
+
 
 class ValidationTests(unittest.TestCase):
     """Test the code that validates the data read from the spreadsheet"""
