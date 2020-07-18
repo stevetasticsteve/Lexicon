@@ -124,7 +124,6 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertEqual(5, len(data), 'All rows not read when header is missing')
             self.assertEqual('undum', data[0]['phon'], 'First row is incorrect')
 
-
     def test_read_lexicon_row_contents(self):
         self.fail('Finish the test')
 
@@ -141,7 +140,10 @@ class ReadLexiconTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_read_lexicon_no_blank_senses_in_return(self):
-        self.fail('Finish the test')
+        data = lexicon.read_lexicon(config_file=tests.fixtures)
+        for row in data:
+            self.assertIsNot(row['sense'], '', 'Blank sense numbers are in the return value')
+            self.assertIs(int, type(row['sense']))
 
 
 class ValidationTests(unittest.TestCase):
