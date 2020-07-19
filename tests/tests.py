@@ -82,14 +82,14 @@ class ReadLexiconTests(unittest.TestCase):
         self.assertEqual(len(data), 5, 'Number of rows read not correct')
 
     def test_read_lexicon_xlsx(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xlsx',
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_xlsx.xlsx',
                                                'sheet_name': 'Sheet1'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(type(data), list, 'Wrong data type returned, xlsx not read')
         self.assertEqual(5, len(data), 'Number of rows read not correct in xlsx')
 
     def test_read_lexicon_xls(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xls',
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_xls.xls',
                                                'sheet_name': 'Sheet1'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
 
@@ -114,23 +114,23 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('does not exist', str(error.exception))
 
     def test_read_lexicon_blank_file(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/blank_spreadsheet.ods',
-                                               'sheet_name': 'Sheet1'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
+                                               'sheet_name': 'blank_sheet'}):
             with self.assertRaises(AssertionError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
             self.assertIn('That file is blank', str(error.exception))
 
     def test_read_lexicon_blank_rows(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/missing_cells.ods',
-                                               'sheet_name': 'Sheet2'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
+                                               'sheet_name': 'blank_rows'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
             self.assertEqual(5, len(data), 'Blank rows included in return')
             self.assertEqual('undum', data[0]['phon'], 'First row incorrect')
             self.assertEqual('limoŋ', data[4]['phon'], 'Last row incorrect')
 
     def test_read_lexicon_header_row_missing(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/header_missing.ods',
-                                               'sheet_name': 'Sheet1'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/good_data.ods',
+                                               'sheet_name': 'no_header'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
 
             self.assertEqual(5, len(data), 'All rows not read when header is missing')
@@ -164,7 +164,7 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('items expected in spreadsheet_config,', str(error.exception))
 
     def test_read_lexicon_sheet_name_unexpected(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.ods',
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/good_data.ods',
                                                'sheet_name': 'ImaginarySheet'}):
             with self.assertRaises(AssertionError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
@@ -189,8 +189,8 @@ class ReadLexiconTests(unittest.TestCase):
         check_ids(data)
         self.assertEqual(1,data[0]['id'], 'First id number incorrect')
 
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/missing_cells.ods',
-                                               'sheet_name': 'Sheet1'}):
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
+                                               'sheet_name': 'missing_cells'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
             check_ids(data)
             self.assertEqual(0, data[0]['id'], 'First id number incorrect')
