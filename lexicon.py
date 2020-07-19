@@ -89,7 +89,11 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
         raw_data.pop(0)
 
     # create a list of dictionaries
-    raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
+    raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
+    # set the id number to 0 if it's blank - preventing sort failures later
+    for row in raw_data:
+        if row[col['id_col']] == '':
+            row[col['id_col']] = 0
     raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
     processed_data = []
     for entry in raw_data:

@@ -177,6 +177,22 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIsNot(row['sense'], '', 'Blank sense numbers are in the return value')
             self.assertIs(int, type(row['sense']), 'Sense number for row isn\'t an integer')
 
+    def test_read_lexicon_no_blank_id_in_return(self):
+        def check_ids(data):
+            for row in data:
+                self.assertIsNot(row['id'], '', 'Blank ID numbers are in the return value')
+                self.assertIs(int, type(row['id']), 'ID number for row isn\'t an integer')
+
+        data = lexicon.read_lexicon(config_file=tests.fixtures)
+        check_ids(data)
+        self.assertEqual(1,data[0]['id'], 'First id number incorrect')
+
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/missing_cells.ods',
+                                               'sheet_name': 'Sheet1'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
+            check_ids(data)
+            self.assertEqual(0, data[0]['id'], 'First id number incorrect')
+
     def test_read_lexicon_data_not_as_expected(self):
         """Test to make sure assertion error if the columns the user has put in the config don\'t contain the
         data types expected"""
