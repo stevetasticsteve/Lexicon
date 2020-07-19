@@ -58,7 +58,7 @@ def check_config():
     pass
 
 
-def read_lexicon(*args, config_file=lexicon_config):
+def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
     """Reads the .ods and returns a list of dictionary items representing the lexicon,
     unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
     spreadsheet = config_file.settings['spreadsheet_name']
@@ -73,7 +73,9 @@ def read_lexicon(*args, config_file=lexicon_config):
 
     # Convert column letters to list integers
     col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
-    assert len(col) == 18, '18 Columns expected, %d defined' % len(col)
+    assert len(col) == number_of_columns, \
+        '{n} items expected in spreadsheet_config, {m} defined'.format(n=number_of_columns, m=len(col))
+
     # Read the lexicon and return a list of (Python) dictionary entries
     try:
         raw_data = pyexcel_ods3.get_data(spreadsheet)[config_file.settings['sheet_name']]
@@ -81,16 +83,17 @@ def read_lexicon(*args, config_file=lexicon_config):
         raise AssertionError('That sheet doesn\'t exist.')
     # Throw an assertion error if the file is blank (pyxcel returns [[]] )
     assert len(raw_data) > 1, 'That file is blank'
+
     # If the first row is identified as a header row (ID column is a string rather than int) get rid of it
     if type(raw_data[0][col['id_col']]) == str:
         raw_data.pop(0)
 
+    # create a list of dictionaries
     raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
     raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
     processed_data = []
-
     for entry in raw_data:
-        while len(entry) < 18:  # add blank columns to avoid index errors
+        while len(entry) < number_of_columns:  # add blank columns to avoid index errors
             entry.append('')
         d = {
             'id': entry[col['id_col']],

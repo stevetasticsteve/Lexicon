@@ -1,3 +1,4 @@
+import datetime
 import logging
 import unittest
 from unittest.mock import patch
@@ -10,6 +11,7 @@ import tests.fixtures
 
 class MiscTests(unittest.TestCase):
     """Test all the small miscellaneous functions"""
+
     def test_letter_to_number(self):
         # valid input
         self.assertEqual(lexicon.letter_to_number('A'), 0, 'Letter to number giving wrong output')
@@ -67,6 +69,7 @@ class MiscTests(unittest.TestCase):
 
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
+
     def test_read_lexicon_return_type(self):
         # test also proves that .ods is being read
         data = lexicon.read_lexicon(config_file=tests.fixtures)
@@ -132,10 +135,31 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertEqual('undum', data[0]['phon'], 'First row is incorrect')
 
     def test_read_lexicon_row_contents(self):
-        self.fail('Finish the test')
+        data = lexicon.read_lexicon(config_file=tests.fixtures)
+        self.assertEqual(data[0], {'ant': '',
+                                   'check': '',
+                                   'date': datetime.date(2020, 4, 30),
+                                   'def': 'A small person',
+                                   'dial': '',
+                                   'eng': 'child',
+                                   'enter': 'Steve',
+                                   'ex': 'ɛŋ undum',
+                                   'id': 1,
+                                   'link': '',
+                                   'orth': '',
+                                   'phon': 'undum',
+                                   'pos': 'n',
+                                   'sense': 1,
+                                   'syn': '',
+                                   'tag': '',
+                                   'tpi': 'pikinini',
+                                   'trans': 'my child'}, 'First row not as expected')
 
     def test_read_lexicon_settings_column_undefined(self):
-        self.fail('Finish the test')
+        with patch("tests.fixtures.spreadsheet_config", {'id_col': 'A'}):
+            with self.assertRaises(AssertionError) as error:
+                lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertIn('items expected in spreadsheet_config,', str(error.exception))
 
     def test_read_lexicon_sheet_name_unexpected(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.ods',
@@ -161,6 +185,7 @@ class ReadLexiconTests(unittest.TestCase):
 
 class ValidationTests(unittest.TestCase):
     """Test the code that validates the data read from the spreadsheet"""
+
     def test_validate_data_return_type(self):
         """Function should return a list of error tuples ('error', 'data') or None"""
         self.fail('Finish the test')
@@ -179,6 +204,7 @@ class ValidationTests(unittest.TestCase):
 
 class DataProcessingTests(unittest.TestCase):
     """Test all the functions that process and reorganise data read from spreadsheet"""
+
     def test_create_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, list)"""
         self.fail('Finish the test')
@@ -207,6 +233,7 @@ class DataProcessingTests(unittest.TestCase):
 
 class HTMLGenerationTests(unittest.TestCase):
     """Tests the generation of HTML pages"""
+
     def test_generate_html(self):
         self.fail('Finish the test')
 
