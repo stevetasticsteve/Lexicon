@@ -121,10 +121,12 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('That file is blank', str(error.exception))
 
     def test_read_lexicon_blank_rows(self):
-        # @ start
-        # @ middle
-        # @ end
-        self.fail('Finish the test')
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/missing_cells.ods',
+                                               'sheet_name': 'Sheet2'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertEqual(5, len(data), 'Blank rows included in return')
+            self.assertEqual('undum', data[0]['phon'], 'First row incorrect')
+            self.assertEqual('limoŋ', data[4]['phon'], 'Last row incorrect')
 
     def test_read_lexicon_header_row_missing(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/header_missing.ods',
