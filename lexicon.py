@@ -325,7 +325,7 @@ def generate_lexicon_page(processed_data, errors):
     initial_letters = get_word_beginnings(lexicon_entries)
 
     file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader)
+    env = Environment(loader=file_loader, autoescape=True)
     template = env.get_template('dictionary_template.html')
 
     html = os.path.join(lexicon_config.settings['target_folder'], 'main_dict.html')
@@ -338,7 +338,7 @@ def generate_error_page(errors):
     """Creates a page that shows all the validation errors discovered in the spreadsheet"""
 
     file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader)
+    env = Environment(loader=file_loader, autoescape=True)
     template = env.get_template('error_template.html')
 
     context = generate_context(title='Data errors'.format(language=lexicon_config.settings['language']),
@@ -351,7 +351,7 @@ def generate_error_page(errors):
 def generate_Eng_page(processed_data):
     """Creates a English to language lookup version of dictionary as html"""
     file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader)
+    env = Environment(loader=file_loader, autoescape=True)
     template = env.get_template('dictionary_template.html')
 
     # Create the HTML header and navbar
@@ -364,14 +364,15 @@ def generate_Eng_page(processed_data):
 
     html = os.path.join(lexicon_config.settings['target_folder'], 'reverse_dict.html')
     with open(html, 'w') as file:
-        print(template.render(context=context, entries=lexicon_entries, letters=initial_letters), file=file)
+        print(template.render(context=context, entries=lexicon_entries, letters=initial_letters),
+              file=file)
 
 
 def generate_check_page(processed_data):
     """Creates a page that shows all the phonetics that need to be checked. The HTML is sparse and is designed
     for printing."""
     file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader)
+    env = Environment(loader=file_loader, autoescape=True)
     template = env.get_template('check_template.html')
 
     # filter out and return only unchecked entries
@@ -395,7 +396,7 @@ def generate_check_page(processed_data):
 def generate_help_page():
     """Creates a help page"""
     file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader)
+    env = Environment(loader=file_loader,  autoescape=True)
     template = env.get_template('help_template.html')
 
     context = generate_context(title='Help', header='help')
