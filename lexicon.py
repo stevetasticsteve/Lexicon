@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: UTF-8 -*-
 import datetime
 import logging
 import os
@@ -53,9 +54,9 @@ def letter_to_number(letter):
     return ord(letter.upper()) - 65
 
 
-def check_config():
-    #todo write it!
-    pass
+# def check_config():
+#     #todo write it!
+#     pass
 
 
 def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
