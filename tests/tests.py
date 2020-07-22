@@ -188,7 +188,7 @@ class ReadLexiconTests(unittest.TestCase):
 
         data = lexicon.read_lexicon(config_file=tests.fixtures)
         check_ids(data)
-        self.assertEqual(1,data[0]['id'], 'First id number incorrect')
+        self.assertEqual(1, data[0]['id'], 'First id number incorrect')
 
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
                                                'sheet_name': 'missing_cells'}):

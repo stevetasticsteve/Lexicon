@@ -396,7 +396,7 @@ def generate_check_page(processed_data):
 def generate_help_page():
     """Creates a help page"""
     file_loader = FileSystemLoader('templates')
-    env = Environment(loader=file_loader,  autoescape=True)
+    env = Environment(loader=file_loader, autoescape=True)
     template = env.get_template('help_template.html')
 
     context = generate_context(title='Help', header='help')
@@ -461,4 +461,3 @@ if __name__ == '__main__':
     data = read_lexicon()
     generate_html(data)
     create_phonemic_assistant_db(data, checked_only=False)
-
