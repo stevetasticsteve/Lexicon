@@ -172,7 +172,37 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('That sheet doesn\'t exist.', str(error.exception))
 
     def test_read_lexicon_blank_cell_response(self):
-        self.fail('Finish the test')
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
+                                               'sheet_name': 'missing_cells'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
+            self.assertEqual(len(data), 6, 'Incorrect number of rows read')
+            # missing ID - should recieve an ID of 0
+            self.assertEqual(0, data[0]['id'], 'ID incorrect on blank cell')
+            # missing phonetics - return ''
+            self.assertEqual('', data[5]['phon'], "Blank phonetics not returning correctly")
+            # missing sense - return 1
+            self.assertEqual(1, data[5]['sense'], "Blank sense not returning correctly")
+            # missing POS - return ''
+            self.assertEqual('', data[4]['pos'], "Blank POS not returning correctly")
+            # missing English - return ''
+            self.assertEqual('', data[1]['eng'], "Blank English not returning correctly")
+            # missing Tok Pisin - return ''
+            self.assertEqual('', data[1]['tpi'], "Blank Tok pisin not returning correctly")
+            # missing definition - return ''
+            self.assertEqual('', data[1]['def'], "Blank definition not returning correctly")
+            # missing example - return ''
+            self.assertEqual('', data[1]['ex'], "Blank example not returning correctly")
+            # missing translation - return ''
+            self.assertEqual('', data[1]['trans'], "Blank example translation not returning correctly")
+            # missing date - return ''
+            self.assertEqual('', data[1]['date'])
+            # missing entered - return ''
+            self.assertEqual('', data[1]['enter'], "Blank entered by not returning correctly")
+            # missing check, syn, ant, see also - return ''
+            self.assertEqual('', data[1]['syn'], "Blank synonym not returning correctly")
+            self.assertEqual('', data[1]['ant'], "Blank antonym not returning correctly")
+            self.assertEqual('', data[1]['check'], "Blank check not returning correctly")
+            self.assertEqual('', data[1]['link'], "Blank see also not returning correctly")
 
     def test_read_lexicon_no_blank_senses_in_return(self):
         data = lexicon.read_lexicon(config_file=tests.fixtures)
