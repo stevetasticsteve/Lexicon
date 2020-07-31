@@ -100,5 +100,5 @@ good_processed_data = [{'ant': '',
                         'syn': '',
                         'tpi': 'rat',
                         'trans': '',
-                        'tag': 'description'}
+                        'tag': ''}
                        ]

@@ -33,16 +33,20 @@ class MiscTests(unittest.TestCase):
 
     def test_sort_by_id(self):
         data = lexicon.sort_by_id(tests.fixtures.good_processed_data)
-        self.assertEqual(data[0]['id'], 1, 'First is not ID 1')
-        self.assertEqual(data[1]['id'], 2, 'Second is not ID 2')
-        self.assertEqual(data[3]['id'], 3, 'Last is not ID 3')
+        self.assertEqual(1, data[0]['id'], 'First is not ID 1')
+        self.assertEqual(2, data[1]['id'], 'Second is not ID 2')
+        self.assertEqual(3, data[3]['id'], 'Last is not ID 3')
 
     def test_sort_by_tag(self):
-        self.fail('Finish the test')
-        # test case - tag missing
+        data = lexicon.sort_by_tag(tests.fixtures.good_processed_data)
+        self.assertEqual('', data[0]['tag'], 'Tags not in alphabetical order')
+        self.assertEqual('animal', data[1]['tag'], 'Tags not in alphabetical order')
+        self.assertEqual('test', data[3]['tag'], 'Tags not in alphabetical order')
 
     def test_sort_by_sense(self):
-        self.fail('Finish the test')
+        data = lexicon.sort_by_sense(tests.fixtures.good_processed_data)
+        self.assertEqual(1, data[0]['sense'], 'Sense numbers not in order')
+        self.assertEqual(2, data[3]['sense'], 'Sense numbers not in order')
 
     def test_check_processed_data(self):
         """Function should raise an assert error if argument isn't in the form of the return value of the
@@ -72,7 +76,6 @@ class MiscTests(unittest.TestCase):
 
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
-
     def test_read_lexicon_return_type(self):
         # test also proves that .ods is being read
         data = lexicon.read_lexicon(config_file=tests.fixtures)
