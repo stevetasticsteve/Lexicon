@@ -32,8 +32,10 @@ class MiscTests(unittest.TestCase):
             lexicon.letter_to_number(' ')
 
     def test_sort_by_id(self):
-        self.fail('Finish the test')
-        # test case - ID number missing
+        data = lexicon.sort_by_id(tests.fixtures.good_processed_data)
+        self.assertEqual(data[0]['id'], 1, 'First is not ID 1')
+        self.assertEqual(data[1]['id'], 2, 'Second is not ID 2')
+        self.assertEqual(data[3]['id'], 3, 'Last is not ID 3')
 
     def test_sort_by_tag(self):
         self.fail('Finish the test')
@@ -154,7 +156,6 @@ class ReadLexiconTests(unittest.TestCase):
                                    'pos': 'n',
                                    'sense': 1,
                                    'syn': '',
-                                   'tag': '',
                                    'tpi': 'pikinini',
                                    'trans': 'my child',
                                    'tag': 'test'}, 'First row not as expected')
@@ -243,6 +244,7 @@ class ReadLexiconTests(unittest.TestCase):
                     self.assertEqual(type(v), datetime.date, 'value for {k} is not a datetime'.format(k=k))
                 else:
                     self.assertEqual(type(v), str, 'value for {k} is not a string'.format(k=k))
+
 
 class ValidationTests(unittest.TestCase):
     """Test the code that validates the data read from the spreadsheet"""
