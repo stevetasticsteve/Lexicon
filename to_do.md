@@ -27,9 +27,11 @@ viewed even if user can't launch Python (helping first time users)
 
 ## Bug fixes
 - When filtering the html dict letters with no hits shouldn't show
+- Bandit has taken issue with my assert statements. I've learned that
+try/except is more pythonic than asserts so I'll use them
+- Flake8 has identified read_lexicon() as too complex
 
 ## Testing
-- Finish thinking through and scaffolding the neccesary tests
 - Write the tests
 
 # Kovol specific features
