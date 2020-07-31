@@ -156,7 +156,8 @@ class ReadLexiconTests(unittest.TestCase):
                                    'syn': '',
                                    'tag': '',
                                    'tpi': 'pikinini',
-                                   'trans': 'my child'}, 'First row not as expected')
+                                   'trans': 'my child',
+                                   'tag': 'test'}, 'First row not as expected')
 
     def test_read_lexicon_settings_column_undefined(self):
         with patch("tests.fixtures.spreadsheet_config", {'id_col': 'A'}):
@@ -198,11 +199,12 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertEqual('', data[1]['date'])
             # missing entered - return ''
             self.assertEqual('', data[1]['enter'], "Blank entered by not returning correctly")
-            # missing check, syn, ant, see also - return ''
+            # missing check, syn, ant, see also, tag - return ''
             self.assertEqual('', data[1]['syn'], "Blank synonym not returning correctly")
             self.assertEqual('', data[1]['ant'], "Blank antonym not returning correctly")
             self.assertEqual('', data[1]['check'], "Blank check not returning correctly")
             self.assertEqual('', data[1]['link'], "Blank see also not returning correctly")
+            self.assertEqual('', data[1]['tag'], "Blank tag not returning correctly")
 
     def test_read_lexicon_no_blank_senses_in_return(self):
         data = lexicon.read_lexicon(config_file=tests.fixtures)
