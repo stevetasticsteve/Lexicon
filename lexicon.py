@@ -101,24 +101,24 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
         while len(entry) < number_of_columns:  # add blank columns to avoid index errors
             entry.append('')
         d = {
-            'id': entry[col['id_col']],         # int, blank = 0
-            'orth': entry[col['orth_col']],     # str, blank = ''
-            'phon': entry[col['phon_col']],     # str, blank = ''
-            'dial': entry[col['dial_col']],     # str, blank = ''
-            'sense': entry[col['sense_col']],   # int, blank = 1
-            'pos': entry[col['pos_col']],       # str, blank = ''
-            'eng': entry[col['eng_col']],       # str, blank = ''
-            'tpi': entry[col['tpi_col']],       # str, blank = ''
-            'def': entry[col['def_col']],       # str, blank = ''
-            'ex': entry[col['ex_col']],         # str, blank = ''
-            'trans': entry[col['trans_col']],   # str, blank = ''
-            'date': entry[col['date_col']],     # datetime.date, blank = '', incorrect_format = ?
-            'enter': entry[col['enter_col']],   # str, blank = ''
-            'check': entry[col['check_col']],   # str, blank = ''
-            'syn': entry[col['syn_col']],       # str, blank = ''
-            'ant': entry[col['ant_col']],       # str, blank = ''
-            'link': entry[col['link_col']],     # str, blank = ''
-            'tag': entry[col['tag_col']],       # str, blank = ''
+            'id': entry[col['id_col']],              # int, blank = 0 Don't force int, pre processing cleans up
+            'orth': str(entry[col['orth_col']]),     # str, blank = ''
+            'phon': str(entry[col['phon_col']]),     # str, blank = ''
+            'dial': str(entry[col['dial_col']]),     # str, blank = ''
+            'sense': entry[col['sense_col']],        # int, blank = 1 Don't force int, pre processing cleans up
+            'pos': str(entry[col['pos_col']]),       # str, blank = ''
+            'eng': str(entry[col['eng_col']]),       # str, blank = ''
+            'tpi': str(entry[col['tpi_col']]),       # str, blank = ''
+            'def': str(entry[col['def_col']]),       # str, blank = ''
+            'ex': str(entry[col['ex_col']]),         # str, blank = ''
+            'trans': str(entry[col['trans_col']]),   # str, blank = ''
+            'date': entry[col['date_col']],          # datetime.date, blank = '', format enforced by spreadsheet
+            'enter': str(entry[col['enter_col']]),   # str, blank = ''
+            'check': str(entry[col['check_col']]),   # str, blank = ''
+            'syn': str(entry[col['syn_col']]),       # str, blank = ''
+            'ant': str(entry[col['ant_col']]),       # str, blank = ''
+            'link': str(entry[col['link_col']]),     # str, blank = ''
+            'tag': str(entry[col['tag_col']]),       # str, blank = ''
         }
 
         processed_data.append(d)

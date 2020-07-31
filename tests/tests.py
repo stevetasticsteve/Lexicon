@@ -173,6 +173,7 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('That sheet doesn\'t exist.', str(error.exception))
 
     def test_read_lexicon_blank_cell_response(self):
+        """Tests every column for response to blank"""
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
                                                'sheet_name': 'missing_cells'}):
             data = lexicon.read_lexicon(config_file=tests.fixtures)
@@ -229,10 +230,19 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertEqual(0, data[0]['id'], 'First id number incorrect')
 
     def test_read_lexicon_data_not_as_expected(self):
-        """Test to make sure assertion error if the columns the user has put in the config don\'t contain the
-        data types expected"""
-        self.fail('Finish the test')
-
+        """Tests each column for data of unexpected type. Data validation on the spreadsheet stops a lot of nonsense"""
+        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
+                                               'sheet_name': 'dodgy_data'}):
+            data = lexicon.read_lexicon(config_file=tests.fixtures)
+            for k, v in data[0].items():
+                if k == 'id':
+                    self.assertEqual(type(v), int, 'value for {k} is not a int'.format(k=k))
+                elif k == 'sense':
+                    self.assertEqual(type(v), int, 'value for {k} is not a int'.format(k=k))
+                elif k == 'date':
+                    self.assertEqual(type(v), datetime.date, 'value for {k} is not a datetime'.format(k=k))
+                else:
+                    self.assertEqual(type(v), str, 'value for {k} is not a string'.format(k=k))
 
 class ValidationTests(unittest.TestCase):
     """Test the code that validates the data read from the spreadsheet"""
