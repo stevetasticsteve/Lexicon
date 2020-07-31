@@ -101,24 +101,24 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
         while len(entry) < number_of_columns:  # add blank columns to avoid index errors
             entry.append('')
         d = {
-            'id': entry[col['id_col']],
-            'orth': entry[col['orth_col']],
-            'phon': entry[col['phon_col']],
-            'dial': entry[col['dial_col']],
-            'sense': entry[col['sense_col']],
-            'pos': entry[col['pos_col']],
-            'eng': entry[col['eng_col']],
-            'tpi': entry[col['tpi_col']],
-            'def': entry[col['def_col']],
-            'ex': entry[col['ex_col']],
-            'trans': entry[col['trans_col']],
-            'date': entry[col['date_col']],
-            'enter': entry[col['enter_col']],
-            'check': entry[col['check_col']],
-            'syn': entry[col['syn_col']],
-            'ant': entry[col['ant_col']],
-            'link': entry[col['link_col']],
-            'tag': entry[col['tag_col']],
+            'id': entry[col['id_col']],         # int, blank = 0
+            'orth': entry[col['orth_col']],     # str, blank = ''
+            'phon': entry[col['phon_col']],     # str, blank = ''
+            'dial': entry[col['dial_col']],     # str, blank = ''
+            'sense': entry[col['sense_col']],   # int, blank = 1
+            'pos': entry[col['pos_col']],       # str, blank = ''
+            'eng': entry[col['eng_col']],       # str, blank = ''
+            'tpi': entry[col['tpi_col']],       # str, blank = ''
+            'def': entry[col['def_col']],       # str, blank = ''
+            'ex': entry[col['ex_col']],         # str, blank = ''
+            'trans': entry[col['trans_col']],   # str, blank = ''
+            'date': entry[col['date_col']],     # datetime.date, blank = '', incorrect_format = ?
+            'enter': entry[col['enter_col']],   # str, blank = ''
+            'check': entry[col['check_col']],   # str, blank = ''
+            'syn': entry[col['syn_col']],       # str, blank = ''
+            'ant': entry[col['ant_col']],       # str, blank = ''
+            'link': entry[col['link_col']],     # str, blank = ''
+            'tag': entry[col['tag_col']],       # str, blank = ''
         }
 
         processed_data.append(d)
