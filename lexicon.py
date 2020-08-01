@@ -149,7 +149,7 @@ def raw_data_to_dict(raw_data, col, number_of_columns):
 
 
 def post_process_raw_data(dict_data):
-    # pre processing tasks
+    # post processing tasks
     for entry in dict_data:
         if entry['sense'] == '':
             entry['sense'] = 1
@@ -307,20 +307,23 @@ def get_word_beginnings(lexicon_entries):
     return sorted(set(letters))
 
 
-def assert_templates_exist():
-    template_dir = 'templates'
-    assert os.path.exists(template_dir), '{dir} is missing'.format(dir=template_dir)
-    assert os.path.isdir(template_dir), '{dir} is not a directory'.format(dir=template_dir)
-
+def assert_templates_exist(template_dir='templates'):
     templates = ['check_template.html', 'dictionary_template.html', 'error_template.html', 'help_template.html']
     partial_templates = ['base.html', 'entry.html', 'header.html', 'reverse_entry.html', 'sidebar.html']
 
-    partial_templates = ['partial/' + x for x in partial_templates]
-
+    partial_templates = ['partial/' + t for t in partial_templates]
     templates = templates + partial_templates
-    for template in templates:
-        template = os.path.join(template_dir, template)
-        assert os.path.exists(template), 'Template Error: {template} is missing'.format(template=template)
+
+    try:
+        for template in templates:
+            template = os.path.join(template_dir, template)
+            if not os.path.exists(template):
+                raise FileNotFoundError
+        return True
+    except FileNotFoundError:
+        msg = 'Template: "{template}" not found'.format(template=template)
+        logger.exception(msg)
+        raise FileNotFoundError(msg)
 
 
 def generate_html(processed_data):

@@ -65,7 +65,10 @@ class MiscTests(unittest.TestCase):
         self.fail('Finish the test')
 
     def test_assert_templates_exist(self):
-        self.fail('Finish the test')
+        self.assertTrue(lexicon.assert_templates_exist())
+        with self.assertRaises(FileNotFoundError) as error:
+            lexicon.assert_templates_exist(template_dir='Fake directory')
+            self.assertIn('Template:', str(error.exception))
 
     def test_generate_context(self):
         self.fail('Finish the test')
