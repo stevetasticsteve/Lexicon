@@ -103,28 +103,29 @@ class ReadLexiconTests(unittest.TestCase):
         self.assertEqual(len(data), 5, 'Number of rows read not correct in xls')
 
     def test_read_lexicon_incorrect_file_format(self):
+        error_msg = 'is not a valid file extension. Must be .ods, .xls or .xlsx.'
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xl'}):
-            with self.assertRaises(AssertionError) as error:
+            with self.assertRaises(TypeError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
-            self.assertIn('Invalid file', str(error.exception))
+            self.assertIn(error_msg, str(error.exception))
 
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.db'}):
-            with self.assertRaises(AssertionError) as error:
+            with self.assertRaises(TypeError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
-            self.assertIn('Invalid file', str(error.exception))
+            self.assertIn(error_msg, str(error.exception))
 
     def test_read_lexicon_file_not_found(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/non_existent.ods'}):
-            with self.assertRaises(AssertionError) as error:
+            with self.assertRaises(FileNotFoundError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
-            self.assertIn('does not exist', str(error.exception))
+            self.assertIn('not found.', str(error.exception))
 
     def test_read_lexicon_blank_file(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
                                                'sheet_name': 'blank_sheet'}):
-            with self.assertRaises(AssertionError) as error:
+            with self.assertRaises(AttributeError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
-            self.assertIn('That file is blank', str(error.exception))
+            self.assertIn('The file is blank', str(error.exception))
 
     def test_read_lexicon_blank_rows(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
@@ -172,9 +173,9 @@ class ReadLexiconTests(unittest.TestCase):
     def test_read_lexicon_sheet_name_unexpected(self):
         with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/good_data.ods',
                                                'sheet_name': 'ImaginarySheet'}):
-            with self.assertRaises(AssertionError) as error:
+            with self.assertRaises(KeyError) as error:
                 lexicon.read_lexicon(config_file=tests.fixtures)
-            self.assertIn('That sheet doesn\'t exist.', str(error.exception))
+            self.assertIn('is not a valid sheet name.', str(error.exception))
 
     def test_read_lexicon_blank_cell_response(self):
         """Tests every column for response to blank"""

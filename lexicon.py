@@ -7,6 +7,7 @@ import sys
 import traceback
 from collections import Counter
 
+import pyexcel_io
 import pyexcel_ods3
 from jinja2 import Environment, FileSystemLoader
 
@@ -62,32 +63,39 @@ def letter_to_number(letter):
 def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
     """Reads the .ods and returns a list of dictionary items representing the lexicon,
     unlike create_lexicon_entries() it doesn't group senses under 1 headword - it's just a data dump."""
-    spreadsheet = config_file.settings['spreadsheet_name']
-    assert os.path.exists(spreadsheet), '{spreadsheet} does not exist'.format(spreadsheet=spreadsheet)
-    _, extension = os.path.splitext(spreadsheet)
-    valid_extensions = ('.ods', '.xls', '.xlsx')
-    assert any(ex == extension for ex in valid_extensions), \
-        'Invalid file {extension}, must be .ods, .xls or .xlsx'.format(extension=extension)
     if args:
         logger.info('Function not designed to accept arguments. \nDefine the settings in lexicon_config.py or pass a '
                     'different config via the config_file **kwarg')
 
-    # Convert column letters to list integers
-    col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
-    assert len(col) == number_of_columns, \
-        '{n} items expected in spreadsheet_config, {m} defined'.format(n=number_of_columns, m=len(col))
-
-    # Read the lexicon and return a list of (Python) dictionary entries
+    spreadsheet = config_file.settings['spreadsheet_name']
+    # read the file with pyexcel
     try:
         raw_data = pyexcel_ods3.get_data(spreadsheet)[config_file.settings['sheet_name']]
+        # Convert column letters to list integers
+        col = {k: letter_to_number(v) for k, v in config_file.spreadsheet_config.items()}
+        assert len(col) == number_of_columns, \
+            '{n} items expected in spreadsheet_config, {m} defined'.format(n=number_of_columns, m=len(col))
+        # pop the header if it exists
+        if type(raw_data[0][col['id_col']]) == str:  # Str == 'ID'
+            raw_data.pop(0)
     except KeyError:
-        raise AssertionError('That sheet doesn\'t exist.')
-    # Throw an assertion error if the file is blank (pyxcel returns [[]] )
-    assert len(raw_data) > 1, 'That file is blank'
-
-    # If the first row is identified as a header row (ID column is a string rather than int) get rid of it
-    if type(raw_data[0][col['id_col']]) == str:
-        raw_data.pop(0)
+        if not os.path.exists(spreadsheet):
+            msg = '{file} not found.'.format(file=spreadsheet)
+            logger.exception(msg)
+            raise FileNotFoundError(msg)
+        else:
+            msg = '{sheet} is not a valid sheet name.'.format(sheet=spreadsheet)
+            logger.exception(msg)
+            raise KeyError(msg)
+    except pyexcel_io.exceptions.NoSupportingPluginFound:
+        _, extension = os.path.splitext(spreadsheet)
+        msg = '{ext} is not a valid file extension. Must be .ods, .xls or .xlsx.'.format(ext=extension)
+        logger.exception(msg)
+        raise TypeError(msg)
+    except IndexError:
+        msg = 'The file is blank'
+        logger.exception(msg)
+        raise AttributeError(msg)
 
     # create a list of dictionaries
     raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
