@@ -78,6 +78,7 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
         # pop the header if it exists
         if type(raw_data[0][col['id_col']]) == str:  # Str == 'ID'
             raw_data.pop(0)
+        raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
     except KeyError:
         if not os.path.exists(spreadsheet):
             msg = '{file} not found.'.format(file=spreadsheet)
@@ -97,46 +98,62 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
         logger.exception(msg)
         raise AttributeError(msg)
 
-    # create a list of dictionaries
-    raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
+    # pre process
+    raw_data = pre_process_raw_data(raw_data, col)
+    # format as a list of dict
+    dict_data = raw_data_to_dict(raw_data, col, number_of_columns)
+    # post process
+    processed_data = post_process_raw_data(dict_data)
+
+    logger.info('   -%d dictionary entries read' % len(processed_data))
+    return processed_data
+
+
+def pre_process_raw_data(raw_data, col):
     # set the id number to 0 if it's blank - preventing sort failures later
     for row in raw_data:
         if row[col['id_col']] == '':
             row[col['id_col']] = 0
     raw_data.sort(key=lambda raw_data: raw_data[col['id_col']])  # sort by ID number
-    processed_data = []
+    return raw_data
+
+
+def raw_data_to_dict(raw_data, col, number_of_columns):
+    dict_data = []
     for entry in raw_data:
         while len(entry) < number_of_columns:  # add blank columns to avoid index errors
             entry.append('')
         d = {
-            'id': entry[col['id_col']],              # int, blank = 0 Don't force int, pre processing cleans up
-            'orth': str(entry[col['orth_col']]),     # str, blank = ''
-            'phon': str(entry[col['phon_col']]),     # str, blank = ''
-            'dial': str(entry[col['dial_col']]),     # str, blank = ''
-            'sense': entry[col['sense_col']],        # int, blank = 1 Don't force int, pre processing cleans up
-            'pos': str(entry[col['pos_col']]),       # str, blank = ''
-            'eng': str(entry[col['eng_col']]),       # str, blank = ''
-            'tpi': str(entry[col['tpi_col']]),       # str, blank = ''
-            'def': str(entry[col['def_col']]),       # str, blank = ''
-            'ex': str(entry[col['ex_col']]),         # str, blank = ''
-            'trans': str(entry[col['trans_col']]),   # str, blank = ''
-            'date': entry[col['date_col']],          # datetime.date, blank = '', format enforced by spreadsheet
-            'enter': str(entry[col['enter_col']]),   # str, blank = ''
-            'check': str(entry[col['check_col']]),   # str, blank = ''
-            'syn': str(entry[col['syn_col']]),       # str, blank = ''
-            'ant': str(entry[col['ant_col']]),       # str, blank = ''
-            'link': str(entry[col['link_col']]),     # str, blank = ''
-            'tag': str(entry[col['tag_col']]),       # str, blank = ''
+            'id': entry[col['id_col']],  # int, blank = 0 Don't force int, pre processing cleans up
+            'orth': str(entry[col['orth_col']]),  # str, blank = ''
+            'phon': str(entry[col['phon_col']]),  # str, blank = ''
+            'dial': str(entry[col['dial_col']]),  # str, blank = ''
+            'sense': entry[col['sense_col']],  # int, blank = 1 Don't force int, pre processing cleans up
+            'pos': str(entry[col['pos_col']]),  # str, blank = ''
+            'eng': str(entry[col['eng_col']]),  # str, blank = ''
+            'tpi': str(entry[col['tpi_col']]),  # str, blank = ''
+            'def': str(entry[col['def_col']]),  # str, blank = ''
+            'ex': str(entry[col['ex_col']]),  # str, blank = ''
+            'trans': str(entry[col['trans_col']]),  # str, blank = ''
+            'date': entry[col['date_col']],  # datetime.date, blank = '', format enforced by spreadsheet
+            'enter': str(entry[col['enter_col']]),  # str, blank = ''
+            'check': str(entry[col['check_col']]),  # str, blank = ''
+            'syn': str(entry[col['syn_col']]),  # str, blank = ''
+            'ant': str(entry[col['ant_col']]),  # str, blank = ''
+            'link': str(entry[col['link_col']]),  # str, blank = ''
+            'tag': str(entry[col['tag_col']]),  # str, blank = ''
         }
 
-        processed_data.append(d)
+        dict_data.append(d)
+    return dict_data
+
+
+def post_process_raw_data(dict_data):
     # pre processing tasks
-    for entry in processed_data:
+    for entry in dict_data:
         if entry['sense'] == '':
             entry['sense'] = 1
-
-    logger.info('   -%d dictionary entries read' % len(processed_data))
-    return processed_data
+    return dict_data
 
 
 def validate_data(processed_data):
@@ -349,8 +366,7 @@ def generate_error_page(errors):
     env = Environment(loader=file_loader, autoescape=True)
     template = env.get_template('error_template.html')
 
-    context = generate_context(title='Data errors'.format(language=lexicon_config.settings['language']),
-                               header='errors')
+    context = generate_context(title='Data errors', header='errors')
 
     with open('errors.html', 'w') as file:
         print(template.render(context=context, errors=errors), file=file)
