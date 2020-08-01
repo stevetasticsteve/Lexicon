@@ -51,7 +51,19 @@ class MiscTests(unittest.TestCase):
     def test_check_processed_data(self):
         """Function should raise an assert error if argument isn't in the form of the return value of the
         read_lexicon() function"""
-        self.fail('Finish the test')
+        self.assertTrue(lexicon.check_processed_data(tests.fixtures.good_processed_data, 'Test'))
+        with self.assertRaises(AssertionError) as error:
+            lexicon.check_processed_data('String', 'Test')
+            self.assertIn('Function called incorrectly', str(error.exception))
+        with self.assertRaises(AssertionError) as error:
+            lexicon.check_processed_data(1, 'Test')
+            self.assertIn('Function called incorrectly', str(error.exception))
+        with self.assertRaises(AssertionError) as error:
+            lexicon.check_processed_data([], 'Test')
+            self.assertIn('Function called incorrectly', str(error.exception))
+        with self.assertRaises(AssertionError) as error:
+            lexicon.check_processed_data({}, 'Test')
+            self.assertIn('Function called incorrectly', str(error.exception))
 
     def test_check_lexicon_entries(self):
         """Function should raise an assert error if argument isn't in the form of the return value of the

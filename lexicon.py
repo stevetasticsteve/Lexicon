@@ -225,7 +225,8 @@ def check_processed_data(processed_data, function):
             'wrong data type given to {function} - needs the result of read_lexicon()'.format(function=function)
         assert type(processed_data[0]) == dict, \
             'wrong data type given to {function} - needs the result of read_lexicon()'.format(function=function)
-    except AssertionError:
+        return True
+    except AssertionError or TypeError:
         logger.exception('Function called incorrectly')
         raise AssertionError
 
