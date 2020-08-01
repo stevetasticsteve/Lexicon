@@ -6,6 +6,7 @@ settings = {
     'sheet_name': 'header',  # Name of the sheet containing data
     'target_folder': 'test_output',  # the folder the web page should be created in
     'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
+    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
 }
 
 spreadsheet_config = {

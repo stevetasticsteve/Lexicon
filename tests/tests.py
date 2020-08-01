@@ -71,7 +71,12 @@ class MiscTests(unittest.TestCase):
             self.assertIn('Template:', str(error.exception))
 
     def test_generate_context(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', tests.fixtures.settings):
+            context = lexicon.generate_context('title', 'header')
+            self.assertEqual('Test', context['language'])
+            self.assertEqual('title', context['title'])
+            self.assertEqual('header', context['header'])
+            self.assertEqual(datetime.datetime.now().strftime('%A %d %B %Y'), context['date'])
 
     def test_check_config(self):
         self.fail('Finish the test')
