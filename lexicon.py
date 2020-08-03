@@ -1,4 +1,16 @@
 #!/usr/bin/python3
+
+# Author: Stephen Stanley, stevetasticsteve@gmail.com
+# License: GPL3.0
+
+# This program reads a spreadsheet containing lexicon data and creates interactive web pages from it. The code
+# is written in 3 layers:
+# 1. read_data interacts with the spreadsheet returning it in dictionary format.
+# 2. process_data takes the raw data and validates it to identify potential data entry mistakes. It then gathers
+#    lexical entries under head words.
+# 3. output takes the lexical entries identified and creates HTML and other useful formats.
+
+# This file links the layers together to form the application.
 import logging
 import sys
 import traceback
