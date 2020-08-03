@@ -1,0 +1,156 @@
+import logging
+from collections import Counter
+
+logger = logging.getLogger('LexiconLog')
+
+
+def validate_data(processed_data):
+    """Check the spreadsheet for incorrectly entered data"""
+    check_processed_data(processed_data, 'validate_data()')
+
+    errors = []
+    errors.append(validate_find_missing_senses(processed_data))
+    if not errors[0]:
+        errors = None
+    return errors
+
+
+def validate_find_missing_senses(processed_data):
+    """Returns a list (or None if n/a) of phonetic entries that are the same but aren't marked as senses of
+    each other. This may reveal data entry errors."""
+    words = [item['phon'] for item in processed_data]
+    count = Counter(words)
+    count = count.items()  # convert to list of tuples (phonetics, number of times counted)
+    repeated_phonetics = [item for item in count if item[1] > 1]  # filter out single occurences
+
+    repeated_senses = []
+    for entry in repeated_phonetics:
+        phonetics = entry[0]
+        entries_matching_phonetics = [entry for entry in processed_data if entry['phon'] == phonetics]
+
+        entry_sense_count = Counter([entry['sense'] for entry in entries_matching_phonetics])
+        entry_sense_count = entry_sense_count.items()
+        repeated_sense = [item for item in entry_sense_count if item[1] > 1]
+        if repeated_sense:
+            error_msg = '{phonetics} use same sense  number multiple times.'.format(phonetics=phonetics)
+            repeated_senses.append(error_msg)
+
+    if repeated_senses:
+        logger.info('   -Data validation found repeated senses')
+        error = ('Sense number repeated', repeated_senses)
+        return error
+    else:
+        return None
+
+
+def sort_by_id(processed_data):
+    return sorted(processed_data, key=lambda data: data['id'])
+
+
+def sort_by_tag(processed_data):
+    return sorted(processed_data, key=lambda data: data['tag'])
+
+
+# def sort_phonetically(processed_data):
+#     return sorted(processed_data, key=lambda data: data['phon'])
+#
+#
+# def sort_orthographically(processed_data):
+#     return sorted(processed_data, key=lambda data: data['orth'])
+
+
+def sort_by_sense(processed_data):
+    return sorted(processed_data, key=lambda data: data['sense'])
+
+
+# Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
+def check_processed_data(processed_data, function):
+    """A quick assert that the right data model is given to function, a list of dictionaries produced by
+    read_lexicon()"""
+    try:
+        assert len(processed_data) > 0, 'No data to work on!'
+        assert type(processed_data) == list, \
+            'wrong data type given to {function} - needs the result of read_lexicon()'.format(function=function)
+        assert type(processed_data[0]) == dict, \
+            'wrong data type given to {function} - needs the result of read_lexicon()'.format(function=function)
+        return True
+    except AssertionError or TypeError:
+        logger.exception('Function called incorrectly')
+        raise AssertionError
+
+
+def check_lexicon_entries(lexicon_entries, function):
+    """A quick assert that the data model comes from create_lexicon_entries, a list of tuples"""
+    try:
+        assert len(lexicon_entries) > 0, 'No data to work on!'
+        assert type(lexicon_entries) == list, \
+            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(
+                function=function)
+        assert type(lexicon_entries[0]) == tuple, \
+            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(
+                function=function)
+    except AssertionError:
+        logger.exception('Function called incorrectly')
+        raise AssertionError
+
+
+def create_lexicon_entries(processed_data):
+    """Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
+    Returns a list of tuples (headword, list of sense dictionary) sorted alphabetically by headword"""
+    check_processed_data(processed_data, 'create_lexicon_entries()')
+    processed_data = sort_by_sense(processed_data)  # get the sense numbers in order
+    processed_data = sort_by_id(processed_data)
+    lexicon_entries = []
+    last_id = 0  # blank variable to check if headwords are the same
+    lexeme_index = -1  # counter for lexicon_entries
+    # Loop through the entries and create the dictionary entries
+    for entry in processed_data:
+        # choose phonetics for headword if orthography not available
+        if entry['orth']:
+            headword = entry['orth']
+        else:
+            headword = entry['phon']
+        sense_data = {
+            'pos': entry['pos'],
+            'phonetics': entry['phon'],
+            'english': entry['eng'],
+            'tok_pisin': entry['tpi'],
+            'definition': entry['def'],
+            'example': entry['ex'],
+            'example_translation': entry['trans'],
+            'sense': entry['sense']
+        }
+
+        if last_id == entry['id']:  # this is a sense of the previous headword
+            lexicon_entries[lexeme_index][1].append(sense_data)
+        else:  # this is a new headword
+            lexeme = (headword, [sense_data])
+            lexicon_entries.append(lexeme)
+            lexeme_index += 1
+        last_id = entry['id']
+    # sort alphabetically
+    lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_tuple: lexeme_tuple[0])
+    return lexicon_entries
+
+
+def create_reverse_lexicon_entries(processed_data):
+    """Adjust the processed data so it's suitable to be displayed in an English to Lang dict"""
+    check_processed_data(processed_data, 'create_reverse_lexicon_entries()')
+
+    processed_data = sorted(processed_data, key=lambda d: d['eng'].lower())
+    lexicon_entries = []
+    for item in processed_data:
+        if item['orth']:
+            item['headword'] = item['orth']
+        else:
+            item['headword'] = item['phon']
+        lexicon_entries.append((item['eng'].lower(), item))
+    return lexicon_entries
+
+
+def get_word_beginnings(lexicon_entries):
+    """Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
+     headwords"""
+    check_lexicon_entries(lexicon_entries, 'get_word_beginnings()')
+    letters = [x[0][0] for x in lexicon_entries]
+    return sorted(set(letters))
