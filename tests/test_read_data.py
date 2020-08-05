@@ -10,7 +10,26 @@ class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
 
     def test_check_config(self):
-        self.fail('Finish the test')
+        settings = {
+            'language': 1,
+            'spreadsheet_name': 'Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
+            'sheet_name': 'Sheet1',  # Name of the sheet containing data
+            'target_folder': 'local_output',  # the folder the web page should be created in,
+            'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
+            'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
+            'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
+        }
+
+        with self.assertRaises(TypeError) as error:
+            read_data.check_settings(config_file=settings)
+        self.assertIn('The language is not a string', str(error.exception))
+
+        settings['language'] = 'Test'
+        settings['target_folder'] = 'Fake directory'
+        with self.assertRaises(FileNotFoundError)as error:
+            read_data.check_settings(config_file=settings)
+        self.assertIn('The following file doesn\'t exist: {t}'.format(t=settings['target_folder']),
+                      str(error.exception), 'Error message wrong')
 
     def test_letter_to_number(self):
         # valid input
@@ -42,15 +61,13 @@ class ReadLexiconTests(unittest.TestCase):
         self.assertEqual(len(data), 5, 'Number of rows read not correct')
 
     def test_read_lexicon_xlsx(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_xlsx.xlsx',
-                                               'sheet_name': 'Sheet1'}):
+        with patch("tests.fixtures.settings", tests.fixtures.xlsx):
             data = read_data.read_lexicon(config_file=tests.fixtures)
         self.assertEqual(type(data), list, 'Wrong data type returned, xlsx not read')
         self.assertEqual(5, len(data), 'Number of rows read not correct in xlsx')
 
     def test_read_lexicon_xls(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_xls.xls',
-                                               'sheet_name': 'Sheet1'}):
+        with patch("tests.fixtures.settings", tests.fixtures.xls):
             data = read_data.read_lexicon(config_file=tests.fixtures)
 
         self.assertEqual(type(data), list, 'Wrong data type returned, xls not read')
@@ -58,40 +75,38 @@ class ReadLexiconTests(unittest.TestCase):
 
     def test_read_lexicon_incorrect_file_format(self):
         error_msg = 'is not a valid file extension. Must be .ods, .xls or .xlsx.'
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.xl'}):
+        with patch("tests.fixtures.settings", tests.fixtures.bad_ext1):
             with self.assertRaises(TypeError) as error:
                 read_data.read_lexicon(config_file=tests.fixtures)
             self.assertIn(error_msg, str(error.exception))
 
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/test_data_1.db'}):
+        with patch("tests.fixtures.settings", tests.fixtures.bad_ext2):
             with self.assertRaises(TypeError) as error:
                 read_data.read_lexicon(config_file=tests.fixtures)
             self.assertIn(error_msg, str(error.exception))
 
     def test_read_lexicon_file_not_found(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/non_existent.ods'}):
+        with patch("tests.fixtures.settings", tests.fixtures.no_spreadsheet):
             with self.assertRaises(FileNotFoundError) as error:
                 read_data.read_lexicon(config_file=tests.fixtures)
-            self.assertIn('not found.', str(error.exception))
+            self.assertIn('The following file doesn\'t exist', str(error.exception))
 
     def test_read_lexicon_blank_file(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
-                                               'sheet_name': 'blank_sheet'}):
+        with patch('tests.fixtures.settings', tests.fixtures.blank_sheet):
+            print(tests.fixtures.settings)
             with self.assertRaises(AttributeError) as error:
                 read_data.read_lexicon(config_file=tests.fixtures)
             self.assertIn('The file is blank', str(error.exception))
 
     def test_read_lexicon_blank_rows(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
-                                               'sheet_name': 'blank_rows'}):
+        with patch("tests.fixtures.settings", tests.fixtures.blank_rows):
             data = read_data.read_lexicon(config_file=tests.fixtures)
             self.assertEqual(5, len(data), 'Blank rows included in return')
             self.assertEqual('undum', data[0]['phon'], 'First row incorrect')
             self.assertEqual('limoŋ', data[4]['phon'], 'Last row incorrect')
 
     def test_read_lexicon_header_row_missing(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/good_data.ods',
-                                               'sheet_name': 'no_header'}):
+        with patch("tests.fixtures.settings", tests.fixtures.no_header):
             data = read_data.read_lexicon(config_file=tests.fixtures)
 
             self.assertEqual(5, len(data), 'All rows not read when header is missing')
@@ -125,16 +140,14 @@ class ReadLexiconTests(unittest.TestCase):
             self.assertIn('items expected in spreadsheet_config,', str(error.exception))
 
     def test_read_lexicon_sheet_name_unexpected(self):
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/good_data.ods',
-                                               'sheet_name': 'ImaginarySheet'}):
+        with patch("tests.fixtures.settings", tests.fixtures.no_sheet):
             with self.assertRaises(KeyError) as error:
                 read_data.read_lexicon(config_file=tests.fixtures)
             self.assertIn('is not a valid sheet name.', str(error.exception))
 
     def test_read_lexicon_blank_cell_response(self):
         """Tests every column for response to blank"""
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
-                                               'sheet_name': 'missing_cells'}):
+        with patch("tests.fixtures.settings", tests.fixtures.missing_cells):
             data = read_data.read_lexicon(config_file=tests.fixtures)
             self.assertEqual(len(data), 6, 'Incorrect number of rows read')
             # missing ID - should recieve an ID of 0
@@ -182,16 +195,14 @@ class ReadLexiconTests(unittest.TestCase):
         check_ids(data)
         self.assertEqual(1, data[0]['id'], 'First id number incorrect')
 
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
-                                               'sheet_name': 'missing_cells'}):
+        with patch("tests.fixtures.settings", tests.fixtures.missing_cells):
             data = read_data.read_lexicon(config_file=tests.fixtures)
             check_ids(data)
             self.assertEqual(0, data[0]['id'], 'First id number incorrect')
 
     def test_read_lexicon_data_not_as_expected(self):
         """Tests each column for data of unexpected type. Data validation on the spreadsheet stops a lot of nonsense"""
-        with patch("tests.fixtures.settings", {'spreadsheet_name': 'tests/test_data/bad_data.ods',
-                                               'sheet_name': 'dodgy_data'}):
+        with patch("tests.fixtures.settings", tests.fixtures.dodgy_data):
             data = read_data.read_lexicon(config_file=tests.fixtures)
             for k, v in data[0].items():
                 if k == 'id':

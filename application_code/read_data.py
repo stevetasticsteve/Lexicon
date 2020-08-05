@@ -12,9 +12,25 @@ import lexicon_config
 logger = logging.getLogger('LexiconLog')
 
 
-# def check_config():
-#     #todo write it!
-#     pass
+def check_settings(config_file=lexicon_config.settings):
+    # sheet_name checked by read_lexicon()
+    paths = (config_file['target_folder'], config_file['log_file'], config_file['stylesheets'],
+             config_file['spreadsheet_name'])
+    try:
+        for p in paths:
+            if not os.path.exists(p):
+                raise FileNotFoundError(p)
+        if type(config_file['language']) != str:
+            raise TypeError
+
+    except FileNotFoundError as e:
+        msg = 'The following file doesn\'t exist: {e}'.format(e=e.args[0])
+        logger.exception(msg)
+        raise FileNotFoundError(msg)
+    except TypeError:
+        msg = 'The language is not a string'
+        logger.exception(msg)
+        raise TypeError(msg)
 
 
 def letter_to_number(letter):
@@ -32,6 +48,7 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
     if args:
         logger.info('Function not designed to accept arguments. \nDefine the settings in lexicon_config.py or pass a '
                     'different config via the config_file **kwarg')
+    check_settings(config_file=config_file.settings)  # pass this in for testing purposes
 
     spreadsheet = config_file.settings['spreadsheet_name']
     # read the file with pyexcel
@@ -46,14 +63,9 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
             raw_data.pop(0)
         raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
     except KeyError:
-        if not os.path.exists(spreadsheet):
-            msg = '{file} not found.'.format(file=spreadsheet)
-            logger.exception(msg)
-            raise FileNotFoundError(msg)
-        else:
-            msg = '{sheet} is not a valid sheet name.'.format(sheet=spreadsheet)
-            logger.exception(msg)
-            raise KeyError(msg)
+        msg = '{sheet} is not a valid sheet name.'.format(sheet=spreadsheet)
+        logger.exception(msg)
+        raise KeyError(msg)
     except pyexcel_io.exceptions.NoSupportingPluginFound:
         _, extension = os.path.splitext(spreadsheet)
         msg = '{ext} is not a valid file extension. Must be .ods, .xls or .xlsx.'.format(ext=extension)

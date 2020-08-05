@@ -4,9 +4,10 @@ settings = {
     'language': 'Test',
     'spreadsheet_name': 'tests/test_data/good_data.ods',
     'sheet_name': 'header',  # Name of the sheet containing data
-    'target_folder': 'test_output',  # the folder the web page should be created in
+    'target_folder': 'tests/test_output/',  # the folder the web page should be created in
     'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
+    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets',
+    'log_file': 'tests/test_log'
 }
 
 spreadsheet_config = {
@@ -29,6 +30,44 @@ spreadsheet_config = {
     'link_col': 'Q',  # Column containing links,
     'tag_col': 'R',  # Column containing semantic tags
 }
+
+# Slightly modify the test settings for different tests
+bad_data = settings.copy()
+bad_data['spreadsheet_name'] = 'tests/test_data/bad_data.ods'
+
+missing_cells = bad_data.copy()
+missing_cells['sheet_name'] = 'missing_cells'
+
+blank_sheet = bad_data.copy()
+blank_sheet['sheet_name'] = 'blank_sheet'
+
+blank_rows = bad_data.copy()
+blank_rows['sheet_name'] = 'blank_rows'
+
+dodgy_data = bad_data.copy()
+dodgy_data['sheet_name'] = 'dodgy_data'
+
+no_spreadsheet = settings.copy()
+no_spreadsheet['spreadsheet_name'] = 'Made up spreadsheet.ods'
+
+no_header = settings.copy()
+no_header['sheet_name'] = 'no_header'
+
+bad_ext1 = settings.copy()
+bad_ext1['spreadsheet_name'] = 'tests/test_data/test_data_1.xl'
+bad_ext2 = settings.copy()
+bad_ext2['spreadsheet_name'] = 'tests/test_data/test_data_1.xl'
+
+xls = settings.copy()
+xls['spreadsheet_name'] = 'tests/test_data/test_xls.xls'
+xls['sheet_name'] = 'Sheet1'
+
+xlsx = settings.copy()
+xlsx['spreadsheet_name'] = 'tests/test_data/test_xlsx.xlsx'
+xlsx['sheet_name'] = 'Sheet1'
+
+no_sheet = settings.copy()
+no_sheet['sheet_name'] = 'ImaginarySheet'
 
 good_processed_data = [{'ant': '',
                         'check': '',
