@@ -28,7 +28,11 @@ class DataProcessingTests(unittest.TestCase):
 
     def test_create_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, list)"""
-        self.fail('Finish the test')
+        data = process_data.create_lexicon_entries(fixtures.good_processed_data)
+        self.assertEqual(list, type(data))
+        self.assertEqual(tuple, type(data[0]))
+        self.assertEqual(str, type(data[0][0]))
+        self.assertEqual(list, type(data[0][1]))
 
     def test_create_lexicon_entries_return_alphabetical_order(self):
         self.fail('Finish the test')
