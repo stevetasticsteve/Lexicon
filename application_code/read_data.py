@@ -17,18 +17,27 @@ def check_settings(config_file=lexicon_config.settings):
     paths = (config_file['target_folder'], config_file['log_file'], config_file['stylesheets'],
              config_file['spreadsheet_name'])
     try:
+        # check all the paths exist
         for p in paths:
             if not os.path.exists(p):
                 raise FileNotFoundError(p)
+        # check language name is a string
         if type(config_file['language']) != str:
-            raise TypeError
+            raise TypeError('language')
+        # check sheet name is a string
+        if type(config_file['sheet_name']) != str:
+            raise TypeError('sheet name')
+        # find the stylesheet
+        stylesheet = os.path.join(config_file['stylesheets'], 'css', 'lexicon.css')
+        if not os.path.exists(stylesheet):
+            raise FileNotFoundError(stylesheet)
 
     except FileNotFoundError as e:
         msg = 'The following file doesn\'t exist: {e}'.format(e=e.args[0])
         logger.exception(msg)
         raise FileNotFoundError(msg)
-    except TypeError:
-        msg = 'The language is not a string'
+    except TypeError as e:
+        msg = 'The {e} is not a string'.format(e=e.args[0])
         logger.exception(msg)
         raise TypeError(msg)
 

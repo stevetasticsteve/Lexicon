@@ -9,46 +9,6 @@ from application_code import read_data
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
 
-    def test_check_config(self):
-        settings = {
-            'language': 1,
-            'spreadsheet_name': 'Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
-            'sheet_name': 'Sheet1',  # Name of the sheet containing data
-            'target_folder': 'local_output',  # the folder the web page should be created in,
-            'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
-            'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-            'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
-        }
-
-        with self.assertRaises(TypeError) as error:
-            read_data.check_settings(config_file=settings)
-        self.assertIn('The language is not a string', str(error.exception))
-
-        settings['language'] = 'Test'
-        settings['target_folder'] = 'Fake directory'
-        with self.assertRaises(FileNotFoundError)as error:
-            read_data.check_settings(config_file=settings)
-        self.assertIn('The following file doesn\'t exist: {t}'.format(t=settings['target_folder']),
-                      str(error.exception), 'Error message wrong')
-
-    def test_letter_to_number(self):
-        # valid input
-        self.assertEqual(read_data.letter_to_number('A'), 0, 'Letter to number giving wrong output')
-        self.assertEqual(read_data.letter_to_number('B'), 1, 'Letter to number giving wrong output')
-        self.assertEqual(read_data.letter_to_number('a'), 0, 'Letter to number giving wrong output')
-        self.assertEqual(read_data.letter_to_number('Z'), 25, 'Letter to number giving wrong output')
-        # invalid input
-        with self.assertRaises(AssertionError):
-            read_data.letter_to_number(1)
-        with self.assertRaises(AssertionError):
-            read_data.letter_to_number('AA')
-        with self.assertRaises(AssertionError):
-            read_data.letter_to_number('1')
-        with self.assertRaises(AssertionError):
-            read_data.letter_to_number('')
-        with self.assertRaises(AssertionError):
-            read_data.letter_to_number(' ')
-
     def test_read_lexicon_return_type(self):
         # test also proves that .ods is being read
         data = read_data.read_lexicon(config_file=tests.fixtures)
@@ -213,3 +173,47 @@ class ReadLexiconTests(unittest.TestCase):
                     self.assertEqual(type(v), datetime.date, 'value for {k} is not a datetime'.format(k=k))
                 else:
                     self.assertEqual(type(v), str, 'value for {k} is not a string'.format(k=k))
+
+
+class SupportingFunctionsTests(unittest.TestCase):
+    """Tests the functions supporting read_lexicon()"""
+
+    def test_check_config(self):
+        settings = {
+            'language': 1,
+            'spreadsheet_name': 'Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
+            'sheet_name': 'Sheet1',  # Name of the sheet containing data
+            'target_folder': 'local_output',  # the folder the web page should be created in,
+            'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
+            'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
+            'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
+        }
+
+        with self.assertRaises(TypeError) as error:
+            read_data.check_settings(config_file=settings)
+        self.assertIn('The language is not a string', str(error.exception))
+
+        settings['language'] = 'Test'
+        settings['target_folder'] = 'Fake directory'
+        with self.assertRaises(FileNotFoundError)as error:
+            read_data.check_settings(config_file=settings)
+        self.assertIn('The following file doesn\'t exist: {t}'.format(t=settings['target_folder']),
+                      str(error.exception), 'Error message wrong')
+
+    def test_letter_to_number(self):
+        # valid input
+        self.assertEqual(read_data.letter_to_number('A'), 0, 'Letter to number giving wrong output')
+        self.assertEqual(read_data.letter_to_number('B'), 1, 'Letter to number giving wrong output')
+        self.assertEqual(read_data.letter_to_number('a'), 0, 'Letter to number giving wrong output')
+        self.assertEqual(read_data.letter_to_number('Z'), 25, 'Letter to number giving wrong output')
+        # invalid input
+        with self.assertRaises(AssertionError):
+            read_data.letter_to_number(1)
+        with self.assertRaises(AssertionError):
+            read_data.letter_to_number('AA')
+        with self.assertRaises(AssertionError):
+            read_data.letter_to_number('1')
+        with self.assertRaises(AssertionError):
+            read_data.letter_to_number('')
+        with self.assertRaises(AssertionError):
+            read_data.letter_to_number(' ')

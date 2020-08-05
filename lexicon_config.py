@@ -4,7 +4,7 @@ settings = {
     'sheet_name': 'Sheet1',  # Name of the sheet containing data
     'target_folder': 'local_output',  # the folder the web page should be created in,
     'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
-    'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
+    # 'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
     'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
     # the path to the stylesheet folder
 }
