@@ -1,6 +1,8 @@
 import copy
 import datetime
 
+from application_code.process_data import LexiconEntry
+
 settings = {
     'language': 'Test',
     'spreadsheet_name': 'tests/test_data/good_data.ods',
@@ -146,3 +148,7 @@ good_processed_data = [{'ant': '',
 
 repeated_sense_processed_data = copy.deepcopy(good_processed_data)
 repeated_sense_processed_data[3]['sense'] = 1
+
+jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('test_word_1', {})]
+
+

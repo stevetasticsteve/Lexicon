@@ -115,12 +115,13 @@ class DataProcessingTests(unittest.TestCase):
             self.assertIn('Function called incorrectly', str(error.exception))
 
     def test_check_lexicon_entries(self):
-        """Function should raise an assert error if argument isn't in the form of the return value of the
+        """Function should raise a Type error if argument isn't in the form of the return value of the
         create_lexicon_entries() function"""
-        self.fail()
-
-    def test_get_word_beginnings_all_initial_words_present(self):
-        self.fail('Finish the test')
+        with self.assertRaises(TypeError):
+            process_data.check_lexicon_entries('String', 'test')
+        process_data.check_lexicon_entries([process_data.LexiconEntry('Test', {})], 'test')
 
     def test_get_word_beginnings_returns_in_alphabetical_order(self):
-        self.fail('Finish the test')
+        data = process_data.get_word_beginnings(fixtures.jumbled_lexicon_entries)
+
+        self.assertEqual(['t', 'x'], data)

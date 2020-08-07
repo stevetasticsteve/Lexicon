@@ -97,22 +97,25 @@ def check_processed_data(processed_data, function):
 def check_lexicon_entries(lexicon_entries, function):
     """A quick assert that the data model comes from create_lexicon_entries, a list of tuples"""
     try:
-        assert len(lexicon_entries) > 0, 'No data to work on!'
-        assert type(lexicon_entries) == list, \
-            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(
-                function=function)
-        assert type(lexicon_entries[0]) == tuple, \
-            'wrong data type given to {function} - needs the result of create_lexicon_entries()'.format(
-                function=function)
-    except AssertionError:
-        logger.exception('Function called incorrectly')
-        raise AssertionError
+        if type(lexicon_entries) != list:
+            raise TypeError
+        for object in lexicon_entries:
+            if not isinstance(object, LexiconEntry):
+                raise TypeError
+    except TypeError:
+        logger.exception('{f} called incorrectly'.format(f=function))
+        raise TypeError
+
 
 
 class LexiconEntry:
     def __init__(self, headword, entry):
         self.headword = headword
-        self.entry = entry
+        if type(entry) != dict:
+            logger.error('Lexicon entry initialised with wrong type')
+            raise TypeError
+        else:
+            self.entry = [entry]
 
 
 def create_lexicon_entries(processed_data):
@@ -146,7 +149,7 @@ def create_lexicon_entries(processed_data):
             lexicon_entries[lexeme_index].entry.append(sense_data)
         else:  # this is a new headword
             # lexeme = (headword, [sense_data])
-            lexeme = LexiconEntry(headword, [sense_data])
+            lexeme = LexiconEntry(headword, sense_data)
             lexicon_entries.append(lexeme)
             lexeme_index += 1
         last_id = entry['id']
@@ -172,8 +175,8 @@ def create_reverse_lexicon_entries(processed_data):
 
 
 def get_word_beginnings(lexicon_entries):
-    """Takes the tuple (headwords, entry html) and returns an alphabetically sorted set of the first letters of all
+    """Takes a list of LexiconEntry objects and returns an alphabetically sorted set of the first letters of all
      headwords"""
     check_lexicon_entries(lexicon_entries, 'get_word_beginnings()')
-    letters = [x[0][0] for x in lexicon_entries]
+    letters = [x.headword[0] for x in lexicon_entries]
     return sorted(set(letters))
