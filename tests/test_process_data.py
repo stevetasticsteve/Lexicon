@@ -65,20 +65,30 @@ class DataProcessingTests(unittest.TestCase):
                            'tok_pisin': 'papa'}], data[0].entry, 'Entry wrong')
         self.assertEqual(3, len(data), 'Number of headwords wrong')
 
+
+    def test_create_lexicon_entries_orthography_trumps_phonetics(self):
+        """Function should use orthographic text for headword when available"""
+        data = process_data.create_lexicon_entries(fixtures.good_processed_data)
+
+        self.assertEqual('undum__', data[2].headword)
+
     def test_create_reverse_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, dict)"""
-        self.fail('Finish the test')
+        data = process_data.create_reverse_lexicon_entries(fixtures.good_processed_data)
 
-    def test_create_reverse_lexicon_entries_return_alphabetical_order(self):
-        """Function should sort alphabetically based on tuple[0]"""
-        self.fail('Finish the test')
+        self.assertIsInstance(data, list, 'List not returned')
+        self.assertIsInstance(data[0], process_data.LexiconEntry, 'List doesn\'t contain entry objects')
+
 
     def test_create_reverse_lexicon_entries_return_contents(self):
-        self.fail('Finish the test')
+        data = process_data.create_reverse_lexicon_entries(fixtures.good_processed_data)
 
-    def test_create_reverse_lexicon_entries_orthography_trumps_phonetics(self):
-        """Function should use orthographic text for headword when available"""
-        self.fail('Finish the test')
+        self.assertEqual(4, len(data))
+        self.assertEqual('child', data[0].headword)
+        print(data[0].entry)
+        self.assertEqual('pikinini', data[0].entry[0]['tpi'])
+        self.assertEqual('dad', data[1].headword)
+
 
     def test_sort_by_id(self):
         data = process_data.sort_by_id(fixtures.good_processed_data)

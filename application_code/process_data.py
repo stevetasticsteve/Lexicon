@@ -107,7 +107,6 @@ def check_lexicon_entries(lexicon_entries, function):
         raise TypeError
 
 
-
 class LexiconEntry:
     def __init__(self, headword, entry):
         self.headword = headword
@@ -116,6 +115,12 @@ class LexiconEntry:
             raise TypeError
         else:
             self.entry = [entry]
+
+    def __str__(self):
+        return 'Lexicon entry: {h}'.format(h=self.headword)
+
+    def __repr__(self):
+        return 'Lexicon entry: {h}- {n} senses'.format(h=self.headword, n=len(self.entry))
 
 
 def create_lexicon_entries(processed_data):
@@ -170,7 +175,7 @@ def create_reverse_lexicon_entries(processed_data):
             item['headword'] = item['orth']
         else:
             item['headword'] = item['phon']
-        lexicon_entries.append((item['eng'].lower(), item))
+        lexicon_entries.append(LexiconEntry(item['eng'].lower(), item))
     return lexicon_entries
 
 
@@ -178,5 +183,5 @@ def get_word_beginnings(lexicon_entries):
     """Takes a list of LexiconEntry objects and returns an alphabetically sorted set of the first letters of all
      headwords"""
     check_lexicon_entries(lexicon_entries, 'get_word_beginnings()')
-    letters = [x.headword[0] for x in lexicon_entries]
+    letters = [x.headword[0].lower() for x in lexicon_entries]
     return sorted(set(letters))

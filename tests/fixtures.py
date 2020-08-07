@@ -82,7 +82,7 @@ good_processed_data = [{'ant': '',
                         'ex': 'ɛŋ undum',
                         'id': 1,
                         'link': '',
-                        'orth': '',
+                        'orth': 'undum__',
                         'phon': 'undum',
                         'pos': 'n',
                         'sense': 1,
@@ -149,6 +149,6 @@ good_processed_data = [{'ant': '',
 repeated_sense_processed_data = copy.deepcopy(good_processed_data)
 repeated_sense_processed_data[3]['sense'] = 1
 
-jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('test_word_1', {})]
+jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]
 
 
