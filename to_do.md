@@ -31,6 +31,12 @@ viewed even if user can't launch Python (helping first time users)
 try/except is more pythonic than asserts so I'll use them
 - Flake8 has identified read_lexicon() as too complex
 
+## Implementation questions
+- Are the check_processed_data() and check_lexicon_entries() functions necessary?
+They assert that the right kind of data is being given to a function, but
+is it better to drop them? Functions are unlikely to be called interactively as
+an API call - wouldn't it save effort to drop and not maintain these things?
+
 ## Testing
 - Write the tests
 

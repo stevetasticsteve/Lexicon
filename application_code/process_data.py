@@ -5,7 +5,7 @@ logger = logging.getLogger('LexiconLog')
 
 
 def validate_data(processed_data):
-    """Check the spreadsheet for incorrectly entered data"""
+    """Check the spreadsheet for incorrectly entered data". Returns None or an error tuple"""
     check_processed_data(processed_data, 'validate_data()')
 
     errors = []
@@ -13,6 +13,12 @@ def validate_data(processed_data):
     if not errors[0]:
         errors = None
     return errors
+
+
+class DataValidationError:
+    def __init__(self, error_type, error_data):
+        self.error_type = error_type
+        self.error_data = error_data
 
 
 def validate_find_missing_senses(processed_data):
@@ -37,8 +43,7 @@ def validate_find_missing_senses(processed_data):
 
     if repeated_senses:
         logger.info('   -Data validation found repeated senses')
-        error = ('Sense number repeated', repeated_senses)
-        return error
+        return DataValidationError('Sense number repeated', repeated_senses)
     else:
         return None
 

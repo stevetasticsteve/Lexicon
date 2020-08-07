@@ -1,3 +1,4 @@
+import copy
 import datetime
 
 settings = {
@@ -142,3 +143,6 @@ good_processed_data = [{'ant': '',
                         'trans': '',
                         'tag': ''}
                        ]
+
+repeated_sense_processed_data = copy.deepcopy(good_processed_data)
+repeated_sense_processed_data[3]['sense'] = 1

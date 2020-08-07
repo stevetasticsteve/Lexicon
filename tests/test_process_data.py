@@ -9,7 +9,12 @@ class ValidationTests(unittest.TestCase):
 
     def test_validate_data_return_type(self):
         """Function should return a list of error tuples ('error', 'data') or None"""
-        self.fail('Finish the test')
+        rtn = process_data.validate_data(fixtures.good_processed_data)
+        self.assertEqual(None, rtn, 'Good return type not None')
+
+        rtn = process_data.validate_data(fixtures.repeated_sense_processed_data)
+        self.assertIsInstance(rtn, list, 'Return type not a list')
+        self.assertIsInstance(rtn[0], process_data.DataValidationError, 'Return type not an error object')
 
     def test_validate_data_incorrect_data_input_response(self):
         """Function should raise an assertion error if processed data isn't provided"""
@@ -17,7 +22,10 @@ class ValidationTests(unittest.TestCase):
 
     def test_validate_find_missing_senses_return_type(self):
         """Function should return list of tuples ('Sense number repeated', 'data') or None"""
-        self.fail('Finish the test')
+        rtn = process_data.validate_find_missing_senses(fixtures.good_processed_data)
+        self.assertEqual(None, rtn, 'Good return type not None')
+        rtn = process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data)
+        self.assertIsInstance(rtn, process_data.DataValidationError, 'Return type not an error object')
 
     def test_validate_find_missing_senses_return_contents(self):
         self.fail('Finish the test')
