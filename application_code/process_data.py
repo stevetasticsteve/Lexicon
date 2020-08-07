@@ -13,8 +13,7 @@ def validate_data(processed_data):
     to call all validation checks and perform an assertion that good data is provided."""
     check_processed_data(processed_data, 'validate_data()')
 
-    errors = []
-    errors.append(validate_find_missing_senses(processed_data))
+    errors = [validate_find_missing_senses(processed_data)]
     if not errors[0]:
         errors = None
     return errors
@@ -34,7 +33,7 @@ def validate_find_missing_senses(processed_data):
     words = [item['phon'] for item in processed_data]
     count = Counter(words)
     count = count.items()  # convert to list of tuples (phonetics, number of times counted)
-    repeated_phonetics = [item for item in count if item[1] > 1]  # filter out single occurences
+    repeated_phonetics = [item for item in count if item[1] > 1]  # filter out single occurrences
 
     repeated_senses = []
     for entry in repeated_phonetics:
@@ -61,14 +60,6 @@ def sort_by_id(processed_data):
 
 def sort_by_tag(processed_data):
     return sorted(processed_data, key=lambda data: data['tag'].lower())
-
-
-# def sort_phonetically(processed_data):
-#     return sorted(processed_data, key=lambda data: data['phon'])
-#
-#
-# def sort_orthographically(processed_data):
-#     return sorted(processed_data, key=lambda data: data['orth'])
 
 
 def sort_by_sense(processed_data):
@@ -110,11 +101,19 @@ def check_lexicon_entries(lexicon_entries, function):
 class LexiconEntry:
     def __init__(self, headword, entry):
         self.headword = headword
-        if type(entry) != dict:
+        try:
+            # must be either a dictionary or list of dictionaries
+            if type(entry) == dict:
+                self.entry = [entry]
+            elif type(entry) == list:
+                if entry[0] != dict:
+                    raise TypeError
+            else:
+                raise TypeError
+
+        except TypeError:
             logger.error('Lexicon entry initialised with wrong type')
             raise TypeError
-        else:
-            self.entry = [entry]
 
     def __str__(self):
         return 'Lexicon entry: {h}'.format(h=self.headword)
@@ -165,14 +164,16 @@ def create_lexicon_entries(processed_data):
 def create_reverse_lexicon_entries(processed_data):
     """Adjust the processed data so it's suitable to be displayed in an English to Lang dict"""
     check_processed_data(processed_data, 'create_reverse_lexicon_entries()')
-
+    # sort in English alphabetical order
     processed_data = sorted(processed_data, key=lambda d: d['eng'].lower())
     lexicon_entries = []
     for item in processed_data:
+        # set the headword
         if item['orth']:
             item['headword'] = item['orth']
         else:
             item['headword'] = item['phon']
+            # create the LexiconEntry object
         lexicon_entries.append(LexiconEntry(item['eng'].lower(), item))
     return lexicon_entries
 

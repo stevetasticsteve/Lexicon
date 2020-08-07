@@ -53,7 +53,8 @@ class DataProcessingTests(unittest.TestCase):
 
     def test_create_lexicon_entries_return_contents(self):
         data = process_data.create_lexicon_entries(fixtures.good_processed_data)
-
+        # number of headwords should be less than data rows
+        self.assertLess(len(data), len(fixtures.good_processed_data))
         self.assertEqual('inda', data[0].headword, 'Headword wrong')
         self.assertEqual([{'definition': 'A large person',
                            'english': 'dad',
@@ -64,7 +65,9 @@ class DataProcessingTests(unittest.TestCase):
                            'sense': 1,
                            'tok_pisin': 'papa'}], data[0].entry, 'Entry wrong')
         self.assertEqual(3, len(data), 'Number of headwords wrong')
-
+        self.assertEqual(1, len(data[0].entry))
+        # check the entry with multiple senses has an entry of len 2
+        self.assertEqual(2, len(data[1].entry))
 
     def test_create_lexicon_entries_orthography_trumps_phonetics(self):
         """Function should use orthographic text for headword when available"""
@@ -79,16 +82,13 @@ class DataProcessingTests(unittest.TestCase):
         self.assertIsInstance(data, list, 'List not returned')
         self.assertIsInstance(data[0], process_data.LexiconEntry, 'List doesn\'t contain entry objects')
 
-
     def test_create_reverse_lexicon_entries_return_contents(self):
         data = process_data.create_reverse_lexicon_entries(fixtures.good_processed_data)
 
         self.assertEqual(4, len(data))
         self.assertEqual('child', data[0].headword)
-        print(data[0].entry)
         self.assertEqual('pikinini', data[0].entry[0]['tpi'])
         self.assertEqual('dad', data[1].headword)
-
 
     def test_sort_by_id(self):
         data = process_data.sort_by_id(fixtures.good_processed_data)
