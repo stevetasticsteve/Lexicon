@@ -1,3 +1,7 @@
+# This file contains functions for the 2nd layer of the application - processing the data for output. This involves
+# validating the raw data to identify data entry mistakes and collating the data under headwords (so for instance.
+# all the different meanings of 'running' would go under a single dictionary entry rather than several.
+
 import logging
 from collections import Counter
 
@@ -5,7 +9,8 @@ logger = logging.getLogger('LexiconLog')
 
 
 def validate_data(processed_data):
-    """Check the spreadsheet for incorrectly entered data". Returns None or an error tuple"""
+    """Check the spreadsheet for incorrectly entered data". Returns None or an error tuple. A master function
+    to call all validation checks and perform an assertion that good data is provided."""
     check_processed_data(processed_data, 'validate_data()')
 
     errors = []
@@ -16,6 +21,8 @@ def validate_data(processed_data):
 
 
 class DataValidationError:
+    """A simple object describing and detailing validation errors"""
+
     def __init__(self, error_type, error_data):
         self.error_type = error_type
         self.error_data = error_data

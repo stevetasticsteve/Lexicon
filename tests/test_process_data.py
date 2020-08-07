@@ -18,7 +18,8 @@ class ValidationTests(unittest.TestCase):
 
     def test_validate_data_incorrect_data_input_response(self):
         """Function should raise an assertion error if processed data isn't provided"""
-        self.fail('Finish the test')
+        with self.assertRaises(AssertionError):
+            process_data.validate_data('A string')
 
     def test_validate_find_missing_senses_return_type(self):
         """Function should return list of tuples ('Sense number repeated', 'data') or None"""
@@ -26,9 +27,13 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(None, rtn, 'Good return type not None')
         rtn = process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data)
         self.assertIsInstance(rtn, process_data.DataValidationError, 'Return type not an error object')
+        self.assertIsInstance(rtn.error_type, str, 'Type not a string')
+        self.assertIsInstance(rtn.error_data, list, 'Data not a list')
 
     def test_validate_find_missing_senses_return_contents(self):
-        self.fail('Finish the test')
+        rtn = process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data)
+        self.assertEqual('Sense number repeated', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['sinasim use same sense  number multiple times.'], rtn.error_data, 'Incorrect error data')
 
 
 class DataProcessingTests(unittest.TestCase):
@@ -43,7 +48,11 @@ class DataProcessingTests(unittest.TestCase):
         self.assertEqual(list, type(data[0][1]))
 
     def test_create_lexicon_entries_return_alphabetical_order(self):
-        self.fail('Finish the test')
+        data = process_data.create_lexicon_entries(fixtures.good_processed_data)
+        headwords = [h[0].lower() for h in data]
+
+        self.assertGreater(ord(headwords[1][0]), ord(headwords[0][0]))
+        self.assertGreater(ord(headwords[2][0]), ord(headwords[1][0]))
 
     def test_create_lexicon_entries_return_contents(self):
         self.fail('Finish the test')
