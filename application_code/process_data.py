@@ -99,8 +99,8 @@ def check_lexicon_entries(lexicon_entries, function):
     try:
         if type(lexicon_entries) != list:
             raise TypeError
-        for object in lexicon_entries:
-            if not isinstance(object, LexiconEntry):
+        for o in lexicon_entries:
+            if not isinstance(o, LexiconEntry):
                 raise TypeError
     except TypeError:
         logger.exception('{f} called incorrectly'.format(f=function))
