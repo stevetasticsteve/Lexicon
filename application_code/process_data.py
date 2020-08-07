@@ -109,6 +109,12 @@ def check_lexicon_entries(lexicon_entries, function):
         raise AssertionError
 
 
+class LexiconEntry:
+    def __init__(self, headword, entry):
+        self.headword = headword
+        self.entry = entry
+
+
 def create_lexicon_entries(processed_data):
     """Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
     Returns a list of tuples (headword, list of sense dictionary) sorted alphabetically by headword"""
@@ -137,14 +143,16 @@ def create_lexicon_entries(processed_data):
         }
 
         if last_id == entry['id']:  # this is a sense of the previous headword
-            lexicon_entries[lexeme_index][1].append(sense_data)
+            lexicon_entries[lexeme_index].entry.append(sense_data)
         else:  # this is a new headword
-            lexeme = (headword, [sense_data])
+            # lexeme = (headword, [sense_data])
+            lexeme = LexiconEntry(headword, [sense_data])
             lexicon_entries.append(lexeme)
             lexeme_index += 1
         last_id = entry['id']
     # sort alphabetically
-    lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_tuple: lexeme_tuple[0])
+    # lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_tuple: lexeme_tuple[0])
+    lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_object: lexeme_object.headword)
     return lexicon_entries
 
 

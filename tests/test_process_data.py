@@ -42,20 +42,28 @@ class DataProcessingTests(unittest.TestCase):
     def test_create_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, list)"""
         data = process_data.create_lexicon_entries(fixtures.good_processed_data)
-        self.assertEqual(list, type(data))
-        self.assertEqual(tuple, type(data[0]))
-        self.assertEqual(str, type(data[0][0]))
-        self.assertEqual(list, type(data[0][1]))
+        self.assertIsInstance(data, list)
+        self.assertIsInstance(data[0], process_data.LexiconEntry)
 
     def test_create_lexicon_entries_return_alphabetical_order(self):
         data = process_data.create_lexicon_entries(fixtures.good_processed_data)
-        headwords = [h[0].lower() for h in data]
 
-        self.assertGreater(ord(headwords[1][0]), ord(headwords[0][0]))
-        self.assertGreater(ord(headwords[2][0]), ord(headwords[1][0]))
+        self.assertGreater(ord(data[1].headword[0]), ord(data[0].headword[0]))
+        self.assertGreater(ord(data[2].headword[0]), ord(data[1].headword[0]))
 
     def test_create_lexicon_entries_return_contents(self):
-        self.fail('Finish the test')
+        data = process_data.create_lexicon_entries(fixtures.good_processed_data)
+
+        self.assertEqual('inda', data[0].headword, 'Headword wrong')
+        self.assertEqual([{'definition': 'A large person',
+                           'english': 'dad',
+                           'example': 'ɛŋ inda',
+                           'example_translation': 'my dad',
+                           'phonetics': 'inda',
+                           'pos': 'n',
+                           'sense': 1,
+                           'tok_pisin': 'papa'}], data[0].entry, 'Entry wrong')
+        self.assertEqual(3, len(data), 'Number of headwords wrong')
 
     def test_create_reverse_lexicon_entries_return_type(self):
         """Function should return a list of tuples (str, dict)"""
@@ -109,7 +117,7 @@ class DataProcessingTests(unittest.TestCase):
     def test_check_lexicon_entries(self):
         """Function should raise an assert error if argument isn't in the form of the return value of the
         create_lexicon_entries() function"""
-        self.fail('Finish the test')
+        self.fail()
 
     def test_get_word_beginnings_all_initial_words_present(self):
         self.fail('Finish the test')
