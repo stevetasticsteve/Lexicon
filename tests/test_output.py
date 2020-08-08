@@ -1,4 +1,5 @@
 import datetime
+import os
 import unittest
 from unittest.mock import patch
 
@@ -61,11 +62,26 @@ class HTMLGenerationTests(unittest.TestCase):
 
 
 class OtherFileGenerationTests(unittest.TestCase):
+    def setUp(self):
+        parent_folder = (os.path.abspath(os.path.join(__file__, '..')))
+        self.path = os.path.join(parent_folder, 'test_output', '{language}_phonology_assistant.db'.format(
+            language=fixtures.settings['language']))
+
+    def tearDown(self):
+        if os.path.exists(self.path):
+            os.remove(self.path)
+
     def test_create_phonemic_assistant_new_file_exists(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=False)
+        self.assertTrue(os.path.exists(self.path))
+        with patch('lexicon_config.settings', fixtures.settings):
+            with self.assertRaises(AssertionError) as error:
+                output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=True)
+            self.assertIn('No checked data to work with!', str(error.exception))
 
     def test_create_phonemic_assistant_contents(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=False)
 
-    def test_create_phonemic_assistant_check_false(self):
-        self.fail('Finish the test')
+        self.fail()
