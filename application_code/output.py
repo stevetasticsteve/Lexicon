@@ -166,7 +166,7 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
     else:
         logger.info('   - writing unchecked words to phonology assistant file')
 
-    pa_db = '﻿\_sh v3.0  400  PhoneticData\n'
+    pa_db = '\\_sh v3.0  400  PhoneticData\n'
 
     for i, item in enumerate(processed_data, 1):
         item['ref'] = '{:03d}'.format(i)  # format ref as 001, 002 etc

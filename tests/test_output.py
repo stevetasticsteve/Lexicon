@@ -10,11 +10,24 @@ from tests import fixtures
 class HTMLGenerationTests(unittest.TestCase):
     """Tests the generation of HTML pages"""
 
+    def setUp(self):
+        parent_folder = (os.path.abspath(os.path.join(__file__, '..')))
+        self.test_folder = os.path.join(parent_folder, 'test_output')
+        self.lex_page = os.path.join(self.test_folder, 'main_dict.html')
+        self.reverse_page = os.path.join(self.test_folder, 'reverse_dict.html')
+        self.check_page = os.path.join(self.test_folder, 'check_list.html')
+
+    def tearDown(self):
+        for file in os.listdir(self.test_folder):
+            os.remove(os.path.join(self.test_folder, file))
+
     def test_generate_html(self):
         self.fail('Finish the test')
 
-    def test_generate_lexicon_page_exits(self):
-        self.fail('Finish the test')
+    def test_generate_lexicon_page_exists(self):
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_lexicon_page(fixtures.good_processed_data, None)
+        self.assertTrue(os.path.exists(self.lex_page))
 
     def test_generate_lexicon_page_good_html(self):
         self.fail('Finish the test')
@@ -28,8 +41,10 @@ class HTMLGenerationTests(unittest.TestCase):
     def test_generate_error_page_without_errors(self):
         self.fail('Finish the test')
 
-    def test_generate_Eng_page_exits(self):
-        self.fail('Finish the test')
+    def test_generate_Eng_page_exists(self):
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_eng_page(fixtures.good_processed_data)
+        self.assertTrue(os.path.exists(self.reverse_page))
 
     def test_generate_Eng_page_good_html(self):
         self.fail('Finish the test')
@@ -37,8 +52,10 @@ class HTMLGenerationTests(unittest.TestCase):
     def test_generate_Eng_page_contents(self):
         self.fail('Finish the test')
 
-    def test_generate_check_page_exits(self):
-        self.fail('Finish the test')
+    def test_generate_check_page_exists(self):
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_check_page(fixtures.good_processed_data)
+        self.assertTrue(os.path.exists(self.check_page))
 
     def test_generate_check_page_good_html(self):
         self.fail('Finish the test')
@@ -84,4 +101,32 @@ class OtherFileGenerationTests(unittest.TestCase):
         with patch('lexicon_config.settings', fixtures.settings):
             output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=False)
 
-        self.fail()
+        with open(self.path, 'r') as file:
+            expected_contents = """\\_sh v3.0  400  PhoneticData
+
+\\ref 001
+\ge child
+\gn pikinini
+\ph undum
+\ps n
+
+\\ref 002
+\ge dad
+\gn papa
+\ph inda
+\ps n
+
+\\ref 003
+\ge rat
+\gn rat
+\ph sinasim
+\ps n
+
+\\ref 004
+\ge rat
+\gn rat
+\ph sinasim
+\ps n
+
+"""
+            self.assertEqual(expected_contents, file.read())
