@@ -11,7 +11,7 @@ class HTMLGenerationTests(unittest.TestCase):
     """Tests the generation of HTML pages"""
 
     def setUp(self):
-        parent_folder = (os.path.abspath(os.path.join(__file__, '..')))
+        parent_folder = os.path.dirname(__file__)
         self.test_folder = os.path.join(parent_folder, 'test_output')
         self.lex_page = os.path.join(self.test_folder, 'main_dict.html')
         self.reverse_page = os.path.join(self.test_folder, 'reverse_dict.html')
