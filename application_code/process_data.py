@@ -44,7 +44,7 @@ def validate_find_missing_senses(processed_data):
         entry_sense_count = entry_sense_count.items()
         repeated_sense = [item for item in entry_sense_count if item[1] > 1]
         if repeated_sense:
-            error_msg = '{phonetics} use same sense  number multiple times.'.format(phonetics=phonetics)
+            error_msg = '{phonetics} uses same sense  number multiple times.'.format(phonetics=phonetics)
             repeated_senses.append(error_msg)
 
     if repeated_senses:

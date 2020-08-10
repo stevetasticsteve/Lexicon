@@ -16,6 +16,7 @@ class HTMLGenerationTests(unittest.TestCase):
         self.lex_page = os.path.join(self.test_folder, 'main_dict.html')
         self.reverse_page = os.path.join(self.test_folder, 'reverse_dict.html')
         self.check_page = os.path.join(self.test_folder, 'check_list.html')
+        self.error_page = os.path.join(self.test_folder, 'errors.html')
 
     def tearDown(self):
         for file in os.listdir(self.test_folder):
@@ -46,10 +47,25 @@ class HTMLGenerationTests(unittest.TestCase):
                 self.assertIn('<ul><a href="#{d}">{d}</a></ul>'.format(d=letter), file, 'letter beginnings missing')
 
     def test_generate_error_page_with_errors(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_html(fixtures.repeated_sense_processed_data)
+        self.assertTrue(os.path.exists(self.error_page))
+        with open(self.error_page, 'r') as file:
+            file = file.read()
+            self.assertIn('<h3>Sense number repeated</h3>', file, 'Error heading missing')
+            self.assertIn('sinasim use same sense  number multiple times.', file, 'Error heading missing')
+
+        with open(self.lex_page, 'r') as file:
+            file = file.read()
+        self.assertIn('Errors in the data have been identified', file, 'Error message should be showing')
 
     def test_generate_error_page_without_errors(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_html(fixtures.good_processed_data)
+        self.assertFalse(os.path.exists(self.error_page))
+        with open(self.lex_page, 'r') as file:
+            file = file.read()
+        self.assertNotIn('Errors in the data have been identified', file, 'Error message shouldn\'t be showing')
 
     def test_generate_Eng_page_exists(self):
         with patch('lexicon_config.settings', fixtures.settings):

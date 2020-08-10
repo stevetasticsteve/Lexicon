@@ -76,8 +76,9 @@ def generate_error_page(errors):
     template = env.get_template('error_template.html')
 
     context = generate_context(title='Data errors', header='errors')
+    html = os.path.join(lexicon_config.settings['target_folder'], 'errors.html')
 
-    with open('errors.html', 'w') as file:
+    with open(html, 'w') as file:
         print(template.render(context=context, errors=errors), file=file)
 
 
