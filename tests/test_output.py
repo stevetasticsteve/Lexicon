@@ -29,11 +29,21 @@ class HTMLGenerationTests(unittest.TestCase):
             output.generate_lexicon_page(fixtures.good_processed_data, None)
         self.assertTrue(os.path.exists(self.lex_page))
 
-    def test_generate_lexicon_page_good_html(self):
-        self.fail('Finish the test')
-
     def test_generate_lexicon_page_contents(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_lexicon_page(fixtures.good_processed_data, None)
+        with open(self.lex_page, 'r') as file:
+            file = file.read()
+            # check fixture data in the html
+            for word in fixtures.good_processed_data:
+                self.assertIn(word['phon'], file)
+                self.assertIn(word['eng'], file)
+                self.assertIn(word['tpi'], file)
+            self.assertIn(datetime.datetime.now().strftime('%A %d %B %Y'), file, 'Date missing')
+
+            expected_word_beginnings = ('u', 'i', 's')  # from fixture
+            for letter in expected_word_beginnings:
+                self.assertIn('<ul><a href="#{d}">{d}</a></ul>'.format(d=letter), file, 'letter beginnings missing')
 
     def test_generate_error_page_with_errors(self):
         self.fail('Finish the test')
@@ -45,9 +55,6 @@ class HTMLGenerationTests(unittest.TestCase):
         with patch('lexicon_config.settings', fixtures.settings):
             output.generate_eng_page(fixtures.good_processed_data)
         self.assertTrue(os.path.exists(self.reverse_page))
-
-    def test_generate_Eng_page_good_html(self):
-        self.fail('Finish the test')
 
     def test_generate_Eng_page_contents(self):
         self.fail('Finish the test')
