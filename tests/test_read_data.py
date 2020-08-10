@@ -184,9 +184,9 @@ class SupportingFunctionsTests(unittest.TestCase):
             'spreadsheet_name': 'Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
             'sheet_name': 'Sheet1',  # Name of the sheet containing data
             'target_folder': 'local_output',  # the folder the web page should be created in,
-            'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
+            'log_file': 'tests/test_log',  # path for the log file
             'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-            'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
+            'stylesheets': 'stylesheets'
         }
 
         with self.assertRaises(TypeError) as error:
