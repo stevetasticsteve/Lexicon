@@ -83,16 +83,8 @@ class HTMLGenerationTests(unittest.TestCase):
 
         with open(self.reverse_page, 'r') as file:
             file = file.read()
-            self.assertIn(
-        """    <tr>
-        <td>1</td>
-        <td>undum</td>
-        <td></td>
-        <td>"child"</td>
-        <td>"pikinini"</td>
-        <td>n</td>
-        <td></td>
-    </tr>""", file, 'Check table missing')
+            self.assertIn('<h3>dad</h3>', file, 'Entry missing')
+            self.assertIn('<h3>rat</h3>', file, 'Entry missing')
 
     def test_generate_check_page_exists(self):
         with patch('lexicon_config.settings', fixtures.settings):
