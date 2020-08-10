@@ -20,6 +20,8 @@ class HTMLGenerationTests(unittest.TestCase):
 
     def tearDown(self):
         for file in os.listdir(self.test_folder):
+            if file == 'blank_file':
+                continue
             os.remove(os.path.join(self.test_folder, file))
 
     def test_generate_html(self):
