@@ -23,7 +23,12 @@ class HTMLGenerationTests(unittest.TestCase):
             os.remove(os.path.join(self.test_folder, file))
 
     def test_generate_html(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_html(fixtures.good_processed_data)
+
+        files = (self.lex_page, self.reverse_page, self.check_page) #help, errors
+        for file in files:
+            self.assertTrue(os.path.exists(file))
 
     def test_generate_lexicon_page_exists(self):
         with patch('lexicon_config.settings', fixtures.settings):
@@ -53,7 +58,7 @@ class HTMLGenerationTests(unittest.TestCase):
         with open(self.error_page, 'r') as file:
             file = file.read()
             self.assertIn('<h3>Sense number repeated</h3>', file, 'Error heading missing')
-            self.assertIn('sinasim use same sense  number multiple times.', file, 'Error heading missing')
+            self.assertIn('sinasim uses same sense  number multiple times.', file, 'Error detail missing')
 
         with open(self.lex_page, 'r') as file:
             file = file.read()
@@ -73,18 +78,35 @@ class HTMLGenerationTests(unittest.TestCase):
         self.assertTrue(os.path.exists(self.reverse_page))
 
     def test_generate_Eng_page_contents(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_eng_page(fixtures.good_processed_data)
+
+        with open(self.reverse_page, 'r') as file:
+            file = file.read()
+            self.assertIn(
+        """    <tr>
+        <td>1</td>
+        <td>undum</td>
+        <td></td>
+        <td>"child"</td>
+        <td>"pikinini"</td>
+        <td>n</td>
+        <td></td>
+    </tr>""", file, 'Check table missing')
 
     def test_generate_check_page_exists(self):
         with patch('lexicon_config.settings', fixtures.settings):
             output.generate_check_page(fixtures.good_processed_data)
         self.assertTrue(os.path.exists(self.check_page))
 
-    def test_generate_check_page_good_html(self):
-        self.fail('Finish the test')
-
     def test_generate_check_page_contents(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_check_page(fixtures.good_processed_data)
+
+        with open(self.check_page, 'r') as file:
+            file = file.read()
+            self.assertIn(
+                '<td>sinasim</td>', file, 'Check table missing')
 
     def test_assert_templates_exist(self):
         self.assertTrue(output.assert_templates_exist())
