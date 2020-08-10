@@ -26,7 +26,7 @@ class HTMLGenerationTests(unittest.TestCase):
         with patch('lexicon_config.settings', fixtures.settings):
             output.generate_html(fixtures.good_processed_data)
 
-        files = (self.lex_page, self.reverse_page, self.check_page) #help, errors
+        files = (self.lex_page, self.reverse_page, self.check_page)  # help, errors
         for file in files:
             self.assertTrue(os.path.exists(file))
 

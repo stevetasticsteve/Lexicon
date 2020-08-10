@@ -150,5 +150,3 @@ repeated_sense_processed_data = copy.deepcopy(good_processed_data)
 repeated_sense_processed_data[3]['sense'] = 1
 
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]
-
-
