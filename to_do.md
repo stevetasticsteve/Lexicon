@@ -2,7 +2,6 @@
 
 ## Validation checks
 - sense numbers in order? 1,2,3 not 1,6,10
-- POS missing
 - ID number reused by entry with differing phonetics
 - Phonetics reused by entry with differing ID
 - Phonetic characters within allowable range

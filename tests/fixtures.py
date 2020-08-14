@@ -152,4 +152,7 @@ repeated_sense_processed_data[3]['sense'] = 1
 missing_pos_processed_data = copy.deepcopy(good_processed_data)
 missing_pos_processed_data[3]['pos'] = ''
 
+multiple_error_processed_data = copy.deepcopy(missing_pos_processed_data)
+multiple_error_processed_data[3]['sense'] = 1
+
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]

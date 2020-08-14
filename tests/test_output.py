@@ -80,7 +80,19 @@ class HTMLGenerationTests(unittest.TestCase):
         self.assertIn('Errors in the data have been identified', file, 'Error message should be showing')
 
     def test_error_page_multiple_errors(self):
-        self.fail('Finish the test')
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.generate_html(fixtures.multiple_error_processed_data)
+        self.assertTrue(os.path.exists(self.error_page))
+        with open(self.error_page, 'r') as file:
+            file = file.read()
+            self.assertIn('<h3>Part of speech missing</h3>', file, 'Error heading missing')
+            self.assertIn('sinasim is missing pos', file, 'Error detail missing')
+            self.assertIn('<h3>Sense number repeated</h3>', file, 'Error heading missing')
+            self.assertIn('sinasim uses same sense number multiple times.', file, 'Error detail missing')
+
+        with open(self.lex_page, 'r') as file:
+            file = file.read()
+        self.assertIn('Errors in the data have been identified', file, 'Error message should be showing')
 
     def test_generate_error_page_without_errors(self):
         with patch('lexicon_config.settings', fixtures.settings):
