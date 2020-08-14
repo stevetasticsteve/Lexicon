@@ -7,7 +7,6 @@
 - Phonetic characters within allowable range
 - Synonym and Antonyms one way link only
 - Date in unusual format
-- Entry missing ID
 - Example missing translation
 - Entered by missing
 

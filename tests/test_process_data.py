@@ -51,6 +51,20 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual('Part of speech missing', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['sinasim is missing pos'], rtn.error_data, 'Incorrect error data')
 
+    def test_validate_translation_missing_return_type(self):
+        rtn = process_data.validate_translation_missing(fixtures.good_processed_data)
+        self.assertEqual(None, rtn, 'Good return type not None')
+        rtn = process_data.validate_translation_missing(fixtures.translation_missing_processed_data)
+        self.assertIsInstance(rtn, process_data.DataValidationError, 'Return type not an error object')
+        self.assertIsInstance(rtn.error_type, str, 'Type not a string')
+        self.assertIsInstance(rtn.error_data, list, 'Data not a list')
+
+    def test_validate_translation_missing_return_contents(self):
+        rtn = process_data.validate_translation_missing(fixtures.translation_missing_processed_data)
+        self.assertEqual('Example is missing a translation', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['sinasim example: "om sinasim", is missing a translation'], rtn.error_data,
+                         'Incorrect error data')
+
 
 class DataProcessingTests(unittest.TestCase):
     """Test all the functions that process and reorganise data read from spreadsheet"""

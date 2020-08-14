@@ -13,7 +13,8 @@ def validate_data(processed_data):
     to call all validation checks and perform an assertion that good data is provided."""
     check_processed_data(processed_data, 'validate_data()')
 
-    errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data)]
+    errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data),
+              validate_translation_missing(processed_data)]
     errors = [e for e in errors if e]
     if not errors:
         errors = None
@@ -61,10 +62,19 @@ def validate_find_missing_senses(processed_data):
 def validate_find_missing_pos(processed_data):
     """Checks the spreadsheet for blank POS cells"""
     blank_pos = ['{w} is missing pos'.format(w=row['phon']) for row in processed_data if row['pos'] == '']
-    print(processed_data)
     if blank_pos:
         logger.info('   -Data validation found missing POS')
         return DataValidationError('Part of speech missing', blank_pos)
+    else:
+        return None
+
+
+def validate_translation_missing(processed_data):
+    missing_translations = ['{w} example: "{ex}", is missing a translation'.format(w=row['phon'], ex=row['ex'])
+                            for row in processed_data if (row['ex'] != '' and row['trans'] == '')]
+    if missing_translations:
+        logger.info('   -Data validation found missing example translations')
+        return DataValidationError('Example is missing a translation', missing_translations)
     else:
         return None
 
