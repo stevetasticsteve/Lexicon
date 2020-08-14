@@ -21,7 +21,7 @@ page from the source spreadsheet that can shared and used as a team resource.
 
 ## Development state
 This is a new project, started in March 2020. It works and our team is using it. 
-Tests are currently being written and changes happen freqently.
+Tests are currently being written and changes happen frequently.
 
 ## Getting started
 coming soon...

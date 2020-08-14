@@ -37,8 +37,6 @@ They assert that the right kind of data is being given to a function, but
 is it better to drop them? Functions are unlikely to be called interactively as
 an API call - wouldn't it save effort to drop and not maintain these things?
 
-## Testing
-- Write the tests
 
 # Kovol specific features
 - Predict verb endings for a given root

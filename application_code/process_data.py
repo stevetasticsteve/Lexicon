@@ -13,8 +13,9 @@ def validate_data(processed_data):
     to call all validation checks and perform an assertion that good data is provided."""
     check_processed_data(processed_data, 'validate_data()')
 
-    errors = [validate_find_missing_senses(processed_data)]
-    if not errors[0]:
+    errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data)]
+    errors = [e for e in errors if e]
+    if not errors:
         errors = None
     return errors
 
@@ -25,6 +26,9 @@ class DataValidationError:
     def __init__(self, error_type, error_data):
         self.error_type = error_type
         self.error_data = error_data
+
+    def __repr__(self):
+        return '{type} error object'.format(type=self.error_type)
 
 
 def validate_find_missing_senses(processed_data):
@@ -44,12 +48,23 @@ def validate_find_missing_senses(processed_data):
         entry_sense_count = entry_sense_count.items()
         repeated_sense = [item for item in entry_sense_count if item[1] > 1]
         if repeated_sense:
-            error_msg = '{phonetics} uses same sense  number multiple times.'.format(phonetics=phonetics)
+            error_msg = '{phonetics} uses same sense number multiple times.'.format(phonetics=phonetics)
             repeated_senses.append(error_msg)
 
     if repeated_senses:
         logger.info('   -Data validation found repeated senses')
         return DataValidationError('Sense number repeated', repeated_senses)
+    else:
+        return None
+
+
+def validate_find_missing_pos(processed_data):
+    """Checks the spreadsheet for blank POS cells"""
+    blank_pos = ['{w} is missing pos'.format(w=row['phon']) for row in processed_data if row['pos'] == '']
+    print(processed_data)
+    if blank_pos:
+        logger.info('   -Data validation found missing POS')
+        return DataValidationError('Part of speech missing', blank_pos)
     else:
         return None
 
