@@ -32,7 +32,8 @@ class ValidationTests(unittest.TestCase):
         error_types = (process_data.validate_find_missing_pos(fixtures.missing_pos_processed_data),
                        process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data),
                        process_data.validate_translation_missing(fixtures.translation_missing_processed_data),
-                       process_data.validate_repeated_id(fixtures.repeated_id_processed_data),)
+                       process_data.validate_repeated_id(fixtures.repeated_id_processed_data),
+                       process_data.validate_missing_id(fixtures.id_missing_processed_data))
 
         for error in error_types:
             self.assertIsInstance(error, process_data.DataValidationError, 'Return type not an error object')
@@ -64,6 +65,12 @@ class ValidationTests(unittest.TestCase):
     def test_validate_repeated_id_ignores_0(self):
         rtn = process_data.validate_repeated_id(fixtures.id_0_repeated)
         self.assertEqual(None, rtn, 'return type not None')
+
+    def test_validate_missing_id(self):
+        rtn = process_data.validate_missing_id(fixtures.id_missing_processed_data)
+        self.assertEqual('ID number is missing', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['mutol is missing an ID number'], rtn.error_data,
+                         'Incorrect error data')
 
 
 class DataProcessingTests(unittest.TestCase):

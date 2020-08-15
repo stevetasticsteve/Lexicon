@@ -14,7 +14,8 @@ def validate_data(processed_data):
     check_processed_data(processed_data, 'validate_data()')
 
     errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data),
-              validate_translation_missing(processed_data), validate_repeated_id(processed_data)]
+              validate_translation_missing(processed_data), validate_repeated_id(processed_data),
+              validate_missing_id(processed_data),]
     errors = [e for e in errors if e]
     if not errors:
         errors = None
@@ -68,6 +69,14 @@ def validate_find_missing_pos(processed_data):
     else:
         return None
 
+def validate_missing_id(processed_data):
+    """Check for data assinged an ID of 0. Indicates user forgot to put ID number"""
+    blank_id = ['{w} is missing an ID number'.format(w=row['phon']) for row in processed_data if row['id'] == 0]
+    if blank_id:
+        logger.info('   -Data validation found missing ID number')
+        return DataValidationError('ID number is missing', blank_id)
+    else:
+        return None
 
 def validate_repeated_id(processed_data):
     """ID numbers can be reused only if the phonetic word is the same. A repeated ID indicates a secondary sense of a

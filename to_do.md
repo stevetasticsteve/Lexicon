@@ -7,7 +7,6 @@
 - Synonym and Antonyms one way link only
 - Date in unusual format
 - Entered by missing
-- ID number is 0 (id was missing)
 
 ## Features
 - Help page - shouldn't be Jinja - should be standalone html so it can be 
