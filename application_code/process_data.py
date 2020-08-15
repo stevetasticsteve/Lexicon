@@ -15,7 +15,8 @@ def validate_data(processed_data):
 
     errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data),
               validate_translation_missing(processed_data), validate_repeated_id(processed_data),
-              validate_missing_id(processed_data), validate_words_unique(processed_data), ]
+              validate_missing_id(processed_data), validate_words_unique(processed_data),
+              validate_entered_by(processed_data), ]
     errors = [e for e in errors if e]
     if not errors:
         errors = None
@@ -134,6 +135,16 @@ def validate_words_unique(processed_data):
     if error_data:
         logger.info('   -Data validation found repeated words')
         return DataValidationError('Word is duplicated', error_data)
+    else:
+        return None
+
+
+def validate_entered_by(processed_data):
+    """Finds words that have a blank entered_by field"""
+    error_data = ['{w} is lacking an author'.format(w=r['phon']) for r in processed_data if r['enter'] == '']
+    if error_data:
+        logger.info('   -Data validation found repeated words')
+        return DataValidationError('Author is missing', error_data)
     else:
         return None
 

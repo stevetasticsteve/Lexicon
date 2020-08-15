@@ -187,4 +187,7 @@ id_0_repeated[0]['id'] = 0
 words_unique_processed_data = copy.deepcopy(good_processed_data)
 words_unique_processed_data[3]['id'] = 4
 
+entered_by_processed_data = copy.deepcopy(good_processed_data)
+entered_by_processed_data[3]['enter'] = ''
+
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]

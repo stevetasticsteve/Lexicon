@@ -34,7 +34,8 @@ class ValidationTests(unittest.TestCase):
                        process_data.validate_translation_missing(fixtures.translation_missing_processed_data),
                        process_data.validate_repeated_id(fixtures.repeated_id_processed_data),
                        process_data.validate_missing_id(fixtures.id_missing_processed_data),
-                       process_data.validate_words_unique(fixtures.words_unique_processed_data))
+                       process_data.validate_words_unique(fixtures.words_unique_processed_data),
+                       process_data.validate_entered_by(fixtures.entered_by_processed_data))
 
         for error in error_types:
             self.assertIsInstance(error, process_data.DataValidationError, 'Return type not an error object')
@@ -77,6 +78,12 @@ class ValidationTests(unittest.TestCase):
         rtn = process_data.validate_words_unique(fixtures.words_unique_processed_data)
         self.assertEqual('Word is duplicated', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['sinasim appears multiple times with differing ID number'], rtn.error_data,
+                         'Incorrect error data')
+
+    def test_validate_entered_by(self):
+        rtn = process_data.validate_entered_by(fixtures.entered_by_processed_data)
+        self.assertEqual('Author is missing', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['sinasim is lacking an author'], rtn.error_data,
                          'Incorrect error data')
 
 
