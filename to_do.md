@@ -1,7 +1,6 @@
 # To do
 
 ## Validation checks
-- sense numbers in order? 1,2,3 not 1,6,10
 - Phonetic characters within allowable range
 - Synonym and Antonyms one way link only
 - Date in unusual format

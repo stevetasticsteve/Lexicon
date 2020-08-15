@@ -16,7 +16,7 @@ def validate_data(processed_data):
     errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data),
               validate_translation_missing(processed_data), validate_repeated_id(processed_data),
               validate_missing_id(processed_data), validate_words_unique(processed_data),
-              validate_entered_by(processed_data), ]
+              validate_entered_by(processed_data), validate_sense_number_order(processed_data), ]
     errors = [e for e in errors if e]
     if not errors:
         errors = None
@@ -34,24 +34,36 @@ class DataValidationError:
         return '{type} error object'.format(type=self.error_type)
 
 
-def validate_find_missing_senses(processed_data):
-    """Returns a list (or None if n/a) of phonetic entries that are the same but aren't marked as senses of
-    each other. This may reveal data entry errors."""
+def get_repeated_ids(processed_data):
+    ids = [item['id'] for item in processed_data if
+           item['id'] > 0]  # ignore id 0 as that indicates no ID entered by user
+    count = Counter(ids)
+    count = count.items()  # convert to list of tuples (id, number of times counted)
+    repeated_ids = [item[0] for item in count if item[1] > 1]  # filter out single occurrences
+    return repeated_ids
+
+
+def get_repeated_words(processed_data):
     words = [item['phon'] for item in processed_data]
     count = Counter(words)
     count = count.items()  # convert to list of tuples (phonetics, number of times counted)
-    repeated_phonetics = [item for item in count if item[1] > 1]  # filter out single occurrences
+    repeated_phonetics = [item[0] for item in count if item[1] > 1]  # filter out single occurrences
+    return repeated_phonetics
 
+
+def validate_find_missing_senses(processed_data):
+    """Returns a list (or None if n/a) of phonetic entries that are the same but aren't marked as senses of
+    each other. This may reveal data entry errors."""
+    repeated_phonetics = get_repeated_words(processed_data)
     repeated_senses = []
-    for entry in repeated_phonetics:
-        phonetics = entry[0]
-        entries_matching_phonetics = [entry for entry in processed_data if entry['phon'] == phonetics]
+    for i in repeated_phonetics:
+        rows = [r for r in processed_data if r['phon'] == i]
 
-        entry_sense_count = Counter([entry['sense'] for entry in entries_matching_phonetics])
+        entry_sense_count = Counter([entry['sense'] for entry in rows])
         entry_sense_count = entry_sense_count.items()
         repeated_sense = [item for item in entry_sense_count if item[1] > 1]
         if repeated_sense:
-            error_msg = '{phonetics} uses same sense number multiple times.'.format(phonetics=phonetics)
+            error_msg = '{phonetics} uses same sense number multiple times.'.format(phonetics=i)
             repeated_senses.append(error_msg)
 
     if repeated_senses:
@@ -84,12 +96,7 @@ def validate_missing_id(processed_data):
 def validate_repeated_id(processed_data):
     """ID numbers can be reused only if the phonetic word is the same. A repeated ID indicates a secondary sense of a
     a word. Thus repeated ID numbers with differing phonetics indicates a data entry mistake"""
-    ids = [item['id'] for item in processed_data if
-           item['id'] > 0]  # ignore id 0 as that indicates no ID entered by user
-    count = Counter(ids)
-    count = count.items()  # convert to list of tuples (id, number of times counted)
-    repeated_ids = [item[0] for item in count if item[1] > 1]  # filter out single occurrences
-
+    repeated_ids = get_repeated_ids(processed_data)
     error_data = []
     for i in repeated_ids:
         rows = [r for r in processed_data if r['id'] == i]
@@ -119,11 +126,7 @@ def validate_translation_missing(processed_data):
 def validate_words_unique(processed_data):
     """Checks for words that are phonetically identical, but don't have identical IDs. If the word is a sense of another
     word the ID number should be the same."""
-    words = [item['phon'] for item in processed_data]
-    count = Counter(words)
-    count = count.items()  # convert to list of tuples (phonetics, number of times counted)
-    repeated_phonetics = [item[0] for item in count if item[1] > 1]  # filter out single occurrences
-
+    repeated_phonetics = get_repeated_words(processed_data)
     error_data = []
     for i in repeated_phonetics:
         rows = [r for r in processed_data if r['phon'] == i]
@@ -145,6 +148,32 @@ def validate_entered_by(processed_data):
     if error_data:
         logger.info('   -Data validation found repeated words')
         return DataValidationError('Author is missing', error_data)
+    else:
+        return None
+
+
+def validate_sense_number_order(processed_data):
+    """Checks to make sure sense numbers aren't missing. 1,2,3 rather than 1,3,4 for example."""
+    repeated_ids = get_repeated_ids(processed_data)
+    error_data = []
+    for id_ in repeated_ids:
+        phonetics = [r['phon'] for r in processed_data if r['id'] == id_][0]
+        sense_numbers = sorted([r['sense'] for r in processed_data if r['id'] == id_])
+        error_msg = '{w} has sense numbers {s}'.format(w=phonetics, s=sense_numbers)
+
+        if sense_numbers[0] != 1:  # find sense numbers that don't start with 1
+            error_data.append(error_msg)
+            continue
+
+        for i, sense_number in enumerate(sense_numbers):  # find sense numbers that don't increment by 1
+            if i > 0:
+                last_number = sense_numbers[i - 1]
+                if sense_number != last_number + 1:
+                    error_data.append(error_msg)
+                    continue
+    if error_data:
+        logger.info('   -Data validation found misnumbered sense numbers')
+        return DataValidationError('Sense numbers misnumbered', error_data)
     else:
         return None
 

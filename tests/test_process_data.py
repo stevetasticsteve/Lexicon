@@ -35,7 +35,8 @@ class ValidationTests(unittest.TestCase):
                        process_data.validate_repeated_id(fixtures.repeated_id_processed_data),
                        process_data.validate_missing_id(fixtures.id_missing_processed_data),
                        process_data.validate_words_unique(fixtures.words_unique_processed_data),
-                       process_data.validate_entered_by(fixtures.entered_by_processed_data))
+                       process_data.validate_entered_by(fixtures.entered_by_processed_data),
+                       process_data.validate_sense_number_order(fixtures.senses_misnumbered_processed_data))
 
         for error in error_types:
             self.assertIsInstance(error, process_data.DataValidationError, 'Return type not an error object')
@@ -84,6 +85,18 @@ class ValidationTests(unittest.TestCase):
         rtn = process_data.validate_entered_by(fixtures.entered_by_processed_data)
         self.assertEqual('Author is missing', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['sinasim is lacking an author'], rtn.error_data,
+                         'Incorrect error data')
+
+    def test_validate_sense_number_order(self):
+        rtn = process_data.validate_sense_number_order(fixtures.senses_misnumbered_processed_data)
+        self.assertEqual('Sense numbers misnumbered', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['sinasim has sense numbers [1, 3]'], rtn.error_data,
+                         'Incorrect error data')
+
+    def test_validate_sense_number_order_starting_number_off(self):
+        rtn = process_data.validate_sense_number_order(fixtures.senses_misnumbered_processed_data2)
+        self.assertEqual('Sense numbers misnumbered', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['sinasim has sense numbers [2, 3]'], rtn.error_data,
                          'Incorrect error data')
 
 

@@ -190,4 +190,10 @@ words_unique_processed_data[3]['id'] = 4
 entered_by_processed_data = copy.deepcopy(good_processed_data)
 entered_by_processed_data[3]['enter'] = ''
 
+senses_misnumbered_processed_data = copy.deepcopy(good_processed_data)
+senses_misnumbered_processed_data[3]['sense'] = 3
+
+senses_misnumbered_processed_data2 = copy.deepcopy(good_processed_data)
+senses_misnumbered_processed_data2[2]['sense'] = 3
+
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]
