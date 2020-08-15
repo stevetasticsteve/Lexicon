@@ -33,7 +33,8 @@ class ValidationTests(unittest.TestCase):
                        process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data),
                        process_data.validate_translation_missing(fixtures.translation_missing_processed_data),
                        process_data.validate_repeated_id(fixtures.repeated_id_processed_data),
-                       process_data.validate_missing_id(fixtures.id_missing_processed_data))
+                       process_data.validate_missing_id(fixtures.id_missing_processed_data),
+                       process_data.validate_words_unique(fixtures.words_unique_processed_data))
 
         for error in error_types:
             self.assertIsInstance(error, process_data.DataValidationError, 'Return type not an error object')
@@ -70,6 +71,12 @@ class ValidationTests(unittest.TestCase):
         rtn = process_data.validate_missing_id(fixtures.id_missing_processed_data)
         self.assertEqual('ID number is missing', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['mutol is missing an ID number'], rtn.error_data,
+                         'Incorrect error data')
+
+    def test_validate_words_unique(self):
+        rtn = process_data.validate_words_unique(fixtures.words_unique_processed_data)
+        self.assertEqual('Word is duplicated', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['sinasim appears multiple times with differing ID number'], rtn.error_data,
                          'Incorrect error data')
 
 

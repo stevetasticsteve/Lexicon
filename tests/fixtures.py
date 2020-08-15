@@ -184,4 +184,7 @@ id_missing_processed_data.append({'ant': '',
 id_0_repeated = copy.deepcopy(id_missing_processed_data)
 id_0_repeated[0]['id'] = 0
 
+words_unique_processed_data = copy.deepcopy(good_processed_data)
+words_unique_processed_data[3]['id'] = 4
+
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]

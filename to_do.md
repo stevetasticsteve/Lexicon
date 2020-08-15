@@ -2,7 +2,6 @@
 
 ## Validation checks
 - sense numbers in order? 1,2,3 not 1,6,10
-- Phonetics reused by entry with differing ID
 - Phonetic characters within allowable range
 - Synonym and Antonyms one way link only
 - Date in unusual format
@@ -25,7 +24,6 @@ viewed even if user can't launch Python (helping first time users)
 - When filtering the html dict letters with no hits shouldn't show
 - Bandit has taken issue with my assert statements. I've learned that
 try/except is more pythonic than asserts so I'll use them
-- Flake8 has identified read_lexicon() as too complex
 
 ## Implementation questions
 - Are the check_processed_data() and check_lexicon_entries() functions necessary?
