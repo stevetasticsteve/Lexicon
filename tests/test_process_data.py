@@ -25,39 +25,28 @@ class ValidationTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             process_data.validate_data('A string')
 
-    def test_validate_find_missing_senses_return_type(self):
-        rtn = process_data.validate_find_missing_senses(fixtures.good_processed_data)
+    def test_error_return_types(self):
+        rtn = process_data.validate_find_missing_pos(fixtures.good_processed_data)
         self.assertEqual(None, rtn, 'Good return type not None')
-        rtn = process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data)
-        self.assertIsInstance(rtn, process_data.DataValidationError, 'Return type not an error object')
-        self.assertIsInstance(rtn.error_type, str, 'Type not a string')
-        self.assertIsInstance(rtn.error_data, list, 'Data not a list')
+
+        error_types = (process_data.validate_find_missing_pos(fixtures.missing_pos_processed_data),
+                       process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data),
+                       process_data.validate_translation_missing(fixtures.translation_missing_processed_data))
+
+        for error in error_types:
+            self.assertIsInstance(error, process_data.DataValidationError, 'Return type not an error object')
+            self.assertIsInstance(error.error_type, str, 'Type not a string')
+            self.assertIsInstance(error.error_data, list, 'Data not a list')
 
     def test_validate_find_missing_senses_return_contents(self):
         rtn = process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data)
         self.assertEqual('Sense number repeated', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['sinasim uses same sense number multiple times.'], rtn.error_data, 'Incorrect error data')
 
-    def test_validate_find_missing_pos_return_type(self):
-        rtn = process_data.validate_find_missing_pos(fixtures.good_processed_data)
-        self.assertEqual(None, rtn, 'Good return type not None')
-        rtn = process_data.validate_find_missing_pos(fixtures.missing_pos_processed_data)
-        self.assertIsInstance(rtn, process_data.DataValidationError, 'Return type not an error object')
-        self.assertIsInstance(rtn.error_type, str, 'Type not a string')
-        self.assertIsInstance(rtn.error_data, list, 'Data not a list')
-
     def test_validate_find_missing_pos_return_contents(self):
         rtn = process_data.validate_find_missing_pos(fixtures.missing_pos_processed_data)
         self.assertEqual('Part of speech missing', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['sinasim is missing pos'], rtn.error_data, 'Incorrect error data')
-
-    def test_validate_translation_missing_return_type(self):
-        rtn = process_data.validate_translation_missing(fixtures.good_processed_data)
-        self.assertEqual(None, rtn, 'Good return type not None')
-        rtn = process_data.validate_translation_missing(fixtures.translation_missing_processed_data)
-        self.assertIsInstance(rtn, process_data.DataValidationError, 'Return type not an error object')
-        self.assertIsInstance(rtn.error_type, str, 'Type not a string')
-        self.assertIsInstance(rtn.error_data, list, 'Data not a list')
 
     def test_validate_translation_missing_return_contents(self):
         rtn = process_data.validate_translation_missing(fixtures.translation_missing_processed_data)
