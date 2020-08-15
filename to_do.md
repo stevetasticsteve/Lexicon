@@ -5,7 +5,6 @@
 - Phonetic characters within allowable range
 - Synonym and Antonyms one way link only
 - Date in unusual format
-- Entered by missing
 
 ## Features
 - Help page - shouldn't be Jinja - should be standalone html so it can be 
