@@ -61,6 +61,10 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(['ID number 2 is used for both inda and sinasim'], rtn.error_data,
                          'Incorrect error data')
 
+    def test_validate_repeated_id_ignores_0(self):
+        rtn = process_data.validate_repeated_id(fixtures.id_missing_processed_data)
+        self.assertEqual(None, rtn, 'return type not None')
+
 
 class DataProcessingTests(unittest.TestCase):
     """Test all the functions that process and reorganise data read from spreadsheet"""

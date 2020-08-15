@@ -161,4 +161,24 @@ translation_missing_processed_data[2]['trans'] = ''
 repeated_id_processed_data = copy.deepcopy(good_processed_data)
 repeated_id_processed_data[2]['id'] = 2
 
+id_missing_processed_data = copy.deepcopy(good_processed_data)  # an entry assigned ID 0 by read_lexicon()
+id_missing_processed_data.append({'ant': '',
+                                  'check': '',
+                                  'date': datetime.date(2020, 7, 3),
+                                  'def': '',
+                                  'dial': '',
+                                  'eng': 'Mushrooom',
+                                  'enter': 'Steve',
+                                  'ex': '',
+                                  'id': 0,
+                                  'link': '',
+                                  'orth': '',
+                                  'phon': 'mutol',
+                                  'pos': 'n',
+                                  'sense': 1,
+                                  'syn': '',
+                                  'tpi': 'talinga',
+                                  'trans': '',
+                                  'tag': ''})
+
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]
