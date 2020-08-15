@@ -31,7 +31,8 @@ class ValidationTests(unittest.TestCase):
 
         error_types = (process_data.validate_find_missing_pos(fixtures.missing_pos_processed_data),
                        process_data.validate_find_missing_senses(fixtures.repeated_sense_processed_data),
-                       process_data.validate_translation_missing(fixtures.translation_missing_processed_data))
+                       process_data.validate_translation_missing(fixtures.translation_missing_processed_data),
+                       process_data.validate_repeated_id(fixtures.repeated_id_processed_data),)
 
         for error in error_types:
             self.assertIsInstance(error, process_data.DataValidationError, 'Return type not an error object')
@@ -52,6 +53,12 @@ class ValidationTests(unittest.TestCase):
         rtn = process_data.validate_translation_missing(fixtures.translation_missing_processed_data)
         self.assertEqual('Example is missing a translation', rtn.error_type, 'Incorrect error type')
         self.assertEqual(['sinasim example: "om sinasim", is missing a translation'], rtn.error_data,
+                         'Incorrect error data')
+
+    def test_validate_repeated_id_contents(self):
+        rtn = process_data.validate_repeated_id(fixtures.repeated_id_processed_data)
+        self.assertEqual('An ID number has been incorrectly repeated', rtn.error_type, 'Incorrect error type')
+        self.assertEqual(['ID number 2 is used for both inda and sinasim'], rtn.error_data,
                          'Incorrect error data')
 
 

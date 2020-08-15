@@ -14,7 +14,7 @@ def validate_data(processed_data):
     check_processed_data(processed_data, 'validate_data()')
 
     errors = [validate_find_missing_senses(processed_data), validate_find_missing_pos(processed_data),
-              validate_translation_missing(processed_data)]
+              validate_translation_missing(processed_data), validate_repeated_id(processed_data)]
     errors = [e for e in errors if e]
     if not errors:
         errors = None
@@ -65,6 +65,31 @@ def validate_find_missing_pos(processed_data):
     if blank_pos:
         logger.info('   -Data validation found missing POS')
         return DataValidationError('Part of speech missing', blank_pos)
+    else:
+        return None
+
+
+def validate_repeated_id(processed_data):
+    """ID numbers can be reused only if the phonetic word is the same. A repeated ID indicates a secondary sense of a
+    a word. Thus repeated ID numbers with differing phonetics indicates a data entry mistake"""
+    ids = [item['id'] for item in processed_data if
+           item['id'] > 0]  # ignore id 0 as that indicates no ID entered by user
+    count = Counter(ids)
+    count = count.items()  # convert to list of tuples (id, number of times counted)
+    repeated_ids = [item[0] for item in count if item[1] > 1]  # filter out single occurrences
+
+    error_data = []
+    for i in repeated_ids:
+        rows = [r for r in processed_data if r['id'] == i]
+        entry = rows[0]['phon']  # pick an word to measure all the others against
+        for row in rows:
+            if entry != row['phon']:
+                error_data.append('ID number {id} is used for both {entry} and {conflict}'.format(
+                    id=i, entry=entry, conflict=row['phon']))
+
+    if error_data:
+        logger.info('   -Data validation found repeated ids with differing phonetics')
+        return DataValidationError('An ID number has been incorrectly repeated', error_data)
     else:
         return None
 

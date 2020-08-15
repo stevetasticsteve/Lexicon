@@ -2,12 +2,12 @@
 
 ## Validation checks
 - sense numbers in order? 1,2,3 not 1,6,10
-- ID number reused by entry with differing phonetics
 - Phonetics reused by entry with differing ID
 - Phonetic characters within allowable range
 - Synonym and Antonyms one way link only
 - Date in unusual format
 - Entered by missing
+- ID number is 0 (id was missing)
 
 ## Features
 - Help page - shouldn't be Jinja - should be standalone html so it can be 

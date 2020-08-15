@@ -158,4 +158,7 @@ multiple_error_processed_data[3]['sense'] = 1
 translation_missing_processed_data = copy.deepcopy(good_processed_data)
 translation_missing_processed_data[2]['trans'] = ''
 
+repeated_id_processed_data = copy.deepcopy(good_processed_data)
+repeated_id_processed_data[2]['id'] = 2
+
 jumbled_lexicon_entries = [LexiconEntry('x test_word_1', {}), LexiconEntry('Test_word_1', {})]
