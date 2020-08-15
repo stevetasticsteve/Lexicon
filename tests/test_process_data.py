@@ -62,7 +62,7 @@ class ValidationTests(unittest.TestCase):
                          'Incorrect error data')
 
     def test_validate_repeated_id_ignores_0(self):
-        rtn = process_data.validate_repeated_id(fixtures.id_missing_processed_data)
+        rtn = process_data.validate_repeated_id(fixtures.id_0_repeated)
         self.assertEqual(None, rtn, 'return type not None')
 
 
