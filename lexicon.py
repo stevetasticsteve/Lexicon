@@ -15,10 +15,10 @@ import logging
 import sys
 import traceback
 
+import kovol_verbs
 import lexicon_config
 from application_code import output
 from application_code import read_data
-import kovol_verbs
 
 
 def initiate_logging():
@@ -57,10 +57,10 @@ logger = initiate_logging()
 if __name__ == '__main__':
     sys.excepthook = excepthook
 
-    verb_spreadsheet = s.settings['verb_spreadsheet']
-    verbs = kovol_verbs.read_verbsheet(spreadsheet=verb_spreadsheet)
-    kovol_verbs.paradigm_html(verbs)
-
     data = read_data.read_lexicon()
     output.generate_html(data)
     output.create_phonemic_assistant_db(data, checked_only=False)
+
+    verb_spreadsheet = lexicon_config.settings['verb_spreadsheet']
+    verbs = kovol_verbs.read_verbsheet(spreadsheet=verb_spreadsheet)
+    kovol_verbs.paradigm_html(verbs)
