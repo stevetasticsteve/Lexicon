@@ -1,9 +1,12 @@
 settings = {
     'language': 'Kovol',
-    'spreadsheet_name': '/media/NAS/Team Share/Kovol_lexicon.ods',
-    'verb_spreadsheet': '/media/NAS/Team Share/Kovol_verbs.ods',
-    'target_folder': '/media/NAS/CLAHub/other_sites/Lexicon',  # the folder the web page should be created in
-    'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
+    'spreadsheet_name': 'Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
+    'sheet_name': 'Sheet1',  # Name of the sheet containing data
+    'target_folder': 'local_output',  # the folder the web page should be created in,
+    'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
+    # 'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
+    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets'
+    # the path to the stylesheet folder
 }
 
 spreadsheet_config = {
@@ -24,5 +27,5 @@ spreadsheet_config = {
     'syn_col': 'O',  # Column containing synonyms
     'ant_col': 'P',  # Column containing antonyms
     'link_col': 'Q',  # Column containing links,
-    'tag_col': 'R', # Column containing semantic tags
+    'tag_col': 'R',  # Column containing semantic tags
 }

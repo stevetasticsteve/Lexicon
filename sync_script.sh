@@ -1,10 +1,10 @@
 #!/bin/bash
 
-scp lexicon.py pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
-scp kovol_verbs.py pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
-scp lexicon_config.py pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
-scp lexicon.css pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
-scp -r templates/ pi@pi:/media/NAS/CLAHub/other_sites/Lexicon
+rsync -r --delete /home/steve/Documents/Computing/Python_projects/Lexicon/application_code/ pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
+rsync -r --delete /home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/ pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
+rsync -r --delete /home/steve/Documents/Computing/Python_projects/Lexicon/templates/ pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
+rsync --delete /home/steve/Documents/Computing/Python_projects/Lexicon/lexicon.py pi@pi:/media/NAS/CLAHub/other_sites/Lexicon/
 
-ssh pi@pi "cd /media/NAS/CLAHub/other_sites/Lexicon/ && python3 /media/NAS/CLAHub/other_sites/Lexicon/lexicon.py"
+
+ssh pi@pi "cd /media/NAS/CLAHub/other_sites/Lexicon/ && python3 /media/NAS/CLAHub/other_sites/Lexicon/main.py"
 

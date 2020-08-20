@@ -1,7 +1,7 @@
 {# template for a lang-eng entry. Includes sense information #}
 
-<h3>{{entry[0]}}</h3>
-{% for sense in entry[1] %}
+<h3>{{entry.headword}}</h3>
+{% for sense in entry.entry %}
     <p>
     {{sense.sense}} <strong>{{sense.pos}}</strong> [{{sense.phonetics}}]
     <strong><em style="color:dodgerblue">{{sense.english}}</em></strong>
