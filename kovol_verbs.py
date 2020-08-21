@@ -1,10 +1,9 @@
 """A script to read our collection of verb paradigms, manipulate and display them"""
 
 import datetime
+import logging
 import os
 import pprint
-import logging
-
 import pyexcel_ods3
 from jinja2 import Environment, FileSystemLoader
 
@@ -162,7 +161,8 @@ def paradigm_html(verbs):
         'title': 'Verbs',
         'date': date,
         'language': s.settings['language'],
-        'header': 'verbs'
+        'header': 'verbs',
+        'stylesheets': s.settings['stylesheets']
     }
 
     with open('verbs.html', 'w') as file:
