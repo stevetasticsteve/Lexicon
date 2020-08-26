@@ -1,13 +1,13 @@
 settings = {
     'language': 'Kovol',
-    'spreadsheet_name': '/media/NAS/Team Share/Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
+    'spreadsheet_name': 'local_data/Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
     'sheet_name': 'Sheet1',  # Name of the sheet containing data
-    'target_folder': '/media/NAS/CLAHub/other_sites/Lexicon/',  # the folder the web page should be created in,
-    'log_file': '/media/NAS/CLAHub/other_sites/Lexicon/Lexicon_error.log',  # the abs path for the log file
+    'target_folder': 'local_output',  # the folder the web page should be created in,
+    'log_file': 'local_output/Lexicon_error.log',  # the abs path for the log file
     # 'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-    'stylesheets': './stylesheets',
+    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/',
     # the path to the stylesheet folder
-    'verb_spreadsheet': '/media/NAS/Team Share/Kovol_verbs.ods'
+    'verb_spreadsheet': 'local_data/Kovol_verbs.ods'
 }
 
 spreadsheet_config = {

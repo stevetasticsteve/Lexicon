@@ -4,10 +4,11 @@ import datetime
 import logging
 import os
 import pprint
+
 import pyexcel_ods3
 from jinja2 import Environment, FileSystemLoader
 
-import lexicon_config as s
+import lexicon_config
 
 id_col, actor_col, tense_col, mode_col, kovol_col, english_col, author_col = 0, 1, 2, 3, 4, 5, 6
 
@@ -133,7 +134,7 @@ class KovolVerb:
                        self.future_paradigm()))
 
 
-def read_verbsheet(spreadsheet='Kovol_verbs.ods'):
+def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet']):
     assert os.path.exists(spreadsheet), 'Verb spreadsheet missing'
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Paradigms']
     raw_data.pop(0)  # get rid of the first row
@@ -160,12 +161,12 @@ def paradigm_html(verbs):
     context = {
         'title': 'Verbs',
         'date': date,
-        'language': s.settings['language'],
+        'language': lexicon_config.settings['language'],
         'header': 'verbs',
-        'stylesheets': s.settings['stylesheets']
+        'stylesheets': lexicon_config.settings['stylesheets']
     }
-
-    with open('verbs.html', 'w') as file:
+    html = os.path.join(lexicon_config.settings['target_folder'], 'verbs.html')
+    with open(html, 'w') as file:
         print(template.render(context=context, verbs=verbs), file=file)
 
     logger.info('Kovol verb paradigms HTML page created')
