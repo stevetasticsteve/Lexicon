@@ -15,9 +15,8 @@ import logging
 import sys
 import traceback
 
-import kovol_verbs
 import lexicon_config
-from application_code import output
+from application_code import output, kovol_verbs
 from application_code import read_data
 
 
@@ -62,5 +61,5 @@ if __name__ == '__main__':
     output.create_phonemic_assistant_db(data, checked_only=False)
 
     verb_spreadsheet = lexicon_config.settings['verb_spreadsheet']
-    verbs = kovol_verbs.read_verbsheet(spreadsheet=verb_spreadsheet)
+    verbs = kovol_verbs.read_verbsheet()
     kovol_verbs.paradigm_html(verbs)

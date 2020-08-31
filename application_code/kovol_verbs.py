@@ -29,6 +29,8 @@ def blank_paradigm():
 
 
 class KovolVerb:
+    vowels = ['i', 'e', 'ɛ', 'a', 'ə', 'u', 'o', 'ɔ']
+
     def __init__(self, future1s, english):
         self.kov = future1s
         self.eng = english
@@ -37,7 +39,7 @@ class KovolVerb:
         self.future = blank_paradigm()
         self.future['1s'] = future1s
         self.past = blank_paradigm()
-        self.rpast = blank_paradigm()
+        self.remote_past = blank_paradigm()
         self.sng_imperative = ''
         self.pl_imperative = ''
 
@@ -104,17 +106,17 @@ class KovolVerb:
                 self.past['3p'] = kovol
         if tense == 'remote past':
             if actor == '1s':
-                self.rpast['1s'] = kovol
+                self.remote_past['1s'] = kovol
             elif actor == '2s':
-                self.rpast['2s'] = kovol
+                self.remote_past['2s'] = kovol
             elif actor == '3s':
-                self.rpast['3s'] = kovol
+                self.remote_past['3s'] = kovol
             elif actor == '1p':
-                self.rpast['1p'] = kovol
+                self.remote_past['1p'] = kovol
             elif actor == '2p':
-                self.rpast['2p'] = kovol
+                self.remote_past['2p'] = kovol
             elif actor == '3p':
-                self.rpast['3p'] = kovol
+                self.remote_past['3p'] = kovol
 
     def future_paradigm(self):
         """Shows a future paradigm"""
@@ -126,12 +128,67 @@ class KovolVerb:
 
     def rpast_paradigm(self):
         """Shows a remote past paradigm"""
-        return pprint.pprint(self.rpast)
+        return pprint.pprint(self.remote_past)
 
     def show_paradigms(self):
         pprint.pprint((self.rpast_paradigm(),
                        self.past_paradigm(),
                        self.future_paradigm()))
+
+    def predict_root(self):
+        # Take the future 1st plural and recent past 1st singular and strip the suffix. The word should be the root,
+        # root reduction operates to remove either a C or V in all declensions.
+        possible_root1 = self.future['1s'][0:-4]  # strip -inim
+        possible_root2 = self.past['1s'][0:-3]  # strip -gom
+
+        if len(possible_root1) > len(possible_root2):
+            return possible_root1
+        else:
+            return possible_root2
+
+    def predict_paradigm(self):
+        root = self.predict_root()
+        print(root)
+        # is the last letter of the root a vowel?
+        if root[-1] in self.vowels:
+            v_reduction_root = root[0:-1]
+            c_reduction_root = root
+            last_v = root[-1]
+        else:
+            v_reduction_root = root
+            c_reduction_root = root[0:-1]
+            last_v = root[-2]
+        if last_v == 'u':
+            sfx_v = 'u'
+        elif last_v == 'a':
+            sfx_v = 'a'
+        else:
+            sfx_v = 'o'
+        remote_past = {
+            '1s': v_reduction_root + sfx_v + 'm',
+            '2s': v_reduction_root + 'oŋ',
+            '3s': v_reduction_root + 'ot',
+            '1p': v_reduction_root + 'omuŋg',
+            '2p': v_reduction_root + 'omwa',
+            '3p': v_reduction_root + 'ɛmind',
+        }
+        past = {
+            '1s': c_reduction_root + 'g' + sfx_v + 'm',
+            '2s': c_reduction_root + 'goŋ',
+            '3s': c_reduction_root + 'ge',
+            '1p': v_reduction_root + sfx_v + 'ŋg',
+            '2p': c_reduction_root + 'g' + sfx_v + 'ma',
+            '3p': c_reduction_root + 'g' + sfx_v + 'nd',
+        }
+        future = {
+            '1s': v_reduction_root + 'inim',
+            '2s': v_reduction_root + 'iniŋ',
+            '3s': v_reduction_root + 'iŋ',
+            '1p': v_reduction_root + 'ug',
+            '2p': v_reduction_root + 'a',
+            '3p': v_reduction_root + 'is',
+        }
+        return remote_past, past, future
 
 
 def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet']):
@@ -146,6 +203,7 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet']):
         k = KovolVerb(v[0], v[1])
         for i in raw_data:
             k.add_row(i)
+        k.pred_remote_past, k.pred_past, k.pred_future = k.predict_paradigm()
         verbs.append(k)
     logger.info('{n} Kovol verbs processed'.format(n=len(verbs)))
     return sorted(verbs, key=lambda v: v.kov)
@@ -170,3 +228,33 @@ def paradigm_html(verbs):
         print(template.render(context=context, verbs=verbs), file=file)
 
     logger.info('Kovol verb paradigms HTML page created')
+
+
+def evaluate_prediction(Verbs):
+    errors = 0
+    number_of_paradigms = len(Verbs) * 3 * 6
+    for v in Verbs:
+        if v.future == v.pred_future and v.past == v.pred_past and v.remote_past == v.pred_remote_past:
+            print(str(v) + ' predicted correctly')
+        else:
+            future_diff = list(v.future.items() ^ v.pred_future.items())
+            errors += len(future_diff) / 2
+            print(sorted(future_diff))
+            past_diff = list(v.past.items() ^ v.pred_past.items())
+            errors += len(past_diff) / 2
+            print(sorted(past_diff))
+            remote_past_diff = list(v.remote_past.items() ^ v.pred_remote_past.items())
+            errors += len(remote_past_diff) / 2
+            print(sorted(remote_past_diff))
+    print('Accuracy = {x:.2f}%'.format(x=errors / number_of_paradigms * 100))
+
+
+def predict_verb():
+    fut1s = input('What is the first person singular future?   ')
+    past1s = input('What is the first person singular recent past?   ')
+    eng = input('What is the English translation?   ')
+    verb = KovolVerb(fut1s, eng)
+    verb.past['1s'] = past1s
+    remote_past, past, future = verb.predict_paradigm()
+    for tense in (remote_past, past, future):
+        pprint.pprint(tense)
