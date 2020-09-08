@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="New Tribes Mission">
+    <link rel="stylesheet" type="text/css" href="{{context.stylesheets}}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{context.stylesheets}}/css/lexicon.css">
+    <script src="{{context.stylesheets}}/js/bootstrap.min.js"></script>
+    <script src="{{context.stylesheets}}/js/jquery-3.4.1.min.js"></script>
+    <title>Lexicon help</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Lexicon help</h1>
+    <h2>Application overview</h2>
+    <p>This dictionary application combines the ease and familiarity of working with a spreadsheet with the power and
+    portability of web pages. It is designed to take dictionary language data contained in a spreadsheet and generate
+    searchable, mobile friendly web-pages from it.</p>
+
+    <p>The code is written in the Python programming language and is open source and free to use.</p>
+    <h2>Getting started</h2>
+    <h3>Requirements</h3>
+    <p>This program requires Python3 and several Python modules to be installed to interpret and execute the code.</p>
+    <h3>Important files</h3>
+    <p>These are the files you interact with to use the program:</p>
+    <h4>Kovol_lexicon.ods</h4>
+    <p>Is the spreadsheet containing dictionary data. This is the file that users interact with on a daily basis.
+        All data entry and edits are done in this spreadsheet. Both .xlsx and .ods are supported, either Microsoft
+        Excel or LibreOffice Calc are compatible. The file can be renamed and moved to wherever convenient (see lexicon
+        config later). Columns can be rearranged, but the initial layout is recommended. Certain cells have data
+        validation formulae on them that prevent invalid data being entered.</p>
+    <h4>lexicon_config.py</h4>
+    <p>This file should only need to be edited once to set the program up. All options and file locations are set using
+    this file.</p>
+    <h4>lexicon.py</h4>
+    <p>This is the 'executable'.</p>
+
+</div>
+</body>
+</html>

@@ -306,5 +306,5 @@ def get_word_beginnings(lexicon_entries):
     """Takes a list of LexiconEntry objects and returns an alphabetically sorted set of the first letters of all
      headwords"""
     check_lexicon_entries(lexicon_entries, 'get_word_beginnings()')
-    letters = [x.headword[0].lower() for x in lexicon_entries]
+    letters = [x.headword[0].lower() for x in lexicon_entries if x.headword]
     return sorted(set(letters))
