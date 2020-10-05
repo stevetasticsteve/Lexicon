@@ -118,22 +118,22 @@ class KovolVerb:
             elif actor == '3p':
                 self.remote_past['3p'] = kovol
 
-    def future_paradigm(self):
-        """Shows a future paradigm"""
-        return pprint.pprint(self.future)
-
-    def past_paradigm(self):
-        """Shows a recent past paradigm"""
-        return pprint.pprint(self.past)
-
-    def rpast_paradigm(self):
-        """Shows a remote past paradigm"""
-        return pprint.pprint(self.remote_past)
-
-    def show_paradigms(self):
-        pprint.pprint((self.rpast_paradigm(),
-                       self.past_paradigm(),
-                       self.future_paradigm()))
+    # def future_paradigm(self):
+    #     """Shows a future paradigm"""
+    #     return pprint.pprint(self.future)
+    #
+    # def past_paradigm(self):
+    #     """Shows a recent past paradigm"""
+    #     return pprint.pprint(self.past)
+    #
+    # def rpast_paradigm(self):
+    #     """Shows a remote past paradigm"""
+    #     return pprint.pprint(self.remote_past)
+    #
+    # def show_paradigms(self):
+    #     pprint.pprint((self.rpast_paradigm(),
+    #                    self.past_paradigm(),
+    #                    self.future_paradigm()))
 
     def predict_root(self):
         # Take the future 1st plural and recent past 1st singular and strip the suffix. The word should be the root,
@@ -148,7 +148,6 @@ class KovolVerb:
 
     def predict_paradigm(self):
         root = self.predict_root()
-        print(root)
         # is the last letter of the root a vowel?
         if root[-1] in self.vowels:
             v_reduction_root = root[0:-1]
@@ -191,7 +190,8 @@ class KovolVerb:
         return remote_past, past, future
 
 
-def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet']):
+def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet'], output='class'):
+    # Returns an alphabetically sorted list of Verb objects
     assert os.path.exists(spreadsheet), 'Verb spreadsheet missing'
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Paradigms']
     raw_data.pop(0)  # get rid of the first row
@@ -199,14 +199,27 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet']):
     future1s_set = set([(x[kovol_col], x[english_col]) for x in raw_data if
                         (x[actor_col] == '1s' and x[tense_col] == 'future')])
     verbs = []
-    for v in future1s_set:
-        k = KovolVerb(v[0], v[1])
-        for i in raw_data:
-            k.add_row(i)
-        k.pred_remote_past, k.pred_past, k.pred_future = k.predict_paradigm()
-        verbs.append(k)
-    logger.info('{n} Kovol verbs processed'.format(n=len(verbs)))
-    return sorted(verbs, key=lambda v: v.kov)
+    if output == 'class':
+        for v in future1s_set:
+            k = KovolVerb(v[0], v[1])
+            for i in raw_data:
+                k.add_row(i)
+            k.pred_remote_past, k.pred_past, k.pred_future = k.predict_paradigm()
+            verbs.append(k)
+        logger.info('{n} Kovol verbs processed'.format(n=len(verbs)))
+        return sorted(verbs, key=lambda v: v.kov)
+
+    # Output as a list of dictionaries for phonology assistant to use
+    elif output == 'list':
+        for row in raw_data:
+            item = {
+                'phon': row[kovol_col],
+                'eng': row[english_col] + ': ' + row[tense_col] + ' ' + row[actor_col],
+                'tpi': 'None',
+                'pos': 'V'
+            }
+            verbs.append(item)
+        return verbs
 
 
 def paradigm_html(verbs):

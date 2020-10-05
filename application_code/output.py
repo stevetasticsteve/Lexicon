@@ -8,6 +8,7 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 import lexicon_config
+from application_code import kovol_verbs
 from application_code import process_data
 
 logger = logging.getLogger('LexiconLog')
@@ -152,7 +153,7 @@ def generate_context(title, header):
     return context
 
 
-def create_phonemic_assistant_db(processed_data, checked_only=True):
+def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=False):
     """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
     Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
     (default=True)"""
@@ -166,6 +167,9 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
             raise AssertionError('No checked data to work with!')
     else:
         logger.info('   - writing unchecked words to phonology assistant file')
+    if add_verbs:
+        verbs = kovol_verbs.read_verbsheet(output='list')
+        processed_data += verbs
 
     pa_db = '\\_sh v3.0  400  PhoneticData\n'
 
