@@ -101,6 +101,8 @@ def pre_process_raw_data(raw_data, col):
     for row in raw_data:
         if row[col['id_col']] == '':
             row[col['id_col']] = 0
+    # exclude rows lacking ids and language data
+    raw_data = [r for r in raw_data if r[col['id_col']] or r[col['orth_col']] or r[col['phon_col']]]
     raw_data.sort(key=lambda r: r[col['id_col']])  # sort by ID number
     return raw_data
 

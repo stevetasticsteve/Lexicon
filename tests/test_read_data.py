@@ -105,6 +105,12 @@ class ReadLexiconTests(unittest.TestCase):
                 read_data.read_lexicon(config_file=tests.fixtures)
             self.assertIn('is not a valid sheet name.', str(error.exception))
 
+    def test_read_lexicon_mostly_empty_row(self):
+        """Test to catch rows that don't include essential information"""
+        with patch("tests.fixtures.settings", tests.fixtures.mostly_empty):
+            data = read_data.read_lexicon(config_file=tests.fixtures)
+            self.assertEqual(len(data), 5, 'A mostly blank row has been read in')
+
     def test_read_lexicon_blank_cell_response(self):
         """Tests every column for response to blank"""
         with patch("tests.fixtures.settings", tests.fixtures.missing_cells):
