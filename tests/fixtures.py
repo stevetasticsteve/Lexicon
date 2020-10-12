@@ -44,6 +44,9 @@ missing_cells['sheet_name'] = 'missing_cells'
 blank_sheet = bad_data.copy()
 blank_sheet['sheet_name'] = 'blank_sheet'
 
+mostly_empty = bad_data.copy()
+mostly_empty['sheet_name'] = 'mostly_empty_row'
+
 blank_rows = bad_data.copy()
 blank_rows['sheet_name'] = 'blank_rows'
 
