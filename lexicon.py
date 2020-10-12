@@ -12,6 +12,7 @@
 
 # This file links the layers together to form the application.
 import logging
+import os
 import sys
 import traceback
 
@@ -55,6 +56,7 @@ def excepthook(exctype, value, tb):
 logger = initiate_logging()
 if __name__ == '__main__':
     sys.excepthook = excepthook
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     data = read_data.read_lexicon()
     output.generate_html(data)
