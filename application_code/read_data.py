@@ -28,7 +28,7 @@ def check_settings(config_file=lexicon_config.settings):
         if type(config_file['sheet_name']) != str:
             raise TypeError('sheet name')
         # find the stylesheet
-        stylesheet = os.path.join(config_file['stylesheets'], 'css', 'lexicon.css')
+        stylesheet = os.path.join(os.getcwd(), config_file['stylesheets'], 'css', 'lexicon.css')
         if not os.path.exists(stylesheet):
             raise FileNotFoundError(stylesheet)
 
