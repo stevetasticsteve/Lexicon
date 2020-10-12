@@ -11,3 +11,5 @@ iski dic/lexiconScript.js
 iski dic/lexiconStyle.css
 __pycache__/lexicon.cpython-38.pyc
 /.idea/
+/lexicon_config.py
+/local_sync.sh
