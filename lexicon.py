@@ -65,3 +65,6 @@ if __name__ == '__main__':
     verb_spreadsheet = lexicon_config.settings['verb_spreadsheet']
     verbs = kovol_verbs.read_verbsheet()
     kovol_verbs.paradigm_html(verbs)
+
+    output.create_csv(data)
+    output.create_phonemic_assistant_db(data, checked_only=False)
