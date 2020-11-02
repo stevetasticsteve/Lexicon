@@ -1,6 +1,7 @@
 # This file contains functions that output data by calling on functions in process_data. This is the
 # third and final layer. HTML pages and Phonology assistant databases can be produced
 
+import csv
 import datetime
 import logging
 import os
@@ -186,3 +187,14 @@ def create_phonemic_assistant_db(processed_data, checked_only=True):
         print(pa_db, file=file)
 
     logger.info('   - {n} words written to phonology assistant file'.format(n=len(processed_data)))
+
+
+def create_csv(processed_data):
+    logger.info('Writing CSV file')
+    csv_path = os.path.join(lexicon_config.settings['target_folder'], 'word_list.csv')
+    with open(csv_path, 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for item in processed_data:
+            writer.writerow([item['phon']])
+
+

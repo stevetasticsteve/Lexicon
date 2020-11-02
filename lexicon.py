@@ -61,3 +61,4 @@ if __name__ == '__main__':
     data = read_data.read_lexicon()
     output.generate_html(data)
     output.create_phonemic_assistant_db(data, checked_only=False)
+    output.create_csv(data)
