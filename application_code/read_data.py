@@ -96,6 +96,43 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
     return processed_data
 
 
+def read_additional_sheet(sheet_name, config_file=lexicon_config):
+    """Reads additional sheets with columns [Kovol, Phonetic, Dialect, Description]"""
+    spreadsheet = config_file.settings['spreadsheet_name']
+    number_of_columns = 4
+    # read the file with pyexcel
+    try:
+        raw_data = pyexcel_ods3.get_data(spreadsheet)[sheet_name]
+        raw_data.pop(0)
+        raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
+        data = []
+        for row in raw_data:
+            while len(row) < number_of_columns:  # add blank columns to avoid index errors
+                row.append('')
+            d = {
+                'kovol': row[letter_to_number('A')],
+                'phonetic': row[letter_to_number('B')],
+                'dialect': row[letter_to_number('C')],
+                'description': row[letter_to_number('D')],
+            }
+            data.append(d)
+        return data
+
+    except KeyError:
+        msg = '{sheet} is not a valid sheet name.'.format(sheet=spreadsheet)
+        logger.exception(msg)
+        raise KeyError(msg)
+    except pyexcel_io.exceptions.NoSupportingPluginFound:
+        _, extension = os.path.splitext(spreadsheet)
+        msg = '{ext} is not a valid file extension. Must be .ods, .xls or .xlsx.'.format(ext=extension)
+        logger.exception(msg)
+        raise TypeError(msg)
+    except IndexError:
+        msg = 'The file is blank'
+        logger.exception(msg)
+        raise AttributeError(msg)
+
+
 def pre_process_raw_data(raw_data, col):
     # set the id number to 0 if it's blank - preventing sort failures later
     for row in raw_data:

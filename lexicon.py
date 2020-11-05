@@ -13,7 +13,6 @@
 # This file links the layers together to form the application.
 import logging
 import os
-import sys
 import traceback
 
 import lexicon_config
@@ -55,10 +54,12 @@ def excepthook(exctype, value, tb):
 
 logger = initiate_logging()
 if __name__ == '__main__':
-    sys.excepthook = excepthook
+    # sys.excepthook = excepthook
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     data = read_data.read_lexicon()
+    names = read_data.read_additional_sheet('Names')
+    locations = read_data.read_additional_sheet('Locations')
     output.generate_html(data)
     output.create_phonemic_assistant_db(data, checked_only=False)
-    output.create_csv(data)
+    output.create_csv(data, names, locations)
