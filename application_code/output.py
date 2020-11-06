@@ -215,6 +215,6 @@ def create_csv(processed_data, *args):
         for item in processed_data:
             writer.writerow([item['phon']])
         for item in additional_words:
-            writer.writerow(item)
+            writer.writerow([item])
 
 
