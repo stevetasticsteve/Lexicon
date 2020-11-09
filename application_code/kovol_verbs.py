@@ -195,7 +195,7 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet'], outp
     assert os.path.exists(spreadsheet), 'Verb spreadsheet missing'
     raw_data = pyexcel_ods3.get_data(spreadsheet)['Paradigms']
     raw_data.pop(0)  # get rid of the first row
-    raw_data = [x for x in raw_data if x != []]  # get rid of blank rows at the end
+    raw_data = [x for x in raw_data if len(x) >= 5]  # get rid rows lacking data (5 is where the Kovol words are)
     future1s_set = set([(x[kovol_col], x[english_col]) for x in raw_data if
                         (x[actor_col] == '1s' and x[tense_col] == 'future')])
     verbs = []
@@ -234,7 +234,8 @@ def paradigm_html(verbs):
         'date': date,
         'language': lexicon_config.settings['language'],
         'header': 'verbs',
-        'stylesheets': lexicon_config.settings['stylesheets']
+        'bootstrap': lexicon_config.settings.get('bootstrap'),
+        'jquery': lexicon_config.settings.get('jquery'),
     }
     html = os.path.join(lexicon_config.settings['target_folder'], 'verbs.html')
     with open(html, 'w') as file:
