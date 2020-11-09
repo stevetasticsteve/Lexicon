@@ -14,7 +14,7 @@ logger = logging.getLogger('LexiconLog')
 
 def check_settings(config_file=lexicon_config.settings):
     # sheet_name checked by read_lexicon()
-    paths = (config_file['target_folder'], config_file['log_file'], config_file['stylesheets'],
+    paths = (config_file['target_folder'], config_file['log_file'],
              config_file['spreadsheet_name'])
     try:
         # check all the paths exist
@@ -27,10 +27,6 @@ def check_settings(config_file=lexicon_config.settings):
         # check sheet name is a string
         if type(config_file['sheet_name']) != str:
             raise TypeError('sheet name')
-        # find the stylesheet
-        stylesheet = os.path.join(os.getcwd(), config_file['stylesheets'], 'css', 'lexicon.css')
-        if not os.path.exists(stylesheet):
-            raise FileNotFoundError(stylesheet)
 
     except FileNotFoundError as e:
         msg = 'The following file doesn\'t exist: {e}'.format(e=e.args[0])

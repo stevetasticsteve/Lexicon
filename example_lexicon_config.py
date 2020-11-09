@@ -5,7 +5,8 @@ settings = {
     'target_folder': '/home/steve/Documents/Computing/Python_projects/Lexicon/local_output',  # the folder the web page should be created in,
     'log_file': '/home/steve/Documents/Computing/Python_projects/Lexicon/local_output/Lexicon_error.log',  # the abs path for the log file
     # 'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/',
+    'bootstrap': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/',
+    'jquery': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/',
     # the path to the stylesheet folder
 }
 

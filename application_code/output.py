@@ -148,7 +148,8 @@ def generate_context(title, header):
         'date': date,
         'language': lexicon_config.settings['language'],
         'header': header,
-        'stylesheets': lexicon_config.settings['stylesheets']
+        'bootstrap': lexicon_config.settings.get('bootstrap'),
+        'jquery': lexicon_config.settings.get('jquery'),
     }
 
     return context
