@@ -11,7 +11,10 @@ to be passed in. #}
 
         <div id="entries">
         {% for letter in letters %}
-            <hr><h1 id="{{letter}}">{{letter}}</h1><hr>
+            <div class="container-fluid letter">
+                <hr><h1 id="{{letter}}">{{letter}}</h1><hr>
+            </div>
+
             {% for entry in entries %}
                 {%- if entry.headword[0] == letter -%}
                     <div class="entry">
