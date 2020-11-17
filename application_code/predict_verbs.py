@@ -182,13 +182,13 @@ def display_paradigms(correct_paradigms, incorrect_paradigms):
         print(p)
 
 
-def print_paradigms(data, verb='undefined', root='undefined'):
-    with open(output_file, 'a') as file:
-        print('\n{div}\nParadigm for {verb}. Root is thought to be {root}'.format(div='=' * 80, verb=verb, root=root)
-              , file=file)
-        for d in data:
-            print('\n{Title}:'.format(Title=d['title']), file=file)
-            print(tabulate(d['data'], headers=headers), file=file)
+# def print_paradigms(data, verb='undefined', root='undefined'):
+#     with open(output_file, 'a') as file:
+#         print('\n{div}\nParadigm for {verb}. Root is thought to be {root}'.format(div='=' * 80, verb=verb, root=root)
+#               , file=file)
+#         for d in data:
+#             print('\n{Title}:'.format(Title=d['title']), file=file)
+#             print(tabulate(d['data'], headers=headers), file=file)
 
 
 def compare_paradigms(predicted_data, actual_data):
@@ -218,7 +218,7 @@ def process_verb_list(verbs):
 
 
 if __name__ == '__main__':
-
+    print('Reading data...')
     data = kovol_verbs.read_verbsheet()
     target_verbs = ['sindinim',
                     'janim',
@@ -240,4 +240,5 @@ if __name__ == '__main__':
 
     if os.path.exists(output_file):
         os.remove(output_file)
+    print('Predicting {n} verbs...'.format(n=len(verbs)))
     process_verb_list(verbs)
