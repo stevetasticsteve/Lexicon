@@ -53,8 +53,8 @@ def excepthook(exctype, value, tb):
         Traceback: {tb}'''.format(type=exctype, value=value, tb=traceback.format_tb(tb)))
 
 
-logger = initiate_logging()
 if __name__ == '__main__':
+    logger = initiate_logging()
     sys.excepthook = excepthook
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 

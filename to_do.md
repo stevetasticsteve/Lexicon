@@ -30,11 +30,10 @@ is it better to drop them? Functions are unlikely to be called interactively as
 an API call - wouldn't it save effort to drop and not maintain these things?
 
 
-# Kovol specific features
-- Predict verb endings for a given root
-- Identify regular and irregular verbs
-- Identify missing paradigm entries
-
 ## Kovol specific bugs
 - Lots of whitespace when using the JS filter
 
+
+# Kovol verb prediction
+The rule that causes janim to have a -anim suffixes conflicts with the need for aminim to
+take the -inim suffix
