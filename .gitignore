@@ -13,3 +13,4 @@ __pycache__/lexicon.cpython-38.pyc
 /.idea/
 /lexicon_config.py
 /local_sync.sh
+/local_verb_prediction.sh

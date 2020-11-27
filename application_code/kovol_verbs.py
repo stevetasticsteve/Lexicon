@@ -161,6 +161,9 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet'], outp
         for v in future1s_set:
             k = KovolVerb(v[0], v[1])
             for i in raw_data:
+                # Skip rows missing too much data
+                if len(i) < 6:
+                    continue
                 k.add_row(i)
                 k.tabulate = k.create_tabulate_object()
             verbs.append(k)
@@ -170,6 +173,9 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet'], outp
     # Output as a list of dictionaries for phonology assistant to use
     elif output == 'list':
         for row in raw_data:
+            # Skip rows missing too much data
+            if len(row) < 6:
+                continue
             item = {
                 'phon': row[kovol_col],
                 'eng': row[english_col] + ': ' + row[tense_col] + ' ' + row[actor_col],

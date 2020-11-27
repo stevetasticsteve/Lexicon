@@ -1,8 +1,42 @@
+# Makes paradigm predictions to be displayed in terminal.
+# Trigger with :Lexicon_Directory$ python3 -m application_code.predict_verbs
+# Defaults to just working on list of target verbs
+# Pass the flag --all to do all verbs in the spreadsheet (best redirect output, it takes a while on pi)
+
 import os
+import sys
 
 from tabulate import tabulate
 
 from lexicon import kovol_verbs
+
+target_verbs = ['sindinim',
+                'janim',
+                'saliβinim',
+                'liβinim',
+                'aminim',
+                'aŋgiminim',
+                'wɛnim',
+                'tɛnim',
+                'piβugɛnim',
+                'lambiginim',
+                'utinim',
+                'ɛtinim',
+                'duginim',
+                'ʔanatinim',
+                'ɛliminim',
+                'sɛminim',
+                'pɛndɛβiginim',
+                'putugɛnim',
+                'piginim',
+                'sɛmɛtinim',
+                'nɛsinim',
+                'sɛβiginim',
+                'maŋatinim',
+                'pagatinim']
+# target_verbs = [
+#     'dugɛnim', 'wɛnim', 'piβugɛnim', 'putugɛnim', 'nɛnim', 'ʔɛnim'
+# ]
 
 headers = ['Actor', 'Remote past', 'Recent past', 'Future', 'Imperative']
 vowels = ['i', 'e', 'ɛ', 'a', 'ə', 'u', 'o', 'ɔ']
@@ -13,15 +47,16 @@ white = '\033[0m'
 
 def predict_root(verb_tuple):
     # future_tns = verb_tuple[0][0:-4]  # strip -inim
-    future_tns = verb_tuple[0][0:-2]  # strip -ug
+    # future_tns = verb_tuple[0][0:-2]  # strip -ug
+    remote_past_tense = verb_tuple[0][0:-2]  # strip -om
     past_tns = verb_tuple[1][0:-3]  # strip -gom
 
-    if len(past_tns) > len(future_tns):
+    if len(past_tns) > len(remote_past_tense):
         return past_tns
-    elif len(past_tns) == len(future_tns):
-        return future_tns
+    elif len(past_tns) == len(remote_past_tense):
+        return remote_past_tense
     else:
-        return future_tns
+        return remote_past_tense
 
 
 def ending(root):
@@ -47,22 +82,17 @@ def predict_future_tense(verb_tuple):
     else:
         suffixes = ['inim', 'iniŋ', 'iŋ', 'ug', 'wa', 'is']
 
-    if ending(root) == 'V':
-        future_tense = [root[0:-1] + sfx for sfx in suffixes]
+    if last_character == 'l':
+        suffixes = ['ɛnim', 'ɛniŋ', 'aŋ', 'olug', 'wa', 'ɛlis']
+        future_tense = [root[0:-2] + sfx for sfx in suffixes]
+        future_tense[4] = root + suffixes[4]  # don't replace for -wa
 
-        future_tense[4] = root + suffixes[4]
+    elif ending(root) == 'V':
+        future_tense = [root[0:-1] + sfx for sfx in suffixes]
+        future_tense[4] = root + suffixes[4]  # don't replace for -wa
     else:
         future_tense = [root + sfx for sfx in suffixes]
-        future_tense[4] = root + suffixes[4]
-
-    short_o_root = False
-    if last_vowel == 'o' or last_vowel == 'ɔ':
-        if len(strip_consonants(root)) <= 2:
-            short_o_root = True
-    if short_o_root:
-        for i, v in enumerate(future_tense):
-            if not v.endswith('ug'):
-                future_tense[i] = v.replace('ɔ', 'ɛ', 1)
+        future_tense[4] = root + suffixes[4]  # don't replace for -wa
 
     return future_tense
 
@@ -76,16 +106,20 @@ def predict_past_tense(verb_tuple):
     elif last_vowel == 'i':
         suffixes = ['gɔm', 'gɔŋ', 'ge', 'ɔŋg', 'gima', 'gɔnd']
     elif last_character == 'a':
-        suffixes = ['gam', 'gaŋ', 'ga', 'aŋg', 'gama', 'gand']
-    elif root.endswith('ɔl') or root.endswith('ol') or root.endswith('ul'):
-        suffixes = ['gam', 'gaŋ', 'ga', 'aŋg', 'gama', 'gand']
+        suffixes = ['gam', 'gɔŋ', 'ga', 'aŋg', 'gama', 'gand']
+    elif last_character == 'l':
+        suffixes = ['gam', 'gɔŋ', 'ga', 'aŋg', 'gama', 'gand']
+        if len(strip_consonants(root)) == 1:
+            root = root.replace('ɔ', 'a')
     else:
         suffixes = ['gɔm', 'gɔŋ', 'ge', 'ɔŋg', 'gɔma', 'gɔnd']
-
     if ending(root) == 'C':
         if last_character == 'm':
             past_tense = [root[0:-1] + 'ŋ' + sfx for sfx in suffixes]
             past_tense[3] = root + suffixes[3]
+        elif last_character == 'l':
+            past_tense = [root[0:-1] + sfx for sfx in suffixes]
+            past_tense[3] = root[0:-2] + suffixes[3]
         else:
             past_tense = [root[0:-1] + sfx for sfx in suffixes]
             past_tense[3] = root + suffixes[3]
@@ -117,10 +151,14 @@ def predict_remote_past(verb_tuple):
 
 def predict_imperative(verb_tuple):
     root = predict_root(verb_tuple)
-    if ending(root) == 'V':
-        return [root[0:-1] + 'e', root[0:-1] + 'as']
+    if root.endswith('g'):
+        suffixes = ['u', 'as']
     else:
-        return [root + 'e', root + 'as']
+        suffixes = ['e', 'as']
+    if ending(root) == 'V':
+        return [root[0:-1] + sfx for sfx in suffixes]
+    else:
+        return [root + sfx for sfx in suffixes]
 
 
 def predict_paradigm(verb_tuple):
@@ -161,8 +199,9 @@ def get_paradigm(verb):
 
 def format_paradigm(data, verb='undefined'):
     v = verb.future['1s']
-    root = predict_root((verb.future['1p'], verb.past['1s']))
-    header = '\n{div}\nParadigm for {verb}. Root is thought to be {root}'.format(div='=' * 80, verb=v, root=root)
+    root = predict_root((verb.remote_past['1s'], verb.past['1s']))
+    header = '\n{div}\nParadigm for {verb}, "{eng}". Root is thought to be {root}'.format(
+        div='=' * 80, verb=v, eng=verb.eng, root=root)
     paradigm = []
     for d in data:
         paradigm += '\n{Title}:\n'.format(Title=d['title'])
@@ -172,23 +211,17 @@ def format_paradigm(data, verb='undefined'):
 
 
 def display_paradigms(correct_paradigms, incorrect_paradigms):
-    print('{n} paradigms processed\n'.format(n=len(correct_paradigms) + len(incorrect_paradigms)))
+    predictions = len(correct_paradigms) + len(incorrect_paradigms)
+    print('{n} paradigms processed\n'.format(n=predictions))
     print('The following paradigms were accurate:')
     for p in correct_paradigms:
         print(p)
+    print('{n}/{m} correct: {p:.1f}% accuracy'.format(n=len(correct_paradigms), m=predictions,
+                                                      p=len(correct_paradigms) / predictions * 100))
 
     print('\nIncorrect Paradigms:')
     for p in incorrect_paradigms:
         print(p)
-
-
-# def print_paradigms(data, verb='undefined', root='undefined'):
-#     with open(output_file, 'a') as file:
-#         print('\n{div}\nParadigm for {verb}. Root is thought to be {root}'.format(div='=' * 80, verb=verb, root=root)
-#               , file=file)
-#         for d in data:
-#             print('\n{Title}:'.format(Title=d['title']), file=file)
-#             print(tabulate(d['data'], headers=headers), file=file)
 
 
 def compare_paradigms(predicted_data, actual_data):
@@ -203,7 +236,7 @@ def compare_paradigms(predicted_data, actual_data):
 def process_verb_list(verbs):
     paradigms = []
     for v in verbs:
-        predicted_paradigm = predict_paradigm((v.future['1p'], v.past['1s']))
+        predicted_paradigm = predict_paradigm((v.remote_past['1s'], v.past['1s']))
         actual_paradigm = get_paradigm(v.future['1s'])
         predicted_paradigm = compare_paradigms(predicted_paradigm, actual_paradigm)
 
@@ -220,25 +253,16 @@ def process_verb_list(verbs):
 if __name__ == '__main__':
     print('Reading data...')
     data = kovol_verbs.read_verbsheet()
-    target_verbs = ['sindinim',
-                    'janim',
-                    'saliβinim',
-                    'liβinim',
-                    'aminim',
-                    'aŋgiminim',
-                    'wɛnim',
-                    'tɛnim',
-                    'piβugɛnim',
-                    'lambiginim',
-                    'utinim',
-                    'ɛtinim',
-                    'duginim',
-                    'ʔanatinim',
-                    'ɛliminim',
-                    'sɛminim']
+
     verbs = [v for v in data if v.future['1s'] in target_verbs]
+    try:
+        if sys.argv[1] == '--all':
+            verbs = data
+    except IndexError:
+        pass
 
     if os.path.exists(output_file):
         os.remove(output_file)
+
     print('Predicting {n} verbs...'.format(n=len(verbs)))
     process_verb_list(verbs)
