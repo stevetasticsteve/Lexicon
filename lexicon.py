@@ -62,11 +62,10 @@ if __name__ == '__main__':
     names = read_data.read_additional_sheet('Names')
     locations = read_data.read_additional_sheet('Locations')
     output.generate_html(data)
-    output.create_phonemic_assistant_db(data, checked_only=False, add_verbs=True)
+    output.create_phonemic_assistant_db(data, checked_only=True, add_verbs=True)
 
     verb_spreadsheet = lexicon_config.settings['verb_spreadsheet']
     verbs = kovol_verbs.read_verbsheet()
     kovol_verbs.paradigm_html(verbs)
 
-    output.create_phonemic_assistant_db(data, checked_only=False)
     output.create_csv(data, names, locations)

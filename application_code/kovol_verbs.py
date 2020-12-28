@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 
 import lexicon_config
 
-id_col, actor_col, tense_col, mode_col, kovol_col, english_col, author_col = 0, 1, 2, 3, 4, 5, 6
+id_col, actor_col, tense_col, mode_col, kovol_col, english_col, check_col, author_col = 0, 1, 2, 3, 4, 5, 6, 7
 
 logger = logging.getLogger('LexiconLog')
 
@@ -180,8 +180,12 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet'], outp
                 'phon': row[kovol_col],
                 'eng': row[english_col] + ': ' + row[tense_col] + ' ' + row[actor_col],
                 'tpi': 'None',
-                'pos': 'V'
+                'pos': 'V',
             }
+            try:
+                item['checked'] = row[check_col]
+            except IndexError:
+                pass
             verbs.append(item)
         return verbs
 

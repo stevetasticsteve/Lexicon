@@ -169,8 +169,11 @@ def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=F
             raise AssertionError('No checked data to work with!')
     else:
         logger.info('   - writing unchecked words to phonology assistant file')
+
     if add_verbs:
         verbs = kovol_verbs.read_verbsheet(output='list')
+        if checked_only:
+            verbs = [v for v in verbs if v['checked'] != '']
         processed_data += verbs
 
     pa_db = '\\_sh v3.0  400  PhoneticData\n'
