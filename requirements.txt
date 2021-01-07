@@ -1,7 +1,7 @@
 attrs==19.3.0
 Jinja2==2.11.2
 lml==0.0.9
-lxml==4.5.2
+lxml==4.6.2
 MarkupSafe==1.1.1
 more-itertools==8.4.0
 packaging==20.4
