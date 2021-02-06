@@ -8,8 +8,6 @@ settings = {
     'spreadsheet_name': 'tests/test_data/good_data.ods',
     'sheet_name': 'header',  # Name of the sheet containing data
     'target_folder': 'tests/test_output/',  # the folder the web page should be created in
-    'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-    'stylesheets': 'stylesheets',
     'log_file': 'tests/test_log'
 }
 
