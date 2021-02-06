@@ -193,8 +193,24 @@ def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=F
                        '{language}_phonology_assistant.db'.format(language=lexicon_config.settings['language'])))
     with open(db, 'w') as file:
         print(pa_db, file=file)
-
     logger.info('   - {n} words written to phonology assistant file'.format(n=len(processed_data)))
+
+    create_dataset_csv(processed_data)
+
+
+def create_dataset_csv(processed_data):
+    """Creates a .csv to detail the dataset used for phonemic analysis"""
+    logger.info('Creating record of phonemic dataset')
+    csv_path = os.path.join(lexicon_config.settings['target_folder'], 'phonemic_dataset.csv')
+
+    with open(csv_path, 'w') as csvfile:
+        fieldnames = ['ID', 'phonetics', 'English']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for item in processed_data:
+            writer.writerow({'ID': item['id'],
+                             'phonetics': item['phon'],
+                             'English': item['eng']})
 
 
 def create_csv(processed_data, *args):
@@ -220,5 +236,3 @@ def create_csv(processed_data, *args):
             writer.writerow([item['phon']])
         for item in additional_words:
             writer.writerow([item])
-
-
