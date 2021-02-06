@@ -187,12 +187,11 @@ class SupportingFunctionsTests(unittest.TestCase):
     def test_check_config(self):
         settings = {
             'language': 1,
-            'spreadsheet_name': 'Kovol_lexicon.ods',  # the abs path to the spreadsheet used as a data source
+            'spreadsheet_name': 'tests/test_data/good_data.ods',  # the abs path to the spreadsheet used as a data source
             'sheet_name': 'Sheet1',  # Name of the sheet containing data
             'target_folder': 'tests/',  # the folder the web page should be created in,
             'log_file': 'tests/test_log',  # path for the log file
             'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
-            'stylesheets': 'stylesheets'
         }
 
         with self.assertRaises(TypeError) as error:
