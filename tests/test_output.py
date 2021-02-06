@@ -150,11 +150,13 @@ class OtherFileGenerationTests(unittest.TestCase):
         parent_folder = (os.path.abspath(os.path.join(__file__, '..')))
         self.paDb_path = os.path.join(parent_folder, 'test_output', '{language}_phonology_assistant.db'.format(
             language=fixtures.settings['language']))
-        self.dataset_path = os.path.join(parent_folder, 'test_output', 'phonemic_data.csv')
+        self.dataset_path = os.path.join(parent_folder, 'test_output', 'phonemic_dataset.csv')
 
     def tearDown(self):
         if os.path.exists(self.paDb_path):
             os.remove(self.paDb_path)
+        if os.path.exists(self.dataset_path):
+            os.remove(self.dataset_path)
 
     def test_create_phonemic_assistant_new_file_exists(self):
         with patch('lexicon_config.settings', fixtures.settings):
