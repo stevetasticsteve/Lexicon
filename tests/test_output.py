@@ -148,17 +148,18 @@ class HTMLGenerationTests(unittest.TestCase):
 class OtherFileGenerationTests(unittest.TestCase):
     def setUp(self):
         parent_folder = (os.path.abspath(os.path.join(__file__, '..')))
-        self.path = os.path.join(parent_folder, 'test_output', '{language}_phonology_assistant.db'.format(
+        self.paDb_path = os.path.join(parent_folder, 'test_output', '{language}_phonology_assistant.db'.format(
             language=fixtures.settings['language']))
+        self.dataset_path = os.path.join(parent_folder, 'test_output', 'phonemic_data.csv')
 
     def tearDown(self):
-        if os.path.exists(self.path):
-            os.remove(self.path)
+        if os.path.exists(self.paDb_path):
+            os.remove(self.paDb_path)
 
     def test_create_phonemic_assistant_new_file_exists(self):
         with patch('lexicon_config.settings', fixtures.settings):
             output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=False)
-        self.assertTrue(os.path.exists(self.path))
+        self.assertTrue(os.path.exists(self.paDb_path))
         with patch('lexicon_config.settings', fixtures.settings):
             with self.assertRaises(AssertionError) as error:
                 output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=True)
@@ -168,7 +169,7 @@ class OtherFileGenerationTests(unittest.TestCase):
         with patch('lexicon_config.settings', fixtures.settings):
             output.create_phonemic_assistant_db(fixtures.good_processed_data, checked_only=False)
 
-        with open(self.path, 'r') as file:
+        with open(self.paDb_path, 'r') as file:
             expected_contents = """\\_sh v3.0  400  PhoneticData
 
 \\ref 001
@@ -197,3 +198,9 @@ class OtherFileGenerationTests(unittest.TestCase):
 
 """
             self.assertEqual(expected_contents, file.read())
+
+    def test_create_dataset_csv(self):
+        with patch('lexicon_config.settings', fixtures.settings):
+            output.create_dataset_csv(fixtures.good_processed_data)
+
+        self.assertTrue(os.path.exists(self.dataset_path))
