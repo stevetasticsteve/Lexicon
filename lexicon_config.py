@@ -1,11 +1,11 @@
 settings = {
     'language': 'Kovol',
-    'spreadsheet_name': '/home/steve/Documents/Computing/Python_projects/Lexicon/local_data/Kovol_lexicon.ods',
+    'spreadsheet_name': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_data/Kovol_lexicon.ods',
     'sheet_name': 'Dictionary',
-    'target_folder': '/home/steve/Documents/Computing/Python_projects/Lexicon/local_output',
-    'log_file': '/home/steve/Documents/Computing/Python_projects/Lexicon/local_output/Lexicon_error.log',
-    'stylesheets': '/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/',
-    'verb_spreadsheet': '/home/steve/Documents/Computing/Python_projects/Lexicon/local_data/Kovol_verbs.ods'
+    'target_folder': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output',
+    'log_file': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output/Lexicon_error.log',
+    'stylesheets': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/stylesheets/',
+    'verb_spreadsheet': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_data/Kovol_verbs.ods'
 }
 
 spreadsheet_config = {
