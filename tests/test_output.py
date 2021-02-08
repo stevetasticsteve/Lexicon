@@ -174,25 +174,25 @@ class OtherFileGenerationTests(unittest.TestCase):
         with open(self.paDb_path, 'r') as file:
             expected_contents = """\\_sh v3.0  400  PhoneticData
 
-\\ref 001
+\\ref 1
 \ge child
 \gn pikinini
 \ph undum
 \ps n
 
-\\ref 002
+\\ref 2
 \ge dad
 \gn papa
 \ph inda
 \ps n
 
-\\ref 003
+\\ref 3
 \ge rat
 \gn rat
 \ph sinasim
 \ps n
 
-\\ref 004
+\\ref 3
 \ge rat
 \gn rat
 \ph sinasim

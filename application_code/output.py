@@ -176,7 +176,7 @@ def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=F
             verbs = [v for v in verbs if v['checked'] != '']
         processed_data += verbs
 
-    pa_db = r'\\_sh v3.0  400  PhoneticData\n'
+    pa_db = '\\_sh v3.0  400  PhoneticData\n'
 
     for item in processed_data:
         #item['ref'] = '{:03d}'.format(i)  # format ref as 001, 002 etc
