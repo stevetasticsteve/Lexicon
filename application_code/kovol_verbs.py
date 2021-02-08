@@ -181,6 +181,7 @@ def read_verbsheet(spreadsheet=lexicon_config.settings['verb_spreadsheet'], outp
                 'eng': row[english_col] + ': ' + row[tense_col] + ' ' + row[actor_col],
                 'tpi': 'None',
                 'pos': 'V',
+                'id': 'v' + str(row[id_col])
             }
             try:
                 item['checked'] = row[check_col]
