@@ -23,20 +23,22 @@ from application_code import read_data
 
 def initiate_logging():
     # Initiate error logging
-    log = logging.getLogger('LexiconLog')
+    log = logging.getLogger("LexiconLog")
     log.setLevel(logging.DEBUG)
 
     # add a stream log, and a file log for errors
     ch = logging.StreamHandler()
-    formatter = logging.Formatter('%(message)s')
+    formatter = logging.Formatter("%(message)s")
     ch.setFormatter(formatter)
     ch.setLevel(logging.DEBUG)
     log.addHandler(ch)
-    log.info('Updating Lexicon')
-    if __name__ == '__main__':
-        log_file = lexicon_config.settings['log_file']
+    log.info("Updating Lexicon")
+    if __name__ == "__main__":
+        log_file = lexicon_config.settings["log_file"]
         fh = logging.FileHandler(log_file)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
         fh.setFormatter(formatter)
         fh.setLevel(logging.ERROR)
         log.addHandler(fh)
@@ -45,26 +47,34 @@ def initiate_logging():
 
 def excepthook(exctype, value, tb):
     if exctype == AssertionError:
-        logger.error('A critical error occurred: {value} \nAdjust settings and try again'.format(value=value))
+        logger.error(
+            "A critical error occurred: {value} \nAdjust settings and try again".format(
+                value=value
+            )
+        )
     else:
-        logger.critical('''An unhandled error occured, please contact the developer:
+        logger.critical(
+            """An unhandled error occured, please contact the developer:
         Error type : {type}
         Error value: {value}
-        Traceback: {tb}'''.format(type=exctype, value=value, tb=traceback.format_tb(tb)))
+        Traceback: {tb}""".format(
+                type=exctype, value=value, tb=traceback.format_tb(tb)
+            )
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logger = initiate_logging()
     sys.excepthook = excepthook
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     data = read_data.read_lexicon()
-    names = read_data.read_additional_sheet('Names')
-    locations = read_data.read_additional_sheet('Locations')
+    names = read_data.read_additional_sheet("Names")
+    locations = read_data.read_additional_sheet("Locations")
     output.generate_html(data)
     output.create_phonemic_assistant_db(data, checked_only=True, add_verbs=True)
 
-    verb_spreadsheet = lexicon_config.settings['verb_spreadsheet']
+    verb_spreadsheet = lexicon_config.settings["verb_spreadsheet"]
     verbs = kovol_verbs.read_verbsheet()
     kovol_verbs.paradigm_html(verbs)
 
