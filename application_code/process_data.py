@@ -190,6 +190,22 @@ def sort_by_sense(processed_data):
     return sorted(processed_data, key=lambda data: data['sense'])
 
 
+def phonetic_sort(character):
+    if character == "ɛ":
+        return "e"
+    elif character == "β":
+        return "b"
+    elif character == "ə":
+        return "e"
+    elif character == "ɑ":
+        return "a"
+    elif character == "ʔ":
+        return "k"
+    elif character == "ɔ":
+        return "o"
+    else:
+        return character
+
 # Define some quick asserts to make sure functions are given the correct data model to work on (they are similar)
 def check_processed_data(processed_data, function):
     """A quick assert that the right data model is given to function, a list of dictionaries produced by
@@ -281,7 +297,7 @@ def create_lexicon_entries(processed_data):
             lexeme_index += 1
         last_id = entry['id']
     # sort alphabetically
-    lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_object: lexeme_object.headword.lower())
+    lexicon_entries = sorted(lexicon_entries, key=lambda lexeme_object: phonetic_sort(lexeme_object.headword.lower()))
     return lexicon_entries
 
 
@@ -307,4 +323,4 @@ def get_word_beginnings(lexicon_entries):
      headwords"""
     check_lexicon_entries(lexicon_entries, 'get_word_beginnings()')
     letters = [x.headword[0].lower() for x in lexicon_entries if x.headword]
-    return sorted(set(letters))
+    return sorted(set(letters), key=phonetic_sort)
