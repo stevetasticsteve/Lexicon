@@ -2,7 +2,7 @@
 through css #}
 
 <div class="d-none d-md-block">
-    <nav id="dictionary_sidebar">
+    <nav id="dictionary_sidebar" class="bg-info">
 <!--        Searchbar for large viewports-->
         <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
             <div class="input-group">
@@ -10,12 +10,29 @@ through css #}
                      aria-describedby="button-addon1" class="form-control border-0 bg-light">
             </div>
           </div>
-        <a href="check_list.html">See checklist</a>
+        <a href="check_list.html" class="text-light">See checklist</a>
         <hr>
         <div id="letters">
-            {% for letter in letters %}
-            <ul><a href="#{{letter}}">{{letter}}</a></ul>
-            {% endfor %}
+            <div class="row">
+                <div class="col-sm-1">
+                    <div class="btn-group-vertical">
+                        {% for letter in letters %}
+                        {% if loop.index <= half_letters %}
+                         <button type="button" class="btn btn-light p-1 mx-1"><a href="#{{letter}}" class="text-dark text-center">{{letter}}</a></button>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="btn-group-vertical">
+                        {% for letter in letters %}
+                        {% if loop.index > half_letters %}
+                         <button type="button" class="btn btn-light p-1 mx-1"><a href="#{{letter}}" class="text-dark text-center">{{letter}}</a></button>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
         <script>$('#filter').keyup(function () {
             var filter = this.value.toLowerCase();

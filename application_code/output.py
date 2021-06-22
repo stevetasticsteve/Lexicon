@@ -72,6 +72,7 @@ def generate_lexicon_page(processed_data, errors):
 
     lexicon_entries = process_data.create_lexicon_entries(processed_data)
     initial_letters = process_data.get_word_beginnings(lexicon_entries)
+    half_letters = len(initial_letters)/2
 
     file_loader = FileSystemLoader("templates")
     env = Environment(loader=file_loader, autoescape=True)
@@ -85,6 +86,7 @@ def generate_lexicon_page(processed_data, errors):
                 entries=lexicon_entries,
                 errors=errors,
                 letters=initial_letters,
+                half_letters=half_letters,
             ),
             file=file,
         )
@@ -119,12 +121,13 @@ def generate_eng_page(processed_data):
 
     lexicon_entries = process_data.create_reverse_lexicon_entries(processed_data)
     initial_letters = process_data.get_word_beginnings(lexicon_entries)
+    half_letters = len(initial_letters)/2
 
     html = os.path.join(lexicon_config.settings["target_folder"], "reverse_dict.html")
     with open(html, "w") as file:
         print(
             template.render(
-                context=context, entries=lexicon_entries, letters=initial_letters
+                context=context, entries=lexicon_entries, letters=initial_letters, half_letters=half_letters
             ),
             file=file,
         )
