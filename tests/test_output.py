@@ -54,7 +54,8 @@ class HTMLGenerationTests(unittest.TestCase):
             expected_word_beginnings = ("u", "i", "s")  # from fixture
             for letter in expected_word_beginnings:
                 self.assertIn(
-                    f"<button type=\"button\" class=\"btn btn-light p-1 mx-1\"><a href=\"#{letter}\" class=\"text-dark text-center\">{letter}</a></button>",
+                    f'<button type="button" class="btn btn-light p-1 mx-1"><a href="#{letter}" '
+                    f'class="text-dark text-center">{letter}</a></button>',
                     file,
                     "letter beginnings missing",
                 )
