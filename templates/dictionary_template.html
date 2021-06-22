@@ -9,7 +9,7 @@ to be passed in. #}
     <div class="container-fluid" id="main_pane">
         {% include 'partial/header.html' %}
 
-        <div id="entries">
+        <div id="entries" class="container-fluid">
         {% for letter in letters %}
             <div class="container-fluid letter">
                 <hr><h1 id="{{letter}}">{{letter}}</h1><hr>

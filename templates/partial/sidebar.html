@@ -2,18 +2,18 @@
 through css #}
 
 <div class="d-none d-md-block">
-    <nav id="dictionary_sidebar" class="bg-info">
+    <nav id="dictionary_sidebar" class="bg-info text-center">
 <!--        Searchbar for large viewports-->
-        <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
+        <div class="p-1 my-2 bg-light rounded rounded-pill shadow-sm">
             <div class="input-group">
-              <input type="text" id="filter" name="filter" placeholder="Type to search"
-                     aria-describedby="button-addon1" class="form-control border-0 bg-light">
+              <input type="text" id="filter" name="filter" placeholder="Search"
+                     aria-describedby="button-addon1" class="form-control border-0 mx-1 bg-light">
             </div>
           </div>
-        <a href="check_list.html" class="text-light">See checklist</a>
+        <a href="check_list.html" class="text-light my-1">Checklist</a>
         <hr>
         <div id="letters">
-            <div class="row">
+            <div class="row mx-auto">
                 <div class="col-sm-1">
                     <div class="btn-group-vertical">
                         {% for letter in letters %}
