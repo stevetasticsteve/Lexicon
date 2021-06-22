@@ -11,15 +11,15 @@ to be passed in. #}
 
         <div id="entries" class="container-fluid">
         {% for letter in letters %}
-            <div class="container-fluid letter">
+            <div class="container-fluid letter text-center bg-light">
                 <hr><h1 id="{{letter}}">{{letter}}</h1><hr>
             </div>
 
             {% for column in entries|slice(2) %}
-                <div class="row ">
+                <div class="row">
                     {% for entry in column %}
                     {%- if entry.headword[0] == letter -%}
-                        <div class="entry col-sm-6 border-right">
+                        <div class="entry col-sm-6 border-right border-bottom my-auto">
                             {%- if context.dict_type -%}
                             {% include 'partial/reverse_entry.html' %}
                             {%- else -%}
