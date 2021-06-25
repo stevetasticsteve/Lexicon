@@ -209,6 +209,7 @@ def raw_data_to_dict(raw_data, col, number_of_columns):
 
 
 def post_process_raw_data(dict_data):
+    """Add a default sense number to blank rows."""
     # post processing tasks
     for entry in dict_data:
         if entry["sense"] == "":
