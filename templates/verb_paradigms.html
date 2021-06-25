@@ -1,0 +1,26 @@
+{# Main page for creating normal or reverse dictionary pages. Requires letters (a list of initial letters),
+entries (a tuple of (headword, dict of entry info)) and context (date, title and a marker if reverse dict is intended)
+to be passed in. #}
+
+{% extends 'partial/base.html' %}
+{% block page_content %}
+<div class="wrapper">
+    {% include 'partial/sidebar.html' %}
+    <div class="container-fluid" id="main_pane">
+        {% include 'partial/header.html' %}
+        <strong>Searching</strong>
+        <li>If you know the Kovol 1s future for the verb you can use the search bar to filter this page.</li>
+        <li>If you're searching for a particular conjugation you can use Ctrl + F</li>
+        <br>
+        <li>Imperative forms in a paradigm are marked with *</li><hr>
+
+        <div class="container container-fluid" id="entries">
+        {% for verb in verbs %}
+            <h3>{{verb.future_1s}}, "{{verb.english}}</h3>
+            {% include 'partial/paradigm.html' %}
+        {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

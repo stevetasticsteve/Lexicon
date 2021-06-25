@@ -9,7 +9,6 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 import lexicon_config
-from application_code import kovol_verbs
 from application_code import process_data
 
 logger = logging.getLogger("LexiconLog")
@@ -200,6 +199,30 @@ def generate_context(title, header):
     return context
 
 
+def generate_paradigms(verbs):
+    """Creates a verb paradigms page"""
+    file_loader = FileSystemLoader("templates")
+    env = Environment(loader=file_loader)
+    template = env.get_template("verb_paradigms.html")
+
+    date = datetime.datetime.now().strftime("%A %d %B %Y")
+    context = {
+        "title": "Verbs",
+        "date": date,
+        "language": lexicon_config.settings["language"],
+        "header": "verbs",
+        "bootstrap": lexicon_config.settings.get("bootstrap"),
+        "jquery": lexicon_config.settings.get("jquery"),
+    }
+    html = os.path.join(lexicon_config.settings["target_folder"], "verb_paradigms.html")
+
+    verbs = [v for v in verbs if v.future_1s] # Exclude verbs missing main entry
+    with open(html, "w") as file:
+        print(template.render(context=context, verbs=verbs), file=file)
+
+    logger.info("Kovol verb paradigms HTML page created")
+
+
 def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=False):
     """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
     Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
@@ -216,9 +239,7 @@ def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=F
         logger.info("   - writing unchecked words to phonology assistant file")
 
     if add_verbs:
-        verbs = kovol_verbs.read_verbsheet(output="list")
-        if checked_only:
-            verbs = [v for v in verbs if v["checked"] != ""]
+        verbs = process_data.get_pa_verbs(checked=checked_only)
         processed_data += verbs
 
     pa_db = "\\_sh v3.0  400  PhoneticData\n"
@@ -273,7 +294,7 @@ def create_dataset_csv(processed_data):
 def create_csv(processed_data, *args):
     """Creates a CSV to use as a simple wordlist"""
     logger.info("Writing CSV file")
-    verbs = kovol_verbs.read_verbsheet(output="list")
+    verbs = process_data.get_verb_conjugations()
     processed_data += verbs
 
     csv_path = os.path.join(lexicon_config.settings["target_folder"], "word_list.csv")

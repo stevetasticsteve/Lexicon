@@ -1,9 +1,11 @@
 # This file contains functions for the 2nd layer of the application - processing the data for output. This involves
 # validating the raw data to identify data entry mistakes and collating the data under headwords (so for instance.
 # all the different meanings of 'running' would go under a single dictionary entry rather than several.
-
+import csv
 import logging
 from collections import Counter
+
+from application_code import read_data
 
 logger = logging.getLogger("LexiconLog")
 
@@ -381,3 +383,26 @@ def get_word_beginnings(lexicon_entries):
     check_lexicon_entries(lexicon_entries, "get_word_beginnings()")
     letters = [x.headword[0].lower() for x in lexicon_entries if x.headword]
     return sorted(set(letters), key=phonetic_sort)
+
+
+def get_verb_conjugations(checked=False):
+    """Retrieve only the Kovol words from the verb .csv"""
+    with open(read_data.verb_sheet_to_csv(checked=checked), 'r') as csvfile:
+        data = csv.reader(csvfile)
+        for d in data:
+            data = [{"phon":d[3]} for d in data]
+
+        return data
+
+def get_pa_verbs(checked=True):
+    """return the info needed to add a verb to pa.db"""
+    with open(read_data.verb_sheet_to_csv(checked=checked), 'r') as csvfile:
+        data = csv.reader(csvfile)
+        for d in data:
+            data = [{"phon": d[3],
+                     "tpi": "verb",
+                     "pos": "verb",
+                     "eng": "verb",
+                     "id": "verb"} for d in data]
+
+        return data
