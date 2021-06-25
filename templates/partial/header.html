@@ -39,24 +39,7 @@
                  aria-describedby="button-addon1" class="form-control border-0 bg-light">
         </div>
     </div>
-<script>$('#small_filter').keyup(function () {
-    var filter = this.value.toLowerCase();
-
-    $('.entry').each(function() {
-        var _this = $(this);
-        var headword = _this.find('h3').text().toLowerCase();
-
-        if (headword.indexOf(filter) < 0) {
-            _this.hide();
-            }
-            else if(filter == ""){
-                _this.show();
-            }
-            else{
-                _this.show();
-                }
-         });
-    });</script>
+{% include 'partial/filter_js.html' %}
 </div>
 {% if errors %}
 <div errors class="container-fluid">

@@ -34,30 +34,6 @@ through css #}
                 </div>
             </div>
         </div>
-        <script>$('#filter').keyup(function () {
-            var filter = this.value.toLowerCase();
-
-            $('.letter').each(function() {
-                $(this).hide();
-                });
-
-            $('#letters').hide();
-
-            $('.entry').each(function() {
-                var _this = $(this);
-                var headword = _this.find('h3').text().toLowerCase();
-
-                if (headword.indexOf(filter) < 0) {
-                    _this.hide();
-                    }
-                    else if(filter == ""){
-                        _this.show();
-                    }
-                    else{
-                        _this.show();
-                        }
-                 });
-
-            });</script>
+        {% include 'partial/filter_js.html' %}
     </nav>
 </div>

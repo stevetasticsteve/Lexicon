@@ -1,6 +1,6 @@
 {# template for a lang-eng entry. Includes sense information #}
 
-<h3>{{entry.headword}}</h3>
+<h3 class="headword">{{entry.headword}}</h3>
 {% if entry.orth_prediction %}
     <p {% if entry.orth_prediction[1] %} class="text-danger" {% endif%} data-toggle="tooltip" data-placement="right" title="Suggested orthography">
         ({{ entry.orth_prediction[0] }})
@@ -9,7 +9,7 @@
 {% for sense in entry.entry %}
     <p>
     {{sense.sense}} <strong>{{sense.pos}}</strong> [{{sense.phonetics}}]
-    <strong><em style="color:dodgerblue">{{sense.english}}</em></strong>
+    <strong class="english"><em style="color:dodgerblue">{{sense.english}}</em></strong>
     <strong style="color:gray">{{sense.tok_pisin}}</strong>
     </p>
     {%- if sense.definition -%}

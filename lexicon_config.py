@@ -4,7 +4,8 @@ settings = {
     'sheet_name': 'Dictionary',
     'target_folder': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output',
     'log_file': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output/Lexicon_error.log',
-    'stylesheets': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/stylesheets/',
+    'bootstrap': '/home/steve/Documents/Computing/Python_projects/python_web/static_files/bootstrap',
+    'jquery': '/home/steve/Documents/Computing/Python_projects/python_web/static_files/jquery',
     'verb_spreadsheet': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_data/Kovol_verbs.ods'
 }
 
