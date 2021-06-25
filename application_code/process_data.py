@@ -5,6 +5,8 @@ import csv
 import logging
 from collections import Counter
 
+from kovol_language_tools import phonemics
+
 from application_code import read_data
 
 logger = logging.getLogger("LexiconLog")
@@ -332,8 +334,11 @@ def create_lexicon_entries(processed_data):
         # choose phonetics for headword if orthography not available
         if entry["orth"]:
             headword = entry["orth"]
+            orth_prediction = None
         else:
             headword = entry["phon"]
+            orth_prediction = phonemics.phonetics_to_orthography(entry["phon"], hard_fail=False)
+
         sense_data = {
             "pos": entry["pos"],
             "phonetics": entry["phon"],
@@ -349,6 +354,7 @@ def create_lexicon_entries(processed_data):
             lexicon_entries[lexeme_index].entry.append(sense_data)
         else:  # this is a new headword
             lexeme = LexiconEntry(headword, sense_data)
+            lexeme.orth_prediction = orth_prediction
             lexicon_entries.append(lexeme)
             lexeme_index += 1
         last_id = entry["id"]
@@ -389,9 +395,7 @@ def get_verb_conjugations(checked=False):
     """Retrieve only the Kovol words from the verb .csv"""
     with open(read_data.verb_sheet_to_csv(checked=checked), "r") as csvfile:
         data = csv.reader(csvfile)
-        for d in data:
-            data = [{"phon": d[3]} for d in data]
-
+        data = [{"phon": d[3]} for d in data]
         return data
 
 
@@ -399,16 +403,14 @@ def get_pa_verbs(checked=True):
     """return the info needed to add a verb to pa.db"""
     with open(read_data.verb_sheet_to_csv(checked=checked), "r") as csvfile:
         data = csv.reader(csvfile)
-        for d in data:
-            data = [
-                {
-                    "phon": d[3],
-                    "tpi": "verb",
-                    "pos": "verb",
-                    "eng": "verb",
-                    "id": "verb",
-                }
-                for d in data
-            ]
-
+        data = [
+            {
+                "phon": d[3],
+                "tpi": "verb",
+                "pos": "verb",
+                "eng": "verb",
+                "id": "verb",
+            }
+            for d in data
+        ]
         return data

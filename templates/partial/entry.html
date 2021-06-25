@@ -1,6 +1,11 @@
 {# template for a lang-eng entry. Includes sense information #}
 
 <h3>{{entry.headword}}</h3>
+{% if entry.orth_prediction %}
+    <p {% if entry.orth_prediction[1] %} class="text-danger" {% endif%} data-toggle="tooltip" data-placement="right" title="Suggested orthography">
+        ({{ entry.orth_prediction[0] }})
+    {% if entry.orth_prediction[1] %} Phonemics error: {{ entry.orth_prediction[1] }} {% endif %} </p>
+{% endif %}
 {% for sense in entry.entry %}
     <p>
     {{sense.sense}} <strong>{{sense.pos}}</strong> [{{sense.phonetics}}]
