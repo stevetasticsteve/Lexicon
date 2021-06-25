@@ -13,6 +13,7 @@ logger = logging.getLogger("LexiconLog")
 
 
 def check_settings(config_file=lexicon_config.settings):
+    """Cause various errors if user has incorrectly defined settings."""
     # sheet_name checked by read_lexicon()
     paths = (
         config_file["target_folder"],
@@ -111,7 +112,8 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
 
 
 def read_additional_sheet(sheet_name, config_file=lexicon_config):
-    """Reads additional sheets with columns [Kovol, Phonetic, Dialect, Description]"""
+    """Reads additional sheets with columns [Kovol, Phonetic, Dialect, Description]. Intended to separate
+    out proper nouns from the main sheet."""
     spreadsheet = config_file.settings["spreadsheet_name"]
     number_of_columns = 4
     # read the file with pyexcel
@@ -154,6 +156,7 @@ def read_additional_sheet(sheet_name, config_file=lexicon_config):
 
 
 def pre_process_raw_data(raw_data, col):
+    """Exclude blank data and incorrect ID numbers each row from .ods dump."""
     # set the id number to 0 if it's blank - preventing sort failures later
     for row in raw_data:
         if row[col["id_col"]] == "":
@@ -169,6 +172,7 @@ def pre_process_raw_data(raw_data, col):
 
 
 def raw_data_to_dict(raw_data, col, number_of_columns):
+    """Take the rows from pyexcel_ods and convert from list to dict for easier handling."""
     dict_data = []
     for entry in raw_data:
         while len(entry) < number_of_columns:  # add blank columns to avoid index errors
