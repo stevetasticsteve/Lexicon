@@ -387,22 +387,28 @@ def get_word_beginnings(lexicon_entries):
 
 def get_verb_conjugations(checked=False):
     """Retrieve only the Kovol words from the verb .csv"""
-    with open(read_data.verb_sheet_to_csv(checked=checked), 'r') as csvfile:
+    with open(read_data.verb_sheet_to_csv(checked=checked), "r") as csvfile:
         data = csv.reader(csvfile)
         for d in data:
-            data = [{"phon":d[3]} for d in data]
+            data = [{"phon": d[3]} for d in data]
 
         return data
 
+
 def get_pa_verbs(checked=True):
     """return the info needed to add a verb to pa.db"""
-    with open(read_data.verb_sheet_to_csv(checked=checked), 'r') as csvfile:
+    with open(read_data.verb_sheet_to_csv(checked=checked), "r") as csvfile:
         data = csv.reader(csvfile)
         for d in data:
-            data = [{"phon": d[3],
-                     "tpi": "verb",
-                     "pos": "verb",
-                     "eng": "verb",
-                     "id": "verb"} for d in data]
+            data = [
+                {
+                    "phon": d[3],
+                    "tpi": "verb",
+                    "pos": "verb",
+                    "eng": "verb",
+                    "id": "verb",
+                }
+                for d in data
+            ]
 
         return data

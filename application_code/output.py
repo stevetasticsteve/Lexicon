@@ -216,7 +216,7 @@ def generate_paradigms(verbs):
     }
     html = os.path.join(lexicon_config.settings["target_folder"], "verb_paradigms.html")
 
-    verbs = [v for v in verbs if v.future_1s] # Exclude verbs missing main entry
+    verbs = [v for v in verbs if v.future_1s]  # Exclude verbs missing main entry
     with open(html, "w") as file:
         print(template.render(context=context, verbs=verbs), file=file)
 
