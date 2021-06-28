@@ -9,13 +9,6 @@
         } else {
             var filter = $('#filter').val();
         }
-        console.log(filter);
-
-    <!--          $('.letter').each(function() {-->
-    <!--                $(this).hide();-->
-    <!--                });-->
-
-    <!--            $('#letters').hide();-->
 
         $('.entry').each(function() {
             var _this = $(this);
@@ -35,5 +28,17 @@
                     _this.show();
                     }
              });
+
+       $('.main_pane_letter').each(function() {
+            var _this = $(this);
+            _this.show();
+            console.log(_this.find(".entry:visible").length);
+            if ( _this.find(".entry:visible").length < 1 ) {
+                _this.hide();
+            } else {
+            _this.show();
+            }
+        });
+
         }
 </script>

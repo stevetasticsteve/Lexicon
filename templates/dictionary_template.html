@@ -8,15 +8,14 @@ to be passed in. #}
     {% include 'partial/sidebar.html' %}
     <div class="container-fluid" id="main_pane">
         {% include 'partial/header.html' %}
-
         <div id="entries" class="container-fluid">
         {% for letter in letters %}
-            <div class="container-fluid letter text-center bg-light">
-                <hr><h1 id="{{letter}}">{{letter}}</h1><hr>
-            </div>
-
-            {% for column in entries|slice(2) %}
+            <div class="main_pane_letter">
+                <div class="container-fluid letter text-center bg-light">
+                    <hr><h1 id="{{letter}}" >{{letter}}</h1><hr>
+                </div>
                 <div class="row">
+                {% for column in entries|slice(2) %}
                     {% for entry in column %}
                     {%- if entry.headword[0] == letter -%}
                         <div class="entry col-sm-6 border-right border-bottom my-auto">
@@ -28,11 +27,11 @@ to be passed in. #}
                         </div>
                     {%- endif -%}
                     {% endfor %}
-                    </div>
-            {% endfor %}
+                {% endfor %}
+                </div>
+            </div>
         {% endfor %}
         </div>
-
     </div>
 </div>
 {% endblock %}
