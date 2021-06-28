@@ -1,28 +1,39 @@
 <script>
-        $('#filter, #small_filter').keyup(function () {
-           $('#filter, #small_filter').val(this.value);
+    $('#filter, #small_filter').keyup(my_filter);
+    $('#kovol_radio, #english_radio').click( my_filter);
+
+        function my_filter() {
+        if ($(this).hasClass("form-control")) {
+            $('#filter, #small_filter').val(this.value);
             var filter = this.value.toLowerCase();
+        } else {
+            var filter = $('#filter').val();
+        }
+        console.log(filter);
 
+    <!--          $('.letter').each(function() {-->
+    <!--                $(this).hide();-->
+    <!--                });-->
 
-<!--          $('.letter').each(function() {-->
-<!--                $(this).hide();-->
-<!--                });-->
+    <!--            $('#letters').hide();-->
 
-<!--            $('#letters').hide();-->
+        $('.entry').each(function() {
+            var _this = $(this);
+            if ($('#kovol_radio').is(':checked')) {
+            var headword = _this.find('.headword').text().toLowerCase();
+            } else if ($('#english_radio').is(':checked')) {
+            var headword = _this.find('.english').text().toLowerCase();
+            }
 
-            $('.entry').each(function() {
-                var _this = $(this);
-                var headword = _this.find('.headword, .english').text().toLowerCase();
-
-                if (headword.indexOf(filter) < 0) {
-                    _this.hide();
+            if (headword.indexOf(filter) < 0) {
+                _this.hide();
+                }
+                else if(filter == ""){
+                    _this.show();
+                }
+                else{
+                    _this.show();
                     }
-                    else if(filter == ""){
-                        _this.show();
-                    }
-                    else{
-                        _this.show();
-                        }
-                 });
-
-            });</script>
+             });
+        }
+</script>
