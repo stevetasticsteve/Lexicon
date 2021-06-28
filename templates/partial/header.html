@@ -37,6 +37,12 @@
         <div class="input-group">
           <input type="text" id="small_filter" name="filter" placeholder="Type to search"
                  aria-describedby="button-addon1" class="form-control border-0 bg-light">
+            <div class="input-group-append">
+                <div class="custom-control custom-switch my-auto">
+                  <input type="checkbox" class="custom-control-input" id="lang_switch">
+                  <label class="custom-control-label mr-2" for="lang_switch">Eng</label>
+                </div>
+            </div>
         </div>
     </div>
 {% include 'partial/filter_js.html' %}
