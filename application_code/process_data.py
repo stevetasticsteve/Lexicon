@@ -320,7 +320,7 @@ class LexiconEntry:
         )
 
 
-def create_lexicon_entries(processed_data):
+def create_lexicon_entries(processed_data, verb_data=None):
     """Takes the data and creates actual dictionary entries that takes account of multiple senses for the same word.
     Returns a list of tuples (headword, list of sense dictionary) sorted alphabetically by headword"""
     check_processed_data(processed_data, "create_lexicon_entries()")
@@ -358,11 +358,20 @@ def create_lexicon_entries(processed_data):
             lexicon_entries.append(lexeme)
             lexeme_index += 1
         last_id = entry["id"]
+
+    if verb_data:
+        lexicon_entries += create_verb_lexicon_entries(verb_data)
     # sort alphabetically
     lexicon_entries = sorted(
         lexicon_entries,
         key=lambda lexeme_object: phonetic_sort(lexeme_object.headword.lower()),
     )
+    return lexicon_entries
+
+
+def create_verb_lexicon_entries(verb_data):
+    """Convert a list of verb objects into Lexeme objects."""
+    lexicon_entries = [LexiconEntry(v.future_1s, v.__dict__) for v in verb_data]
     return lexicon_entries
 
 

@@ -73,11 +73,11 @@ if __name__ == "__main__":
     data = read_data.read_lexicon()
     names = read_data.read_additional_sheet("Names")
     locations = read_data.read_additional_sheet("Locations")
+    verb_list = verbs.get_data_from_csv(read_data.verb_sheet_to_csv())
 
-    output.generate_html(data)
+    output.generate_html(data, verb_data=verb_list)
     output.create_phonemic_assistant_db(data, checked_only=True, add_verbs=True)
 
-    verb_list = verbs.get_data_from_csv(read_data.verb_sheet_to_csv())
     output.generate_paradigms(verb_list)
 
     output.create_csv(data, names, locations)

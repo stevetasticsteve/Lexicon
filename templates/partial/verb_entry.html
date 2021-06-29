@@ -1,0 +1,20 @@
+{% set verb = entry.entry[0] %}
+
+<div class="accordion px-0" id="{{verb.future_1s}}_accordion">
+  <div class="card">
+    <div class="card-header" id="{{verb.future_1s}}_heading">
+      <h2>
+        <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#{{verb.future_1s}}_collapse" aria-expanded="true" aria-controls="{{verb.future_1s}}_collapse">
+          <h3 class="headword">{{entry.headword}}</h3>
+        </button>
+      </h2>
+      <p class="english"><strong><em style="color:dodgerblue">{{ verb.english }}</em></strong></p>
+    </div>
+
+    <div id="{{verb.future_1s}}_collapse" class="collapse" aria-labelledby="{{verb.future_1s}}_collapse" data-parent="#{{verb.future_1s}}_accordion">
+      <div class="card-body">
+        {% include 'partial/paradigm.html' %}
+      </div>
+    </div>
+  </div>
+</div>

@@ -44,12 +44,12 @@ def assert_templates_exist(template_dir="templates"):
         raise FileNotFoundError(msg)
 
 
-def generate_html(processed_data):
+def generate_html(processed_data, verb_data=None):
     """Generate the HTML pages"""
     assert_templates_exist()
     errors = process_data.validate_data(processed_data)
 
-    generate_lexicon_page(processed_data, errors)
+    generate_lexicon_page(processed_data, errors, verb_data=verb_data)
     generate_eng_page(processed_data)
     generate_help_page()
     generate_check_page(processed_data)
@@ -59,7 +59,7 @@ def generate_html(processed_data):
         logger.info("   - an error page has been generated")
 
 
-def generate_lexicon_page(processed_data, errors):
+def generate_lexicon_page(processed_data, errors, verb_data=None):
     """Create suitable headwords for a dictionary and create a dictionary HTML page"""
     process_data.check_processed_data(processed_data, "generate_HTML()")
 
@@ -69,7 +69,7 @@ def generate_lexicon_page(processed_data, errors):
         header="lexicon",
     )
 
-    lexicon_entries = process_data.create_lexicon_entries(processed_data)
+    lexicon_entries = process_data.create_lexicon_entries(processed_data, verb_data=verb_data)
     initial_letters = process_data.get_word_beginnings(lexicon_entries)
     half_letters = len(initial_letters) / 2
 
