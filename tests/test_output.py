@@ -51,15 +51,6 @@ class HTMLGenerationTests(unittest.TestCase):
                 datetime.datetime.now().strftime("%A %d %B %Y"), file, "Date missing"
             )
 
-            expected_word_beginnings = ("u", "i", "s")  # from fixture
-            for letter in expected_word_beginnings:
-                self.assertIn(
-                    f'<button type="button" class="btn btn-light p-1 mx-1"><a href="#{letter}" '
-                    f'class="text-dark text-center">{letter}</a></button>',
-                    file,
-                    "letter beginnings missing",
-                )
-
     def test_generate_error_page_with_repeated_sense_errors(self):
         with patch("lexicon_config.settings", fixtures.settings):
             output.generate_html(fixtures.repeated_sense_processed_data)
