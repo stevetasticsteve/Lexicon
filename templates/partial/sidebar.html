@@ -22,28 +22,5 @@ through css #}
         </div>
         <a href="check_list.html" class="text-light my-1">Checklist</a>
         <hr>
-        <div id="letters">
-            <div class="row mx-auto">
-                <div class="col-sm-1">
-                    <div class="btn-group-vertical">
-                        {% for letter in letters %}
-                        {% if loop.index <= half_letters %}
-                         <button type="button" class="btn btn-light p-1 mx-1"><a href="#{{letter}}" class="text-dark text-center">{{letter}}</a></button>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-sm-1">
-                    <div class="btn-group-vertical">
-                        {% for letter in letters %}
-                        {% if loop.index > half_letters %}
-                         <button type="button" class="btn btn-light p-1 mx-1"><a href="#{{letter}}" class="text-dark text-center">{{letter}}</a></button>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% include 'partial/filter_js.html' %}
     </nav>
 </div>

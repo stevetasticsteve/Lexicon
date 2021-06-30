@@ -28,7 +28,7 @@ class HTMLGenerationTests(unittest.TestCase):
         with patch("lexicon_config.settings", fixtures.settings):
             output.generate_html(fixtures.good_processed_data)
 
-        files = (self.lex_page, self.reverse_page, self.check_page)  # help, errors
+        files = (self.lex_page, self.check_page)  # help, errors
         for file in files:
             self.assertTrue(os.path.exists(file))
 
@@ -140,20 +140,6 @@ class HTMLGenerationTests(unittest.TestCase):
             file,
             "Error message shouldn't be showing",
         )
-
-    def test_generate_Eng_page_exists(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.generate_eng_page(fixtures.good_processed_data)
-        self.assertTrue(os.path.exists(self.reverse_page))
-
-    def test_generate_Eng_page_contents(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.generate_eng_page(fixtures.good_processed_data)
-
-        with open(self.reverse_page, "r") as file:
-            file = file.read()
-            self.assertIn("<h3>dad</h3>", file, "Entry missing")
-            self.assertIn("<h3>rat</h3>", file, "Entry missing")
 
     def test_generate_check_page_exists(self):
         with patch("lexicon_config.settings", fixtures.settings):

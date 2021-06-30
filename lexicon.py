@@ -78,6 +78,4 @@ if __name__ == "__main__":
     output.generate_html(data, verb_data=verb_list)
     output.create_phonemic_assistant_db(data, checked_only=True, add_verbs=True)
 
-    output.generate_paradigms(verb_list)
-
     output.create_csv(data, names, locations)

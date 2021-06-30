@@ -375,23 +375,6 @@ def create_verb_lexicon_entries(verb_data):
     return lexicon_entries
 
 
-def create_reverse_lexicon_entries(processed_data):
-    """Adjust the processed data so it's suitable to be displayed in an English to Lang dict"""
-    check_processed_data(processed_data, "create_reverse_lexicon_entries()")
-    # sort in English alphabetical order
-    processed_data = sorted(processed_data, key=lambda d: d["eng"].lower())
-    lexicon_entries = []
-    for item in processed_data:
-        # set the headword
-        if item["orth"]:
-            item["headword"] = item["orth"]
-        else:
-            item["headword"] = item["phon"]
-            # create the LexiconEntry object
-        lexicon_entries.append(LexiconEntry(item["eng"].lower(), item))
-    return lexicon_entries
-
-
 def get_word_beginnings(lexicon_entries):
     """Takes a list of LexiconEntry objects and returns an alphabetically sorted set of the first letters of all
     headwords"""

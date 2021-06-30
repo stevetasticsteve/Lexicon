@@ -204,23 +204,6 @@ class DataProcessingTests(unittest.TestCase):
 
         self.assertEqual("undum__", data[2].headword)
 
-    def test_create_reverse_lexicon_entries_return_type(self):
-        """Function should return a list of tuples (str, dict)"""
-        data = process_data.create_reverse_lexicon_entries(fixtures.good_processed_data)
-
-        self.assertIsInstance(data, list, "List not returned")
-        self.assertIsInstance(
-            data[0], process_data.LexiconEntry, "List doesn't contain entry objects"
-        )
-
-    def test_create_reverse_lexicon_entries_return_contents(self):
-        data = process_data.create_reverse_lexicon_entries(fixtures.good_processed_data)
-
-        self.assertEqual(4, len(data))
-        self.assertEqual("child", data[0].headword)
-        self.assertEqual("pikinini", data[0].entry[0]["tpi"])
-        self.assertEqual("dad", data[1].headword)
-
     def test_sort_by_id(self):
         data = process_data.sort_by_id(fixtures.good_processed_data)
         self.assertEqual(1, data[0]["id"], "First is not ID 1")

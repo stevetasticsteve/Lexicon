@@ -50,8 +50,6 @@ def generate_html(processed_data, verb_data=None):
     errors = process_data.validate_data(processed_data)
 
     generate_lexicon_page(processed_data, errors, verb_data=verb_data)
-    generate_eng_page(processed_data)
-    generate_help_page()
     generate_check_page(processed_data)
     logger.info("HTML pages sucessfully generated")
     if errors:
@@ -105,36 +103,6 @@ def generate_error_page(errors):
         print(template.render(context=context, errors=errors), file=file)
 
 
-def generate_eng_page(processed_data):
-    """Creates a English to language lookup version of dictionary as html"""
-    file_loader = FileSystemLoader("templates")
-    env = Environment(loader=file_loader, autoescape=True)
-    template = env.get_template("dictionary_template.html")
-
-    # Create the HTML header and navbar
-    context = generate_context(
-        title="{language} Lexicon".format(language=lexicon_config.settings["language"]),
-        header="reverse",
-    )
-    context["dict_type"] = "reverse"
-
-    lexicon_entries = process_data.create_reverse_lexicon_entries(processed_data)
-    initial_letters = process_data.get_word_beginnings(lexicon_entries)
-    half_letters = len(initial_letters) / 2
-
-    html = os.path.join(lexicon_config.settings["target_folder"], "reverse_dict.html")
-    with open(html, "w") as file:
-        print(
-            template.render(
-                context=context,
-                entries=lexicon_entries,
-                letters=initial_letters,
-                half_letters=half_letters,
-            ),
-            file=file,
-        )
-
-
 def generate_check_page(processed_data):
     """Creates a page that shows all the phonetics that need to be checked. The HTML is sparse and is designed
     for printing."""
@@ -173,18 +141,6 @@ def generate_check_page(processed_data):
         )
 
 
-def generate_help_page():
-    """Creates a help page"""
-    file_loader = FileSystemLoader("templates")
-    env = Environment(loader=file_loader, autoescape=True)
-    template = env.get_template("help_template.html")
-
-    context = generate_context(title="Help", header="help")
-    html = os.path.join(lexicon_config.settings["target_folder"], "help.html")
-    with open(html, "w") as file:
-        print(template.render(context=context), file=file)
-
-
 def generate_context(title, header):
     date = datetime.datetime.now().strftime("%A %d %B %Y")
     context = {
@@ -197,30 +153,6 @@ def generate_context(title, header):
     }
 
     return context
-
-
-def generate_paradigms(verbs):
-    """Creates a verb paradigms page"""
-    file_loader = FileSystemLoader("templates")
-    env = Environment(loader=file_loader)
-    template = env.get_template("verb_paradigms.html")
-
-    date = datetime.datetime.now().strftime("%A %d %B %Y")
-    context = {
-        "title": "Verbs",
-        "date": date,
-        "language": lexicon_config.settings["language"],
-        "header": "verbs",
-        "bootstrap": lexicon_config.settings.get("bootstrap"),
-        "jquery": lexicon_config.settings.get("jquery"),
-    }
-    html = os.path.join(lexicon_config.settings["target_folder"], "verb_paradigms.html")
-
-    verbs = [v for v in verbs if v.future_1s]  # Exclude verbs missing main entry
-    with open(html, "w") as file:
-        print(template.render(context=context, verbs=verbs), file=file)
-
-    logger.info("Kovol verb paradigms HTML page created")
 
 
 def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=False):
