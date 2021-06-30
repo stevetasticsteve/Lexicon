@@ -19,13 +19,13 @@ def assert_templates_exist(template_dir="templates"):
         "check_template.html",
         "dictionary_template.html",
         "error_template.html",
-        "help_template.html",
     ]
     partial_templates = [
         "base.html",
         "entry.html",
         "header.html",
-        "reverse_entry.html",
+        "paradigm.html",
+        "verb_entry.html",
         "sidebar.html",
     ]
 

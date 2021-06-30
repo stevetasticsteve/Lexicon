@@ -19,14 +19,10 @@ to be passed in. #}
                     {% for entry in column %}
                     {%- if entry.headword[0] == letter -%}
                         <div class="entry col-sm-6 border-right border-bottom my-auto">
-                            {%- if context.dict_type -%}
-                            {% include 'partial/reverse_entry.html' %}
+                            {%- if entry.entry[0].future_1s -%}
+                            {%- include 'partial/verb_entry.html' -%}
                             {%- else -%}
-                                {%- if entry.entry[0].future_1s -%}
-                                {%- include 'partial/verb_entry.html' -%}
-                                {%- else -%}
-                                {% include 'partial/entry.html' %}
-                                {%- endif -%}
+                            {% include 'partial/entry.html' %}
                             {%- endif -%}
                         </div>
                     {%- endif -%}

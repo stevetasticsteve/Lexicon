@@ -1,9 +1,0 @@
-{# a reverse dictionary entry: Eng - lang. No sense information displayed #}
-
-<h3>{{entry.headword}}</h3>
-{% for item in entry.entry %}
-    <p>
-    [{{item.phon}}]  <strong><em style="color:dodgerblue">{{entry.headword}}</em></strong>
-    <ul><strong style="color:gray">{{item.tpi}}</strong></ul>
-    </p>
-{% endfor %}
