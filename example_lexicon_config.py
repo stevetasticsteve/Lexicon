@@ -1,12 +1,16 @@
 settings = {
     "language": "Kovol",
-    "spreadsheet_name": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_data/Kovol_lexicon.ods",  # the abs path to the spreadsheet used as a data source
+    "spreadsheet_name": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_data/Kovol_lexicon.ods",
+    # the abs path to the spreadsheet used as a data source
     "sheet_name": "Sheet1",  # Name of the sheet containing data
-    "target_folder": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_output",  # the folder the web page should be created in,
-    "log_file": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_output/Lexicon_error.log",  # the abs path for the log file
+    "target_folder": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_output",
+    # the folder the web page should be created in,
+    "log_file": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_output/Lexicon_error.log",
+    # the abs path for the log file
     # 'sort': 'phonetics',  # order dictionary by 'phonetics' or 'orthography'
     "bootstrap": "/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/",
     "jquery": "/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/",
+    "fontawesome": "/home/steve/Documents/Computing/Python_projects/Lexicon/stylesheets/",
     # the path to the stylesheet folder
 }
 

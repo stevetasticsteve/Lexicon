@@ -150,6 +150,7 @@ def generate_context(title, header):
         "header": header,
         "bootstrap": lexicon_config.settings.get("bootstrap"),
         "jquery": lexicon_config.settings.get("jquery"),
+        "fontawesome": lexicon_config.settings.get("fontawesome"),
     }
 
     return context

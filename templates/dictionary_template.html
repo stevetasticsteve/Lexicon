@@ -31,11 +31,17 @@ to be passed in. #}
                         </div>
                     {%- endif -%}
                     {% endfor %}
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
         </div>
     </div>
 </div>
+<script>
+$(".verb_box").click(function() {
+$(this).parent().find("i").toggleClass("fa fa-chevron-up fa fa-chevron-down");
+});
+
+</script>
 {% endblock %}

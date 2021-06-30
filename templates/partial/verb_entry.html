@@ -1,14 +1,24 @@
 {% set verb = entry.entry[0] %}
 
 <div class="accordion px-0" id="{{verb.future_1s}}_accordion">
-  <div class="card">
+  <div class="card ">
     <div class="card-header" id="{{verb.future_1s}}_heading">
       <h2>
-        <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#{{verb.future_1s}}_collapse" aria-expanded="true" aria-controls="{{verb.future_1s}}_collapse">
-          <h3 class="headword">{{entry.headword}}</h3>
+        <button aria-controls="{{verb.future_1s}}_collapse" aria-expanded="true"
+                class="btn btn-block text-left verb_box collapsed" data-target="#{{verb.future_1s}}_collapse"
+                data-toggle="collapse" type="button">
+          <div class="row">
+            <div class="col-11">
+              <h3 class="headword">{{entry.headword}} </h3>
+              <p class="english"><strong><em style="color:dodgerblue">{{ verb.english }}</em></strong></p>
+            </div>
+            <div class="col-1">
+              <h3><i class="fa fa-chevron-down"></i></h3>
+            </div>
+          </div>
         </button>
       </h2>
-      <p class="english"><strong><em style="color:dodgerblue">{{ verb.english }}</em></strong></p>
+
     </div>
 
     <div id="{{verb.future_1s}}_collapse" class="collapse" aria-labelledby="{{verb.future_1s}}_collapse" data-parent="#{{verb.future_1s}}_accordion">
@@ -18,3 +28,4 @@
     </div>
   </div>
 </div>
+

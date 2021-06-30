@@ -6,7 +6,8 @@ settings = {
     'log_file': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output/Lexicon_error.log',
     'bootstrap': '/home/steve/Documents/Computing/Python_projects/python_web/static_files/bootstrap',
     'jquery': '/home/steve/Documents/Computing/Python_projects/python_web/static_files/jquery',
-    'verb_spreadsheet': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_data/Kovol_verbs.ods'
+    'fontawesome': '/home/steve/Documents/Computing/Python_projects/python_web/static_files/fontawesome',
+    'verb_spreadsheet': '/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_data/Kovol_verbs.ods',
 }
 
 spreadsheet_config = {
