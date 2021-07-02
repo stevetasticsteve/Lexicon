@@ -12,54 +12,16 @@
     <script src="{{context.jquery}}/jquery-3.4.1.min.js"></script>
     <script src="{{context.bootstrap}}/js/bootstrap.min.js"></script>
     <link href="{{context.fontawesome}}/css/all.css" rel="stylesheet">
-    <style>
-        .wrapper {
-    display: flex;
-    width: 100%;
-        }
-
-        #dictionary_sidebar {
-            width: 120px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            z-index: 1;
-        }
-
-        #main_pane {
-            padding: 0px;
-            margin-left: 120px;
-        }
-
-        footer{
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 4%;
-        z-index: 2;
-        }
-
-        footer a:hover{
-            color: #99aab5;
-        }
-
-        @media only screen and (max-width: 600px) {
-          #main_pane{
-          margin-left: 5px;
-          }
-        }
-    </style>
 
     <title>{{context.title}}</title>
 </head>
 
 <body>
+{% include 'partial/header.html' %}
 {% block page_content %}
 {% endblock %}
-<footer class="footer text-center bg-dark">
-    <a href="#main_pane" class="text-light">Jump to top</a>
+<footer class="footer text-center bg-dark fixed-bottom py-2">
+    <a class="text-light" href="#entries">Jump to top</a>
 </footer>
 </body>
 </html>

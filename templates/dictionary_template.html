@@ -4,40 +4,39 @@ to be passed in. #}
 
 {% extends 'partial/base.html' %}
 {% block page_content %}
-<div class="wrapper">
-    {% include 'partial/sidebar.html' %}
-    <div class="container-fluid" id="main_pane">
-        {% include 'partial/header.html' %}
-        <div id="entries" class="container-fluid">
-        {% for letter in letters %}
-            <div class="main_pane_letter">
-                <div class="container-fluid letter text-center bg-light">
-                    <hr><h1 id="{{letter}}" >{{letter}}</h1><hr>
-                </div>
-                <div class="row">
-                {% for column in entries|slice(2) %}
-                    {% for entry in column %}
-                    {%- if entry.headword[0] == letter -%}
-                        <div class="entry col-sm-6 border-right border-bottom my-auto">
-                            {%- if entry.entry[0].future_1s -%}
-                            {%- include 'partial/verb_entry.html' -%}
-                            {%- else -%}
-                            {% include 'partial/entry.html' %}
-                            {%- endif -%}
-                        </div>
-                    {%- endif -%}
-                    {% endfor %}
-                    {% endfor %}
-                </div>
+
+<div class="container-fluid" id="entries">
+
+    {% for letter in letters %}
+    <div class="main_pane_letter">
+        <div class="container-fluid letter text-center bg-light">
+            <hr>
+            <h1 id="{{letter}}">{{letter}}</h1>
+            <hr>
+        </div>
+        <div class="row">
+            {% for column in entries|slice(2) %}
+            {% for entry in column %}
+            {%- if entry.headword[0] == letter -%}
+            <div class="entry col-sm-6 border-right border-bottom my-auto">
+                {%- if entry.entry[0].future_1s -%}
+                {%- include 'partial/verb_entry.html' -%}
+                {%- else -%}
+                {% include 'partial/entry.html' %}
+                {%- endif -%}
             </div>
+            {%- endif -%}
+            {% endfor %}
             {% endfor %}
         </div>
     </div>
+    {% endfor %}
 </div>
 <script>
 $(".verb_box").click(function() {
 $(this).parent().find("i").toggleClass("fa fa-chevron-up fa fa-chevron-down");
 });
+
 
 </script>
 {% endblock %}

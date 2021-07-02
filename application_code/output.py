@@ -26,7 +26,6 @@ def assert_templates_exist(template_dir="templates"):
         "header.html",
         "paradigm.html",
         "verb_entry.html",
-        "sidebar.html",
     ]
 
     partial_templates = ["partial/" + t for t in partial_templates]

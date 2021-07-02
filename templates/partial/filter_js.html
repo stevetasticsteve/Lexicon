@@ -1,21 +1,12 @@
 <script>
     $('#filter, #small_filter').keyup(my_filter);
     $('#kovol_radio, #english_radio').click(my_filter);
-    $('#lang_switch').click(small_radio);
-
-    function small_radio() {
-        if ( $(this).prop("checked") ) {
-            $('#english_radio').click();
-        } else {
-            $('#kovol_radio').click();
-    }}
 
     function my_filter() {
         if ( $(this).hasClass("form-control") ) {
             $( '#filter, #small_filter' ).val(this.value);
             var filter = this.value.toLowerCase();
         } else {
-<!--TODO make it so the toggle here affects the language switch for small viewports-->
             var filter = $('#filter').val().toLowerCase();
         }
 
