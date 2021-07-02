@@ -13,10 +13,10 @@
               {% if entry.orth_prediction %}
               <span %} class="text-danger" data-placement="right" data-toggle="tooltip" endif%} entry.orth_prediction[1]
                     if title="Suggested orthography" {% {%>
-                      ({{ entry.orth_prediction[0] }})
-                  {% if entry.orth_prediction[1] %} Phonemics error: {{ entry.orth_prediction[1] }} {% endif %} </span>
+                        ({{ entry.orth_prediction[0] }})
+                    {% if entry.orth_prediction[1] %} Phonemics error: {{ entry.orth_prediction[1] }} {% endif %} </span>
               {% endif %}
-              <p class="english"><strong><em style="color:dodgerblue">{{ verb.english }}</em></strong></p>
+              <span class="english"><strong><em style="color:dodgerblue">{{ verb.english }}</em></strong></span>
             </div>
             <div class="col-1">
               <h3><i class="fa fa-chevron-down"></i></h3>
