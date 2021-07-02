@@ -372,6 +372,8 @@ def create_lexicon_entries(processed_data, verb_data=None):
 def create_verb_lexicon_entries(verb_data):
     """Convert a list of verb objects into Lexeme objects."""
     lexicon_entries = [LexiconEntry(v.future_1s, v.__dict__) for v in verb_data]
+    for l in lexicon_entries:
+        l.orth_prediction = phonemics.phonetics_to_orthography(l.entry[0]["future_1s"], hard_fail=False)
     return lexicon_entries
 
 
