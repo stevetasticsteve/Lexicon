@@ -1,26 +1,23 @@
-<div class="container-fluid p-2 bg-info text-white">
+<div class="container-fluid p-2 bg-info text-white" id="top">
     <h1>{{context.language}} Lexicon</h1>
     <p>Updated {{context.date}} </p>
 </div>
 
 <div class="input-group input-group-lg m-0 p-2 bg-info sticky-top row">
-    <div class="col-lg-10 mb-2">
+    <div class="col-lg-10 mb-1">
         <div class="input-group input-group-lg">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-lg">Search</span>
-            </div>
             <input aria-describedby="inputGroup-sizing-sm" aria-label="Large" class="form-control" id="filter"
-                   type="text">
+                   type="text" placeholder="Search">
         </div>
     </div>
-    <div class="col-lg-2 mb-3">
+    <div class="col-lg-2">
         <div id="radio-group">
-            <div class="form-check text-white">
+            <div class="form-check text-white custom-control-inline mx-2">
                 <h5><input checked class="form-check-input" id="kovol_radio" name="radio_select" type="radio"
                            value="Kovol">
                     <label class="form-check-label" for="kovol_radio">Search Kovol</label></h5>
             </div>
-            <div class="form-check text-white">
+            <div class="form-check text-white custom-control-inline mx-2">
                 <h5><input class="form-check-input" id="english_radio" name="radio_select" type="radio" value="English">
                     <label class="form-check-label" for="english_radio">Search English</label></h5>
             </div>
