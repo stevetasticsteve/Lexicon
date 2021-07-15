@@ -11,56 +11,56 @@
         <tbody>
             <tr>
                 <th scope="row">1s</th>
-                <td>{{ verb.remote_past_1s }}</td>
-                <td>{{ verb.recent_past_1s }}</td>
-                <td>{{ verb.future_1s }}</td>
+                <td class="headword">{{ verb.remote_past_1s }}</td>
+                <td class="headword">{{ verb.recent_past_1s }}</td>
+                <td class="headword">{{ verb.future_1s }}</td>
             </tr>
             <tr>
                 <th scope="row">2s</th>
-                <td {% if 'remote_past_2s' in verb.errors %}style="color: red;"{% endif %}>{{ verb.remote_past_2s }}</td>
-                <td {% if 'recent_past_2s' in verb.errors %}style="color: red;"{% endif %}>{{ verb.recent_past_2s }}</td>
-                <td {% if 'future_2s' in verb.errors %}style="color: red;"{% endif %}>{{ verb.future_2s }}</td>
+                <td class="headword"> {{ verb.remote_past_2s }}</td>
+                <td class="headword">{{ verb.recent_past_2s }}</td>
+                <td class="headword">{{ verb.future_2s }}</td>
             </tr>
             <tr>
                 <th scope="row">3s</th>
-                <td {% if 'remote_past_3s' in verb.errors %}style="color: red;"{% endif %}>{{ verb.remote_past_3s }}</td>
-                <td {% if 'recent_past_3s' in verb.errors %}style="color: red;"{% endif %}>{{ verb.recent_past_3s }}</td>
-                <td {% if 'future_3s' in verb.errors %}style="color: red;"{% endif %}>{{ verb.future_3s }}</td>
+                <td class="headword">{{ verb.remote_past_3s }}</td>
+                <td class="headword">{{ verb.recent_past_3s }}</td>
+                <td class="headword">{{ verb.future_3s }}</td>
             </tr>
             <tr>
                 <th scope="row">1p</th>
-                <td {% if 'remote_past_1p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.remote_past_1p }}</td>
-                <td {% if 'recent_past_1p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.recent_past_1p }}</td>
-                <td {% if 'future_1p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.future_1p }}</td>
+                <td class="headword">{{ verb.remote_past_1p }}</td>
+                <td class="headword">{{ verb.recent_past_1p }}</td>
+                <td class="headword">{{ verb.future_1p }}</td>
             </tr>
             <tr>
                 <th scope="row">2p</th>
-                <td {% if 'remote_past_2p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.remote_past_2p }}</td>
-                <td {% if 'recent_past_2p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.recent_past_2p }}</td>
-                <td {% if 'future_2p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.future_2p }}</td>
+                <td class="headword">{{ verb.remote_past_2p }}</td>
+                <td class="headword">{{ verb.recent_past_2p }}</td>
+                <td class="headword">{{ verb.future_2p }}</td>
             </tr>
             <tr>
                 <th scope="row">3p</th>
-                <td {% if 'remote_past_3p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.remote_past_3p }}</td>
-                <td {% if 'recent_past_3p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.recent_past_3p }}</td>
-                <td {% if 'future_3p' in verb.errors %}style="color: red;"{% endif %}>{{ verb.future_3p }}</td>
+                <td class="headword">{{ verb.remote_past_3p }}</td>
+                <td class="headword">{{ verb.recent_past_3p }}</td>
+                <td class="headword">{{ verb.future_3p }}</td>
             </tr>
         </tbody>
     </table>
     <div class="row">
         <div class="col-sm-3">
             <strong>Imperative forms:</strong>
-            <ul {% if 'singular_imperative' in verb.errors %}style="color: red;"{% endif %}>2s: {{ verb.singular_imperative }}</ul>
-            <ul {% if 'plural_imperative' in verb.errors %}style="color: red;"{% endif %}>2p: {{ verb.plural_imperative }}</ul>
+            <ul class="headword">2s: {{ verb.singular_imperative }}</ul>
+            <ul class="headword">2p: {{ verb.plural_imperative }}</ul>
         </div>
 
         <div class="col-sm-3">
             {% if verb.short %}
             <strong>Short form:</strong>
-            <ul>{{verb.short}}</ul>
+            <ul class="headword">{{verb.short}}</ul>
             {% endif %}
             {% if verb.root %}
-            <strong>Pedicted root:</strong>
+            <strong>Predicted root:</strong>
             <ul>{{verb.root}}</ul>
             {% endif %}
         </div>
