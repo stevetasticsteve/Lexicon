@@ -17,3 +17,7 @@ __pycache__/lexicon.cpython-38.pyc
 /runner.py
 /local_output/
 /local_data/
+venv
+__pycache__
+output/
+*.log

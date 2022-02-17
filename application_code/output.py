@@ -75,7 +75,7 @@ def generate_lexicon_page(processed_data, errors, verb_data=None):
     template = env.get_template("dictionary_template.html")
 
     html = os.path.join(lexicon_config.settings["target_folder"], "main_dict.html")
-    with open(html, "w") as file:
+    with open(html, "w", encoding="utf-8") as file:
         print(
             template.render(
                 context=context,
@@ -98,7 +98,7 @@ def generate_error_page(errors):
     context = generate_context(title="Data errors", header="errors")
     html = os.path.join(lexicon_config.settings["target_folder"], "errors.html")
 
-    with open(html, "w") as file:
+    with open(html, "w", encoding="utf-8") as file:
         print(template.render(context=context, errors=errors), file=file)
 
 
@@ -131,7 +131,7 @@ def generate_check_page(processed_data):
     )
 
     html = os.path.join(lexicon_config.settings["target_folder"], "check_list.html")
-    with open(html, "w") as file:
+    with open(html, "w", encoding="utf-8") as file:
         print(
             template.render(
                 context=context, new_entries=new_entries, new_senses=new_senses
@@ -195,7 +195,7 @@ def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=F
             language=lexicon_config.settings["language"]
         ),
     )
-    with open(db, "w") as file:
+    with open(db, "w", encoding="utf-8") as file:
         print(pa_db, file=file)
     logger.info(
         "   - {n} words written to phonology assistant file".format(
@@ -213,7 +213,7 @@ def create_dataset_csv(processed_data):
         lexicon_config.settings["target_folder"], "phonemic_dataset.csv"
     )
 
-    with open(csv_path, "w") as csvfile:
+    with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
         fieldnames = ["ID", "phonetics", "English"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -240,7 +240,7 @@ def create_csv(processed_data, *args):
                 word = row["phonetic"]
             additional_words.append(word)
 
-    with open(csv_path, "w") as csvfile:
+    with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
         writer = csv.writer(csvfile)
         for item in processed_data:
             writer.writerow([item["phon"]])

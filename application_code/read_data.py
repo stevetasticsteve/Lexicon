@@ -238,7 +238,7 @@ def verb_sheet_to_csv(
         raw_data = [x[1:6] for x in raw_data]
 
     # Create the csv and return the path
-    with open(csv_path, "w") as csvfile:
+    with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(raw_data)
     return csv_path
