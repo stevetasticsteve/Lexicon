@@ -6,11 +6,6 @@ from unittest.mock import patch
 from application_code import output
 from tests import fixtures
 
-try:
-    import lexicon_config
-except ModuleNotFoundError:
-    import example_lexicon_config as lexicon_config
-
 
 class HTMLGenerationTests(unittest.TestCase):
     """Tests the generation of HTML pages"""
