@@ -400,11 +400,11 @@ def get_pa_verbs(checked=True):
         data = csv.reader(csvfile)
         data = [
             {
-                "phon": d[3],
+                "phon": d[4],
                 "tpi": "verb",
                 "pos": "verb",
                 "eng": "verb",
-                "id": "verb",
+                "id": f"verb {d[0]}",
             }
             for d in data
         ]

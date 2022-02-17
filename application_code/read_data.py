@@ -233,9 +233,9 @@ def verb_sheet_to_csv(
     raw_data = [x for x in raw_data if len(x) >= 6]
     if checked:
         # only include rows with something marked in checked column
-        raw_data = [x[1:6] for x in raw_data if x[6]]
+        raw_data = [x for x in raw_data if x[6]]
     else:
-        raw_data = [x[1:6] for x in raw_data]
+        raw_data = [x for x in raw_data]
 
     # Create the csv and return the path
     with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
