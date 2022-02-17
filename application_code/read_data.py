@@ -8,7 +8,10 @@ import os
 import pyexcel_io
 import pyexcel_ods3
 
-import lexicon_config
+try:
+    import lexicon_config
+except ModuleNotFoundError:
+    import example_lexicon_config as lexicon_config
 
 logger = logging.getLogger("LexiconLog")
 

@@ -8,7 +8,10 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 
-import lexicon_config
+try:
+    import lexicon_config
+except ModuleNotFoundError:
+    import example_lexicon_config as lexicon_config
 from application_code import process_data
 
 logger = logging.getLogger("LexiconLog")

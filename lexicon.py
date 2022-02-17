@@ -18,7 +18,10 @@ import traceback
 
 from kovol_language_tools import verbs
 
-import lexicon_config
+try:
+    import lexicon_config
+except ModuleNotFoundError:
+    import example_lexicon_config as lexicon_config
 from application_code import output
 from application_code import read_data
 
