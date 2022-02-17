@@ -22,3 +22,4 @@ __pycache__
 output/
 *.log
 lexicon_config.py
+_lexicon_config.py

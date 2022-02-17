@@ -350,7 +350,8 @@ def create_lexicon_entries(processed_data, verb_data=None):
             "sense": entry["sense"],
         }
 
-        if last_id == entry["id"]:  # this is a sense of the previous headword
+        if last_id == entry["id"] and entry["id"] != 0:  # this is a sense of the previous headword
+            # 0 is used to mark missing IDs
             lexicon_entries[lexeme_index].entry.append(sense_data)
         else:  # this is a new headword
             lexeme = LexiconEntry(headword, sense_data)
