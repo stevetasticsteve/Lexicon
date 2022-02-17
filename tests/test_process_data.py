@@ -3,6 +3,11 @@ import unittest
 from application_code import process_data
 from tests import fixtures
 
+try:
+    import lexicon_config
+except ModuleNotFoundError:
+    import example_lexicon_config as lexicon_config
+
 
 class ValidationTests(unittest.TestCase):
     """Test the code that validates the data read from the spreadsheet"""
