@@ -1,6 +1,7 @@
 settings = {
     "language": "Kovol",
     "spreadsheet_name": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_data/Kovol_lexicon.ods",
+    "verb_spreadsheet": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_data/Kovol_verbs.ods",
     # the abs path to the spreadsheet used as a data source
     "sheet_name": "Sheet1",  # Name of the sheet containing data
     "target_folder": "/home/steve/Documents/Computing/Python_projects/Lexicon/local_output",
