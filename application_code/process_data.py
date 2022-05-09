@@ -5,7 +5,7 @@ import csv
 import logging
 from collections import Counter
 
-from kovol_language_tools import phonemics
+from kovol_language_tools import verbs
 
 from application_code import read_data
 
@@ -337,7 +337,7 @@ def create_lexicon_entries(processed_data, verb_data=None):
             orth_prediction = None
         else:
             headword = entry["phon"]
-            orth_prediction = phonemics.phonetics_to_orthography(entry["phon"], hard_fail=False)
+            # orth_prediction = phonemics.phonetics_to_orthography(entry["phon"], hard_fail=False)
 
         sense_data = {
             "pos": entry["pos"],
@@ -355,7 +355,7 @@ def create_lexicon_entries(processed_data, verb_data=None):
             lexicon_entries[lexeme_index].entry.append(sense_data)
         else:  # this is a new headword
             lexeme = LexiconEntry(headword, sense_data)
-            lexeme.orth_prediction = orth_prediction
+            # lexeme.orth_prediction = orth_prediction
             lexicon_entries.append(lexeme)
             lexeme_index += 1
         last_id = entry["id"]
@@ -372,9 +372,22 @@ def create_lexicon_entries(processed_data, verb_data=None):
 
 def create_verb_lexicon_entries(verb_data):
     """Convert a list of verb objects into Lexeme objects."""
+    if "ID" in verb_data[0][0]:
+        verb_data.pop(0)  # Remove header
+
+    verb_data = [{"actor": v[1], "tense": v[2], "mode": v[3], "kov": v[4], "eng": v[5]} for v in verb_data]
+    
+    # Get a list of the unique verbs (identified by English translation)
+    eng = set([v["eng"] for v in verb_data])
+    # Get list of all data where each index is a list of dict items for each translation
+    verb_data = [[d for d in verb_data if d["eng"] == e] for e in eng]
+
+
+    verb_data = verbs.csv_data_to_verb_object(verb_data)
+
     lexicon_entries = [LexiconEntry(v.future_1s, v.__dict__) for v in verb_data]
-    for l in lexicon_entries:
-        l.orth_prediction = phonemics.phonetics_to_orthography(l.entry[0]["future_1s"], hard_fail=False)
+    # for l in lexicon_entries:
+    #     l.orth_prediction = phonemics.phonetics_to_orthography(l.entry[0]["future_1s"], hard_fail=False)
     return lexicon_entries
 
 
@@ -393,19 +406,3 @@ def get_verb_conjugations(checked=False):
         data = [{"phon": d[3]} for d in data]
         return data
 
-
-def get_pa_verbs(checked=True):
-    """return the info needed to add a verb to pa.db"""
-    with open(read_data.verb_sheet_to_csv(checked=checked), "r", encoding="utf-8") as csvfile:
-        data = csv.reader(csvfile)
-        data = [
-            {
-                "phon": d[4],
-                "tpi": "verb",
-                "pos": "verb",
-                "eng": "verb",
-                "id": f"verb {d[0]}",
-            }
-            for d in data
-        ]
-        return data

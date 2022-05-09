@@ -16,8 +16,6 @@ import os
 import sys
 import traceback
 
-from kovol_language_tools import verbs
-
 try:
     import lexicon_config
 except ModuleNotFoundError:
@@ -74,11 +72,7 @@ if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     data = read_data.read_lexicon()
-    names = read_data.read_additional_sheet("Names")
-    locations = read_data.read_additional_sheet("Locations")
-    verb_list = verbs.get_data_from_csv(read_data.verb_sheet_to_csv())
+    verbs =read_data.read_verbsheet()
 
-    output.generate_html(data, verb_data=verb_list)
-    output.create_phonemic_assistant_db(data, checked_only=True, add_verbs=True)
+    output.generate_html(data, verb_data=verbs)
 
-    output.create_csv(data, names, locations)

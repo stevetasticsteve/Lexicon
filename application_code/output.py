@@ -1,7 +1,6 @@
 # This file contains functions that output data by calling on functions in process_data. This is the
 # third and final layer. HTML pages and Phonology assistant databases can be produced
 
-import csv
 import datetime
 import logging
 import os
@@ -19,7 +18,6 @@ logger = logging.getLogger("LexiconLog")
 
 def assert_templates_exist(template_dir="templates"):
     templates = [
-        "check_template.html",
         "dictionary_template.html",
         "error_template.html",
     ]
@@ -52,7 +50,6 @@ def generate_html(processed_data, verb_data=None):
     errors = process_data.validate_data(processed_data)
 
     generate_lexicon_page(processed_data, errors, verb_data=verb_data)
-    generate_check_page(processed_data)
     logger.info("HTML pages sucessfully generated")
     if errors:
         generate_error_page(errors)
@@ -105,43 +102,6 @@ def generate_error_page(errors):
         print(template.render(context=context, errors=errors), file=file)
 
 
-def generate_check_page(processed_data):
-    """Creates a page that shows all the phonetics that need to be checked. The HTML is sparse and is designed
-    for printing."""
-    file_loader = FileSystemLoader("templates")
-    env = Environment(loader=file_loader, autoescape=True)
-    template = env.get_template("check_template.html")
-
-    # filter out and return only unchecked entries
-    words_to_check = [word for word in processed_data if not word["check"]]
-    # use a list to represent brand new entries, and one for new senses
-    new_senses = [word for word in words_to_check if word["sense"] > 1]
-    new_entries = [word for word in words_to_check if word["sense"] == 1]
-    # order by tag for more structured language checking session
-    new_entries = process_data.sort_by_tag(new_entries)
-    new_senses = process_data.sort_by_tag(new_senses)
-    logger.info(
-        "   -{words_to_check} words need checking".format(
-            words_to_check=len(words_to_check)
-        )
-    )
-
-    context = generate_context(
-        title="{language} checklist".format(
-            language=lexicon_config.settings["language"]
-        ),
-        header="check_list",
-    )
-
-    html = os.path.join(lexicon_config.settings["target_folder"], "check_list.html")
-    with open(html, "w", encoding="utf-8") as file:
-        print(
-            template.render(
-                context=context, new_entries=new_entries, new_senses=new_senses
-            ),
-            file=file,
-        )
-
 
 def generate_context(title, header):
     date = datetime.datetime.now().strftime("%A %d %B %Y")
@@ -157,95 +117,3 @@ def generate_context(title, header):
 
     return context
 
-
-def create_phonemic_assistant_db(processed_data, checked_only=False, add_verbs=False):
-    """Takes processed data and uses them to produce a .db file that can be read by phonemic assistant.
-    Takes a boolean keyword argument 'checked_only' that limits the entries used to those marked as check
-    (default=True)"""
-    process_data.check_processed_data(processed_data, "create_phonemic_assistant_db()")
-
-    logger.info("Writing phonology assistant file")
-    if checked_only:
-        processed_data = [data for data in processed_data if data["check"]]
-        logger.info("   - writing checked words only to phonology assistant file")
-        if len(processed_data) == 0:
-            raise AssertionError("No checked data to work with!")
-    else:
-        logger.info("   - writing unchecked words to phonology assistant file")
-
-    if add_verbs:
-        verbs = process_data.get_pa_verbs(checked=checked_only)
-        processed_data += verbs
-
-    pa_db = "\\_sh v3.0  400  PhoneticData\n"
-
-    for item in processed_data:
-        # item['ref'] = '{:03d}'.format(i)  # format ref as 001, 002 etc
-        entry = """
-\\ref {id}
-\\ge {eng}
-\\gn {tpi}
-\\ph {phon}
-\\ps {pos}\n""".format(
-            **item
-        )  # use the dict from read_lexicon()
-
-        pa_db += entry
-
-    db = os.path.join(
-        lexicon_config.settings["target_folder"],
-        "{language}_phonology_assistant.db".format(
-            language=lexicon_config.settings["language"]
-        ),
-    )
-    with open(db, "w", encoding="utf-8") as file:
-        print(pa_db, file=file)
-    logger.info(
-        "   - {n} words written to phonology assistant file".format(
-            n=len(processed_data)
-        )
-    )
-
-    create_dataset_csv(processed_data)
-
-
-def create_dataset_csv(processed_data):
-    """Creates a .csv to detail the dataset used for phonemic analysis"""
-    logger.info("Creating record of phonemic dataset")
-    csv_path = os.path.join(
-        lexicon_config.settings["target_folder"], "phonemic_dataset.csv"
-    )
-
-    with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
-        fieldnames = ["ID", "phonetics", "English"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for item in processed_data:
-            writer.writerow(
-                {"ID": item["id"], "phonetics": item["phon"], "English": item["eng"]}
-            )
-
-
-def create_csv(processed_data, *args):
-    """Creates a CSV to use as a simple wordlist"""
-    logger.info("Writing CSV file")
-    verbs = process_data.get_verb_conjugations()
-    processed_data += verbs
-
-    csv_path = os.path.join(lexicon_config.settings["target_folder"], "word_list.csv")
-
-    additional_words = []
-    for arg in args:
-        for row in arg:
-            if row["kovol"]:
-                word = row["kovol"]
-            else:
-                word = row["phonetic"]
-            additional_words.append(word)
-
-    with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
-        writer = csv.writer(csvfile)
-        for item in processed_data:
-            writer.writerow([item["phon"]])
-        for item in additional_words:
-            writer.writerow([item])

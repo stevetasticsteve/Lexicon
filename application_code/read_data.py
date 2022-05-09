@@ -1,7 +1,5 @@
 # This file contains functions related to the first layer of the application: reading the spreadsheet
 # and returning the data in dictionary format, including some processing tasks that fill in blank cells
-
-import csv
 import logging
 import os
 
@@ -115,49 +113,6 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
     return processed_data
 
 
-def read_additional_sheet(sheet_name, config_file=lexicon_config):
-    """Reads additional sheets with columns [Kovol, Phonetic, Dialect, Description]. Intended to separate
-    out proper nouns from the main sheet."""
-    spreadsheet = config_file.settings["spreadsheet_name"]
-    number_of_columns = 4
-    # read the file with pyexcel
-    try:
-        raw_data = pyexcel_ods3.get_data(spreadsheet)[sheet_name]
-        raw_data.pop(0)
-        raw_data = [x for x in raw_data if x != []]  # get rid of blank rows
-        data = []
-        for row in raw_data:
-            while (
-                len(row) < number_of_columns
-            ):  # add blank columns to avoid index errors
-                row.append("")
-            d = {
-                "kovol": row[letter_to_number("A")],
-                "phonetic": row[letter_to_number("B")],
-                "dialect": row[letter_to_number("C")],
-                "description": row[letter_to_number("D")],
-            }
-            data.append(d)
-        return data
-
-    except KeyError:
-        msg = "{sheet} is not a valid sheet name.".format(sheet=spreadsheet)
-        logger.exception(msg)
-        raise KeyError(msg)
-    except pyexcel_io.exceptions.NoSupportingPluginFound:
-        _, extension = os.path.splitext(spreadsheet)
-        msg = (
-            "{ext} is not a valid file extension. Must be .ods, .xls or .xlsx.".format(
-                ext=extension
-            )
-        )
-        logger.exception(msg)
-        raise TypeError(msg)
-    except IndexError:
-        msg = "The file is blank"
-        logger.exception(msg)
-        raise AttributeError(msg)
-
 
 def pre_process_raw_data(raw_data, col):
     """Exclude blank data and incorrect ID numbers each row from .ods dump."""
@@ -221,27 +176,15 @@ def post_process_raw_data(dict_data):
     return dict_data
 
 
-def verb_sheet_to_csv(
+def read_verbsheet(
     spreadsheet=lexicon_config.settings["verb_spreadsheet"],
-    csv_name="verbs.csv",
-    checked=False,
 ):
-    """Read the verb spreadsheet and return a .csv object of columns B-F for kovol-language-tools"""
-    csv_path = os.path.join(lexicon_config.settings["target_folder"], csv_name)
+    """Read the verb spreadsheet and return data"""
 
     # Returns an alphabetically sorted list of Verb objects
     assert os.path.exists(spreadsheet), "Verb spreadsheet missing"
     raw_data = pyexcel_ods3.get_data(spreadsheet)["Paradigms"]
     # get rid rows lacking data an English translation
     raw_data = [x for x in raw_data if len(x) >= 6]
-    if checked:
-        # only include rows with something marked in checked column
-        raw_data = [x for x in raw_data if x[6]]
-    else:
-        raw_data = [x for x in raw_data]
 
-    # Create the csv and return the path
-    with open(csv_path, "w", encoding="utf-8", newline="\n") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(raw_data)
-    return csv_path
+    return raw_data
