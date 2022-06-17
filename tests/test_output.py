@@ -27,9 +27,7 @@ class HTMLGenerationTests(unittest.TestCase):
         with patch("lexicon_config.settings", fixtures.settings):
             output.generate_html(fixtures.good_processed_data)
 
-        files = (self.lex_page, self.check_page)  # help, errors
-        for file in files:
-            self.assertTrue(os.path.exists(file))
+        self.assertTrue(os.path.exists(self.lex_page))
 
     def test_generate_lexicon_page_exists(self):
         with patch("lexicon_config.settings", fixtures.settings):
@@ -131,19 +129,6 @@ class HTMLGenerationTests(unittest.TestCase):
             "Error message shouldn't be showing",
         )
 
-    def test_generate_check_page_exists(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.generate_check_page(fixtures.good_processed_data)
-        self.assertTrue(os.path.exists(self.check_page))
-
-    def test_generate_check_page_contents(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.generate_check_page(fixtures.good_processed_data)
-
-        with open(self.check_page, "r") as file:
-            file = file.read()
-            self.assertIn("<td>sinasim</td>", file, "Check table missing")
-
     def test_assert_templates_exist(self):
         self.assertTrue(output.assert_templates_exist())
         with self.assertRaises(FileNotFoundError) as error:
@@ -180,58 +165,3 @@ class OtherFileGenerationTests(unittest.TestCase):
             os.remove(self.paDb_path)
         if os.path.exists(self.dataset_path):
             os.remove(self.dataset_path)
-
-    def test_create_phonemic_assistant_new_file_exists(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.create_phonemic_assistant_db(
-                fixtures.good_processed_data, checked_only=False
-            )
-        self.assertTrue(os.path.exists(self.paDb_path))
-        with patch("lexicon_config.settings", fixtures.settings):
-            with self.assertRaises(AssertionError) as error:
-                output.create_phonemic_assistant_db(
-                    fixtures.good_processed_data, checked_only=True
-                )
-            self.assertIn("No checked data to work with!", str(error.exception))
-
-    def test_create_phonemic_assistant_contents(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.create_phonemic_assistant_db(
-                fixtures.good_processed_data, checked_only=False
-            )
-
-        with open(self.paDb_path, "r") as file:
-            expected_contents = """\\_sh v3.0  400  PhoneticData
-
-\\ref 1
-\ge child
-\gn pikinini
-\ph undum
-\ps n
-
-\\ref 2
-\ge dad
-\gn papa
-\ph inda
-\ps n
-
-\\ref 3
-\ge rat
-\gn rat
-\ph sinasim
-\ps n
-
-\\ref 3
-\ge rat
-\gn rat
-\ph sinasim
-\ps n
-
-"""
-            self.assertEqual(expected_contents, file.read())
-
-    def test_create_dataset_csv(self):
-        with patch("lexicon_config.settings", fixtures.settings):
-            output.create_dataset_csv(fixtures.good_processed_data)
-
-        self.assertTrue(os.path.exists(self.dataset_path))

@@ -5,6 +5,7 @@ from unittest.mock import patch
 import tests.fixtures
 from application_code import read_data
 
+
 class ReadLexiconTests(unittest.TestCase):
     """Test the code that reads the spreadsheet"""
 

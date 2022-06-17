@@ -113,7 +113,6 @@ def read_lexicon(*args, config_file=lexicon_config, number_of_columns=18):
     return processed_data
 
 
-
 def pre_process_raw_data(raw_data, col):
     """Exclude blank data and incorrect ID numbers each row from .ods dump."""
     # set the id number to 0 if it's blank - preventing sort failures later

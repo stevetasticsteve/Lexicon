@@ -4,7 +4,6 @@ from application_code import process_data
 from tests import fixtures
 
 
-
 class ValidationTests(unittest.TestCase):
     """Test the code that validates the data read from the spreadsheet"""
 

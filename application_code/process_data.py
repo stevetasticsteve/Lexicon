@@ -5,8 +5,7 @@ import csv
 import logging
 from collections import Counter
 
-from kovol_language_tools import verbs
-
+from application_code import verbs
 from application_code import read_data
 
 logger = logging.getLogger("LexiconLog")
@@ -350,7 +349,9 @@ def create_lexicon_entries(processed_data, verb_data=None):
             "sense": entry["sense"],
         }
 
-        if last_id == entry["id"] and entry["id"] != 0:  # this is a sense of the previous headword
+        if (
+            last_id == entry["id"] and entry["id"] != 0
+        ):  # this is a sense of the previous headword
             # 0 is used to mark missing IDs
             lexicon_entries[lexeme_index].entry.append(sense_data)
         else:  # this is a new headword
@@ -375,13 +376,15 @@ def create_verb_lexicon_entries(verb_data):
     if "ID" in verb_data[0][0]:
         verb_data.pop(0)  # Remove header
 
-    verb_data = [{"actor": v[1], "tense": v[2], "mode": v[3], "kov": v[4], "eng": v[5]} for v in verb_data]
-    
+    verb_data = [
+        {"actor": v[1], "tense": v[2], "mode": v[3], "kov": v[4], "eng": v[5]}
+        for v in verb_data
+    ]
+
     # Get a list of the unique verbs (identified by English translation)
     eng = set([v["eng"] for v in verb_data])
     # Get list of all data where each index is a list of dict items for each translation
     verb_data = [[d for d in verb_data if d["eng"] == e] for e in eng]
-
 
     verb_data = verbs.csv_data_to_verb_object(verb_data)
 
@@ -401,8 +404,9 @@ def get_word_beginnings(lexicon_entries):
 
 def get_verb_conjugations(checked=False):
     """Retrieve only the Kovol words from the verb .csv"""
-    with open(read_data.verb_sheet_to_csv(checked=checked), "r", encoding="utf-8") as csvfile:
+    with open(
+        read_data.verb_sheet_to_csv(checked=checked), "r", encoding="utf-8"
+    ) as csvfile:
         data = csv.reader(csvfile)
         data = [{"phon": d[3]} for d in data]
         return data
-

@@ -66,7 +66,9 @@ def generate_lexicon_page(processed_data, errors, verb_data=None):
         header="lexicon",
     )
 
-    lexicon_entries = process_data.create_lexicon_entries(processed_data, verb_data=verb_data)
+    lexicon_entries = process_data.create_lexicon_entries(
+        processed_data, verb_data=verb_data
+    )
     initial_letters = process_data.get_word_beginnings(lexicon_entries)
     half_letters = len(initial_letters) / 2
 
@@ -102,7 +104,6 @@ def generate_error_page(errors):
         print(template.render(context=context, errors=errors), file=file)
 
 
-
 def generate_context(title, header):
     date = datetime.datetime.now().strftime("%A %d %B %Y")
     context = {
@@ -116,4 +117,3 @@ def generate_context(title, header):
     }
 
     return context
-
